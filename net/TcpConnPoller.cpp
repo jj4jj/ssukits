@@ -3,19 +3,19 @@
 
 //poller
 // return 0 if ok else err; 
-int 	TcpConnEpoll::Init(int iMaxFdCount = 0)
+int 	TcpConnEpoll::Init(int _iMaxFdCount = 0)
 {
 	//The size is not the maximum size of the backing store but just a hint  to  the
 		//kernel about how to dimension internal structures.
-	if(0 == iMaxFdCount){iMaxFdCount = 1024;}
+	if(0 == _iMaxFdCount){_iMaxFdCount = 1024;}
 	if(pEvents != NULL)
 	{
 
 		LOG_FATAL("repeat init !");
 		return -1;
 	}
-	int iEventBuffSize = sizeof(struct epoll_event)*iMaxFdCount;
-	iMaxClientCount = iMaxFdCount;
+	int iEventBuffSize = sizeof(struct epoll_event)*_iMaxFdCount;
+	iMaxFDCount = _iMaxFdCount;
 	pEvents = malloc(iEventBuffSize);
 	if(!pEvents)
 	{
@@ -46,11 +46,11 @@ int 	TcpConnEpoll::Add(const TcpSocket& sock,int iInteredtedEventType)
 	{
 	case ET_ACCEPT:
 	case ET_READ:
-		ev.evnts |= EPOLL_IN ;
+		ev.evnts |= EPOLLIN ;
 		break;
 	case ET_CONNECT:
 	case ET_WRITE:
-		ev.evnts |=  EPOLL_OUT ;
+		ev.evnts |=  EPOLLOUT ;
 		break;
 	}
 	ev.data.ptr = &sock;	
@@ -71,7 +71,7 @@ int 	TcpConnEpoll::Del(const TcpSocket& sock)
 		return -1;
 	}
 	struct epoll_event	ev;
-	ev.events = (EPOLL_IN | EPOLL_OUT);
+	ev.events = (EPOLLIN | EPOLLOUT);
 	int ret = epoll_ctl(epfd,EPOLL_CTL_DEL,fd,&ev);
 	if(ret < 0)
 	{
@@ -83,10 +83,10 @@ int 	TcpConnEpoll::Del(const TcpSocket& sock)
 int 	TcpConnEpoll::Polling(std::vector<TcpConnPollerEvent> & events,int iTimeCountMs = 10)
 {
 	events.clear();
-	int iNfds = epoll_wait(epfd,pEvents,iMaxClientCount,TimeCoutMs);
+	int iNfds = epoll_wait(epfd,pEvents,iMaxFDCount,iTimeCountMs);
 	if (iNfds > 0) 
 	{
-		TLOG_ERROR("epoll_wait return ret = %d < 0",iNfds);
+		LOG_ERROR("epoll_wait return ret = %d < 0",iNfds);
 		return iNfds;
 	}
 	int  i = 0 , iProcFD = -1;
@@ -95,8 +95,8 @@ int 	TcpConnEpoll::Polling(std::vector<TcpConnPollerEvent> & events,int iTimeCou
 	{
 		tpe.raw_event = pEvents[i].events;
 		tpe.bPolleType = TCP_CONN_POLLER_TYPE_EPOLL;
-		TcpSocket* pSocket = pEvents[i].data.ptr;
-		if(EPOLL_IN & (pEvents[i].events))
+		TcpSocket* pSocket = GetTcpSocketFromEvent(tpe);
+		if(EPOLLIN & (pEvents[i].events))
 		{
 			if(pSocket->IsListening())
 			{
@@ -108,7 +108,7 @@ int 	TcpConnEpoll::Polling(std::vector<TcpConnPollerEvent> & events,int iTimeCou
 			}
 			events.push_back(tpe);
 		}
-		if(EPOLL_OUT & (pEvents[i].events))
+		if(EPOLLOUT & (pEvents[i].events))
 		{
 			if(pSocket->IsConnecting())
 			{
@@ -135,9 +135,12 @@ void	TcpConnEpoll::Destroy()
 		free(pEvents);
 	}
 	epfd = -1;
-	pEvents = NUL;
+	pEvents = NULL;
 }
 TcpSocket * TcpConnEpoll::GetTcpSocketFromEvent(TcpConnPollerEvent & event)
 {
 	return event.raw_event.data.ptr;
 }
+
+
+

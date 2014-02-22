@@ -37,18 +37,22 @@ class TcpSocket : public Socket
 	int	SetOption(int iFlag,bool bSetOpen);
 	int	Listen(int iBacklog);
 	int	ConnectTo(const SockAddress & remote);
-	TcpSocket & Accept();	
-	
+	TcpSocket * Accept();		
 	// return < 0 is error. 0 is ok.
 	// it will auto call close.
 	int		Send(const Buffer & sendBuffer) ;			
 	// return < 0 is error. 0 is ok.
 	int		Recv(Buffer& recvBuff) ;	
-	void	Close();
+	void	    Close();
 	//-
-	bool	IsConnected(){return GetConnFlag(CONN_FLAG_ESTABLISHED);}
+	bool    	IsConnected(){return GetConnFlag(CONN_FLAG_ESTABLISHED);}
 	bool 	IsConnecting(){return GetConnFlag(CONN_FLAG_CONNECTING);}
 	bool 	IsListening(){return GetConnFlag(CONN_FLAG_LISTENING);}
+public:
+    void        SetParentSocket(TcpSocket* parent_);
+    TcpSocket*  NewAcceptSocket(int fd,const SockAddress& local,const SockAddress & remote);
+    void        DeleteAcceptSocket(TcpSocket* pSocket);
+    
 private:
 	void	SetConnFlag(TcpConnectionStateFlag bFlag,bool bSet);
 	bool	GetConnFlag(TcpConnectionStateFlag bFlag);
@@ -79,4 +83,5 @@ private:
 	uint8_t	bConnFlag;
 	TcpConnHandler *	pHandler;
 	TcpConnHandler *	pDefHandler;	
+    TcpSocket*        pParentSocket;
 };

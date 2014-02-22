@@ -43,7 +43,7 @@ public:
 	virtual int 	Init(){return 0;}
 	//add monitor of interested event type
 	virtual int 	Add(const TcpSocket& sock,uint8_t bEventType) = 0;
-	/del all socket events
+	//del all socket events
 	virtual int 	Del(const TcpSocket& sock) = 0;
 	//return >= 0 (represent the event count) is ok , else is error.
 	virtual int 	Polling(std::vector<TcpConnPollerEvent> & events,int iTimeCountMs) = 0;
@@ -52,17 +52,17 @@ public:
 	virtual TcpSocket* GetTcpSocketFromEvent(const TcpConnPollerEvent& event) = 0;
 
 	//destroy the poller
-	void	Destroy(){}
+	virtual void	Destroy(){}
 };
 
 class TcpConnEpoll : public TcpConnPoller
 {
 public:
-	TcpConnEpoll():epfd(-1),pEvents(NULL){iMaxClientCount = 0;}
+	TcpConnEpoll():epfd(-1),pEvents(NULL){iMaxFDCount = 0;}
 	~TcpConnEpoll(){Destroy();}
 	// return 0 if ok else err; 
 	// create epoll fd
-	int 	Init(int iMaxFdCount = 100);
+	int 	Init(int _iMaxFdCount = 100);
 	int 	Add(const TcpSocket& sock,uint8_t iInteredtedEventType);	
 	int 	Del(const TcpSocket& sock);
 	int 	Polling(std::vector<TcpConnPollerEvent> & events,int iTimeCountMs = 10);
@@ -71,7 +71,7 @@ public:
 private:
 	int epfd;	
 	struct epoll_event * pEvents ;
-	int	iClientCount;
+	int	iMaxFDCount;
 };
 
 

@@ -16,20 +16,23 @@
  *
  * =====================================================================================
  */
+#include "Socket.h"
 
-void  SocketAddress::Construct(uint16_t wPort,char* pszIpOrDomainName)
+
+
+void  SockAddress::Construct(uint16_t wPort,char* pszIpOrDomainName)
 {
-	bzero((char*)&mysock,sizeof(mysock));
+	bzero((char*)&sock_addr,sizeof(sock_addr));
 	bIsEmpty = true;
 	sock_addr.sa_family=AF_INET;
-	sock_addr.sin_port = htons(wPort);//1234ÊÇ¶Ë¿ÚºÅ
-	if(NULL == pszIp)
+	sock_addr.sin_port = htons(wPort);
+	if(NULL == pszIpOrDomainName)
 	{
 		sock_addr.sin_addr.s_addr = INADDR_ANY;
 	}
 	else
 	{
-		sock_addr.sin_addr.s_addr = inet_addr(pszIp);			
+		sock_addr.sin_addr.s_addr = inet_addr(pszIpOrDomainName);			
 		if(sock_addr.sin_addr.s_add == -1)
 		{
 			struct hostent *host = gethostbyname(pszIpOrDomainName);			
@@ -60,3 +63,30 @@ uint32_t    SockAddress::GetIP()   const
 }
 
 //--------------------------------------------
+
+Buffer::Buffer()
+{
+	memset(this,0,sizeof(*this));
+}
+Buffer::Buffer(const char* pszString)
+{
+	pBuffer = pszString;
+	iCap = 0;
+	iUsed = strlen(pszString) + 1;
+}
+Buffer::Buffer(char* pszBuffer,int iCap_)
+{
+    pBuffer = pszBuffer;
+    iUsed = iCap = iCap_;
+}
+
+//--------------------------------------------
+
+
+
+
+
+
+
+
+

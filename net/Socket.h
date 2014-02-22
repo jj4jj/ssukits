@@ -28,7 +28,7 @@ public:
 	SockAddress():bIsEmpty(true){}
 	SockAddress(const sockaddr_in & addr_in){sock_addr = addr_in;bIsEmpty=false;}
 	SockAddress(const sockaddr & addr)sock_addr{memset(&sock_addr,&addr,sizeof(sock_addr));bIsEmpty=false;}	
-	SockAddress(uint16_t wPort,char* pszIpOrDomainName){Construct(wPort,pszIp);}
+	SockAddress(uint16_t wPort,char* pszIpOrDomainName){Construct(wPort,pszIpOrDomainName);}
 	void Construct(uint16_t wPort,char* pszIpOrDomainName);
 	const char* ToString() const;
 	uint16_t    GetPort() const;
@@ -44,16 +44,9 @@ struct Buffer
 	uint8_t * pBuffer;//buffer pointer
 	int32_t	  iCap;//capcity , if cont pBuffer , cap is 0.
 	int32_t	  iUsed;//the valid data length (by bytes)
-	Buffer()
-	{
-		memset(this,0,sizeof(*this));
-	}
-	Buffer(const char* pszString)
-	{
-		pBuffer = pszString;
-		iCap = 0;
-		iUsed = strlen(pszString) + 1;
-	}
+	Buffer();
+	Buffer(const char* pszString);
+    Buffer(char* pszBuffer,int iCap_);
 };
 
 class Socket
@@ -70,7 +63,7 @@ public:
 
 	// return 0 is ok. otherwise fail.
 	int	SetLocalAddress(const SockAddress & ip){localAddress = ip;}
-	int	SetPeerAddress(const SockAddress & ip){peerAddress = ip;} 
+	int	SetPeerAddress(const SockAddress & ip){peerAddress = ip;}     
 	const 	SockAddress &	GetLocalAddress(){return localAddress;}
 	const 	SockAddress &	GetPeerAddress(){return peerAddress;}
 	void	SetFD(int iFd_){iFd = iFd_;};
