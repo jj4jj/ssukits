@@ -17,3 +17,39 @@
  * =====================================================================================
  */
 
+#pragma once 
+
+#include "TcpSocket.h"
+#include "TcpClientHandler.h"
+#include "Epoll.h"
+//multi thead 
+//one client one socket (connection)
+class TcpClient
+{
+public:
+    //create socket
+    int Init();
+    void SetPoller(Epoll*    _pEpoll);
+    void SetHandler(TcpClientHandler* pHandler);
+    //connect to server
+    //poller add its fd
+    int     ConnectTo(const SockAddress & remote );    
+    //close the clend 
+    //poller remove its fd
+    void    Close();
+    TcpSocket&  GetSocket(){return clientSocket;}
+public:
+    TcpClient();    
+    ~TcpClient();
+    void    construct();
+    void    destruct();   
+
+    
+private:
+    TcpSocket           clientSocket;
+    Epoll               *pEpoll;    
+    TcpClientHandler    *pClientHandler;    
+};
+
+ 
+

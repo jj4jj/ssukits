@@ -12,7 +12,7 @@
  *
  *         Author:  YOUR NAME (), 
  *   Organization:  
- *   Last Changed: 05/22/2014 07时59分46秒
+ *   Last Changed: 05/26/2014 07时49分09秒
  *
  * =====================================================================================
  */
@@ -33,12 +33,12 @@ template<class HostType>
 class Singleton : public NonCopyable
 {
 public:
-	HostType & Instance()
+	static HostType & Instance()
 	{
 		static HostType s_Inst;
 		return s_Inst;
 	}
-private:
+protected:
 	Singleton(){}
 };
 

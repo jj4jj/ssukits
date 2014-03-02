@@ -21,67 +21,41 @@
 
 #pragma once
 #include "Socket.h"
-#include "base/Log.h"
-
 
 //simple tcp socket
 class TcpSocket : public Socket
 {
-	
+public:	
 	//return 0 is ok. or fail.
-	int 	Init(const SockAddress & local,TcpConnHandler* pHandler = NULL);
-	int		AttachFD(int fd);
-	void 	SetHandler(TcpConnHandler* pHandler);
-	int	SetNonBlock(bool bSet);	
-	int	SetNagle(bool bSetOpen);
-	int	SetOption(int iFlag,bool bSetOpen);
-	int	Listen(int iBacklog);
-	int	ConnectTo(const SockAddress & remote);
-	TcpSocket * Accept();		
+	int 	    Init();
+    int      Bind(const SockAddress & local);
+	int	    AttachFD(int fd);
+	int	    SetNonBlock(bool bSet);	
+	int	    SetNagle(bool bSetOpen);
+	int	    SetOption(int iFlag,bool bSetOpen);
+	int	    Listen(int iBacklog = 128);
+    int      GetConnErrorState();
+    	const 	SockAddress &	GetPeerAddress();
+    //return 0 , connected ok
+    //return 1 , connecting
+    //< 0:  error
+	int	    ConnectTo(const SockAddress & remote);
+	TcpSocket  Accept();		
 	// return < 0 is error. 0 is ok.
 	// it will auto call close.
 	int		Send(const Buffer & sendBuffer) ;			
 	// return < 0 is error. 0 is ok.
 	int		Recv(Buffer& recvBuff) ;	
 	void	    Close();
-	//-
-	bool    	IsConnected(){return GetConnFlag(CONN_FLAG_ESTABLISHED);}
-	bool 	IsConnecting(){return GetConnFlag(CONN_FLAG_CONNECTING);}
-	bool 	IsListening(){return GetConnFlag(CONN_FLAG_LISTENING);}
-public:
-    void        SetParentSocket(TcpSocket* parent_);
-    TcpSocket*  NewAcceptSocket(int fd,const SockAddress& local,const SockAddress & remote);
-    void        DeleteAcceptSocket(TcpSocket* pSocket);
-    
-private:
-	void	SetConnFlag(TcpConnectionStateFlag bFlag,bool bSet);
-	bool	GetConnFlag(TcpConnectionStateFlag bFlag);
+	//-    
 public:
 	TcpSocket();
-	~TcpSocket();
-	//action flaging;
-	enum TcpConnectionStateFlag
-	{
-		CONN_FLAG_ALL = 0,	  //clear all
-		CONN_FLAG_CONNECTING = 1, //use client
-		CONN_FLAG_LISTENING =  2, //use server
-		CONN_FLAG_ESTABLISHED = 4,//use client
-	};
-	//handler should call it .
-	void	OnConneted()
-	{
-		SetConnFlag(CONN_FLAG_CONNECTING,false);
-		SetConnFlag(CONN_FLAG_ESTABLISHED,true);
-	}
-	void	OnDisconnnected()
-	{
-		SetConnFlag(CONN_FLAG_ESTABLISHED,false);
-	}
-	
-	
-private:
-	uint8_t	bConnFlag;
-	TcpConnHandler *	pHandler;
-	TcpConnHandler *	pDefHandler;	
-    TcpSocket*        pParentSocket;
+    TcpSocket(int fd,const SockAddress & local);
+	virtual ~TcpSocket();	
 };
+
+
+
+
+
+

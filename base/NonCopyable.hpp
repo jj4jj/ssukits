@@ -16,10 +16,11 @@
  *
  * =====================================================================================
  */
-#pragma
+#pragma once
 
-template<class U>
+//template<class U>
 class NonCopyable
 {
-	Noncopyable & operator = (Noncopyable & );
+private:
+	NonCopyable & operator = (NonCopyable & );
 };

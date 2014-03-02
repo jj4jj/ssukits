@@ -31,23 +31,34 @@
 #include <time.h>
 #include <strings.h>
 #include <stdint.h>
-
+#include <errno.h> 
+#include <fcntl.h>
 
 
 //-------------------std cpp--------------------------
 
 
 #include <string>
+using std::string;
 #include <vector>
+using std::vector;
 #include <map>
 #include <set>
 #include <algorithm>
-#include <multimap>
-#include <multiset>
+//#include <multimap>
+//#include <multiset>
 #include <list>
 #include <stack>
 #include <iterator>
 #include <bitset>
+
+#include <tr1/memory>
+using std::tr1::shared_ptr;
+#include <tr1/unordered_map>
+#include <tr1/unordered_set>
+using std::tr1::unordered_map;
+using std::tr1::unordered_set;
+
 
 
 //------------------gnu_cxx cpp---------------------
@@ -56,14 +67,19 @@
 //------------------prototypes---------------------
 
 //------------------linux system call -------------
+#include <unistd.h>
+#include <dirent.h>
+
+#include <poll.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <unistd.h>
 #include <sys/epoll.h>
-#include <poll.h>
-#include <netinet/in.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+
 #include <arpa/inet.h>
-
-
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 

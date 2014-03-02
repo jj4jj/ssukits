@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  CommonMacro.h
+ *       Filename:  stdinclude.h
  *
  *    Description:  
  *
@@ -12,35 +12,17 @@
  *
  *         Author:  YOUR NAME (), 
  *   Organization:  
- *   Last Changed: 05/22/2014 05时43分59秒
+ *   Last Changed: 05/26/2014 05时54分53秒
  *
  * =====================================================================================
  */
 
 
 #pragma once
-
-#if 1
-
-
-#define SAFE_DELETE(p)	do{\
-if((p)!= NULL)\
-{\
-	delete (p);\
-	(p) = NULL;\
-}}while(0)
-
-#define SAFE_FREE(p)    do{\
-if((p)!= NULL)\
-{\
-	free((p));\
-	(p) = NULL;\
-}}while(0)
+#include "stdinc.h"
 
 
-
-
-#endif
+#include "Log.h"
 
 
 
