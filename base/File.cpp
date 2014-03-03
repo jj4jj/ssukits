@@ -124,7 +124,6 @@ int File::Rename(const char* pszOld,const char* pszNew)
 }
 void  File::FileListSort(std::vector<string> &  files,const char* pszDir,FileAttrCompare pfnCmp)
 {
-    //见一个索引表.从小到大比较.
     typedef std::map<string,struct stat>          FileStatMap;
     //typedef FileStatMap::iterator                 FileStatMapItr;
     
