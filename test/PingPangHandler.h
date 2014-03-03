@@ -9,10 +9,11 @@ public:
     int     OnClientDataRecv( TcpSocket &   client,const Buffer & recvBuffer);
     int     OnConnectionClosed( TcpSocket &  client);
     ~PingPangServerHandler(){}
-    PingPangServerHandler(){iClientIdx = 0;iClientCount = 0;}
+    PingPangServerHandler(){iClientIdx = 0;iClientCount = 0;lRecvTotal = 0;}
 private: 
     int iClientIdx; 
     int iClientCount;    
+    long    lRecvTotal;
 }; 
 
 class PingPangClientHandler: public TcpClientHandler

@@ -21,6 +21,7 @@
 //template<class U>
 class NonCopyable
 {
-private:
+protected:
+    NonCopyable(const NonCopyable & );
 	NonCopyable & operator = (NonCopyable & );
 };

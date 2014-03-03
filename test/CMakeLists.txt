@@ -42,6 +42,7 @@ target_link_libraries(pingpang_client
 )
 target_link_libraries(test_base
 	libssukits_base.a
+	libssukits_utility.a
 )
 
 

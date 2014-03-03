@@ -12,7 +12,7 @@
  *
  *         Author:  sean
  *   Organization:  
- *   Last Changed: 05/22/2014 11时28分02秒
+ *   Last Changed: 03/03/2014 12时46分46秒
  *
  * =====================================================================================
  */
@@ -35,7 +35,7 @@ public:
 	int	    SetOption(int iFlag,bool bSetOpen);
 	int	    Listen(int iBacklog = 128);
     int      GetConnErrorState();
-    	const 	SockAddress &	GetPeerAddress();
+    	SockAddress 	GetPeerAddress();
     //return 0 , connected ok
     //return 1 , connecting
     //< 0:  error

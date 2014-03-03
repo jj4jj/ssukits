@@ -6,6 +6,8 @@
 class File
 {
 public:
+    //unix file path delims
+    #define     DELIMS      ('/')
     enum
     {
         //100MB
@@ -21,7 +23,7 @@ public:
 public:
     int  Open(const char*  pszFilePath,const char* pszMode);
     void Close();
-    long GetFileSize();
+    long GetCurrentFileSize();
     long GetAvailBytes();        
     //return 
     virtual int  Write(const char* pBuffer,int iLen);
@@ -30,9 +32,24 @@ public:
     static bool Exist(const char* pszFile);
     static int  Rename(const char* pszOld,const char* pszNew);
     static int  ListFiles(std::vector<string> &  files,const char* pszDir);
-private:
+    static long GetFileSize(const char* pszFilePath);
+    static const char* GetPathDirName(const char* pszFilePath,char* pszBaseNameBuff,int iBuffLen);
+    static const char* GetPathBaseName(const char* pszFilePath,char* pszBaseNameBuff,int iBuffLen);
+
+    //1,0,-1
+    typedef int (*FileAttrCompare)(struct stat & pFileStat1,struct stat & pFileStat2);
+    static void  FileListSort(std::vector<string> &  files,const char* pszDir,FileAttrCompare pfnCmp);
+protected:
     FILE* pFile;
-    //char        szFilePath[256];    
+    char        szFilePath[256]; 
+public:
+    enum 
+    {
+        FILE_ATTR_LAST_MODIFY_TIME = 0,
+        FILE_ATTR_SIZE = 1,            
+        MAX_SUPPORT_ATTR,
+    };
+    static  FileAttrCompare sFileSortByAttr[MAX_SUPPORT_ATTR];
 };
 
 

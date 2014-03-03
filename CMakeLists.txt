@@ -56,7 +56,6 @@ add_subdirectory(net)
 #add_subdirectory(io)
 #add_subdirectory(math)
 #add_subdirectory(thread)
-#add_subdirectory(utility)
-
+add_subdirectory(utility)
 add_subdirectory(test)
 

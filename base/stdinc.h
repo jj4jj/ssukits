@@ -58,8 +58,11 @@ using std::tr1::shared_ptr;
 #include <tr1/unordered_set>
 using std::tr1::unordered_map;
 using std::tr1::unordered_set;
+#include <functional>
 
-
+//#include <tr1/functional>
+//using namespace std::tr1::placeholders;
+//using std::tr1::bind;
 
 //------------------gnu_cxx cpp---------------------
 
@@ -76,10 +79,15 @@ using std::tr1::unordered_set;
 #include <sys/epoll.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 
 #include <arpa/inet.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
+
+
+//thread
+#include <pthread.h>
 
 

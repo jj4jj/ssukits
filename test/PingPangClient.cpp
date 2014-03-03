@@ -6,8 +6,8 @@ int main()
 {
 
     Log::Instance().Init("pingpang_client.log");
-    //client num
-    int iCliNum = 1;
+    //client num     
+    int iCliNum = 1; 
     Epoll* pPoller = new Epoll();
     if(pPoller->Init(iCliNum))
     {

@@ -7,7 +7,7 @@ int     PingPangServerHandler::OnNewConnection(TcpSocket   &   client)
     iClientCount++;
     LOG_INFO("new connection comming fd = %d idx = %d total = %d",client.GetFD(),iClientIdx,iClientCount);
     iClientIdx++;
-    return 0;
+    return 0; 
 }
 int     PingPangServerHandler::OnClientDataRecv(TcpSocket &   client,const Buffer & recvBuffer) 
 {
@@ -18,7 +18,12 @@ int     PingPangServerHandler::OnClientDataRecv(TcpSocket &   client,const Buffe
             LOG_INFO("server recv data idx = %d is eos",i);
             client.Send(Buffer("Hello,Client!"));
         }
+        if(recvBuffer.pBuffer[i] == '\n')
+        {
+            LOG_INFO("Now Total Bytes :%lu ",lRecvTotal);
+        }
     }    
+    lRecvTotal += recvBuffer.iUsed;
     return 0;
 }
 

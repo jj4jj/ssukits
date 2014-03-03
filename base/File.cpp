@@ -1,11 +1,29 @@
 
 #include "File.h"
 
+
+
+static int FileAttrCompByLastModifyTime(struct stat & s1,struct stat& s2)
+{
+    return (s1.st_mtime - s2.st_mtime);
+}
+static int FileAttrCompBySize(struct stat & s1,struct stat & s2)
+{
+    return (s1.st_size - s2.st_size);
+}
+File::FileAttrCompare File::sFileSortByAttr[MAX_SUPPORT_ATTR]=
+{
+    FileAttrCompByLastModifyTime,
+    FileAttrCompBySize
+};
+
+
 #if 1
 void File::Construct()
 {
     pFile = NULL;
-    //szFilePath[0] = '\0';
+    szFilePath[0] = '.';
+    szFilePath[1] = '\0';
 }
 void File::Destruct()
 {
@@ -39,11 +57,61 @@ int File::Open(const char*  pszFileName,const char* pszMode)
         printf("fopen error errno = %d",errno);
         return -1;
     }
+    snprintf(szFilePath,sizeof(szFilePath),"%s",pszFileName);
     return 0;
 }
 void File::Close()
 {
     Destruct();
+}
+long File::GetFileSize(const char* pszFilePath)
+{
+	struct stat statbuff;
+	if(stat(pszFilePath, &statbuff) < 0)
+     {
+        return 0;
+	}
+	return statbuff.st_size;
+}
+const char* File::GetPathDirName(const char* pszFilePath,char* pszDirNameBuff,int iBuffLen)
+{    
+    int len = strlen(pszFilePath);
+    int iDirPathLen = 0;
+    for(int i = len ; i >= 0;  --i)
+    {
+        if(pszFilePath[i] == DELIMS)
+        {
+            iDirPathLen = i;
+            break;
+        }
+    }
+    if(iDirPathLen > 0 && iDirPathLen < iBuffLen)
+    {
+        return strncpy(pszDirNameBuff,pszFilePath,iDirPathLen);
+    }
+    //current dir
+    strncpy(pszDirNameBuff,".",1);
+    return pszDirNameBuff;
+}
+const char* File::GetPathBaseName(const char* pszFilePath,char* pszBaseNameBuff,int iBuffLen)
+{
+    int len = strlen(pszFilePath);
+    int iBaseNameLen = 0;
+    for(int i = len ; i >= 0;  --i)
+    {
+        if(pszFilePath[i] == DELIMS)
+        {
+            iBaseNameLen = len - (i + 1);
+            break;
+        }
+    }
+    
+    if(iBaseNameLen > 0 && iBaseNameLen < iBuffLen)
+    {
+        return strncpy(pszBaseNameBuff,pszFilePath + len - iBaseNameLen ,iBaseNameLen);
+        //return pszBufDirNameBuff;
+    }
+    return NULL;
 }
 
 bool File::Exist(const char * pszFile)
@@ -54,6 +122,51 @@ int File::Rename(const char* pszOld,const char* pszNew)
 {
     return rename(pszOld,pszNew);  
 }
+void  File::FileListSort(std::vector<string> &  files,const char* pszDir,FileAttrCompare pfnCmp)
+{
+    //见一个索引表.从小到大比较.
+    typedef std::map<string,struct stat>          FileStatMap;
+    //typedef FileStatMap::iterator                 FileStatMapItr;
+    
+    FileStatMap   mp;
+    string sFilePath = "";
+    if(pszDir != NULL)
+    {
+        sFilePath += pszDir;
+        sFilePath += DELIMS;
+    }
+    string sFilePathName ;
+    struct  stat statbuff;    
+    for(int i = 0; i < (int)files.size() ; ++i)
+    {
+        sFilePathName = sFilePath + files.at(i);   
+    	if( stat(sFilePathName.c_str(), &statbuff ) < 0)
+        {
+            bzero(&statbuff,sizeof(statbuff));
+    	}
+        mp[files.at(i)] = statbuff;
+    }
+    
+    //------------------------------------------------------------    
+    //sorted
+    for(int i = 1 ;i < (int)files.size(); ++i)
+    {
+        //insert i-th element to front sorted list.
+        for(int j = i; j > 0; --j)
+        {
+            if(pfnCmp(mp[files[j]],mp[files[j-1]]) < 0)
+            {
+                files[j-1].swap(files[j]);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    
+}
+
 int  File::ListFiles(std::vector<std::string> &  files,const char* pszDir)
 {
 	DIR *dfd = NULL;
@@ -93,7 +206,7 @@ int File::Write(const char* pBuffer,int iLen)
 {
     return fwrite(pBuffer,iLen,1,pFile)!=1 ? -1 : 0;
 }
-long File::GetFileSize()
+long File::GetCurrentFileSize()
 {
     long curpos, length;
     curpos = ftell(pFile); 
@@ -104,8 +217,9 @@ long File::GetFileSize()
 }
 long File::GetAvailBytes()
 {
-    long curpos, length;
+    long curpos = 0;
     curpos = ftell(pFile); 
+    long length = 0;
     fseek(pFile, 0L, SEEK_END);  
     length = ftell(pFile);
     fseek(pFile, curpos, SEEK_SET);    
@@ -137,6 +251,7 @@ void    LogFile::Destruct()
 
 LogFile::LogFile(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize )
 {    
+    Construct();
     Open(pszPrefix,_iMaxLogFiles,_lMaxLogSingleFileSize);
 }
 LogFile::~LogFile()
@@ -165,6 +280,30 @@ int      LogFile::GetLastLogFileOrder()
     if(iLastLogFileOrder == 0)
     {
         //1 //todo
+        //
+        vector < std :: string > files;
+        char szFilePathDirName[256];
+        GetPathDirName(szFilePath,szFilePathDirName, sizeof(szFilePath));
+        ListFiles(files,szFilePathDirName);
+        FileListSort(files,szFilePathDirName,sFileSortByAttr[FILE_ATTR_LAST_MODIFY_TIME]);
+        for(int i = (int)files.size() - 1; i >= 0; --i)
+        {
+            string & sLatestFileName = files[i];
+            int iPos = sLatestFileName.rfind(szFilePrefix);
+            if(iPos == (int)string::npos)
+            {
+                continue;
+            }
+            //1 for delims (.)
+            const char* pszID = sLatestFileName.c_str() + iPos + strlen(szFilePrefix) + 1;
+            int id = 1;
+            if(sscanf(pszID,"%d",&id) == 1)
+            {
+                iLastLogFileOrder = id;
+            }          
+            return id;
+        } 
+        iLastLogFileOrder = 1;
         return 1;        
     }
         
@@ -177,6 +316,7 @@ string   LogFile::GetLogFileName(int iOrder)
         iOrder = 1;
     }
     char szBuffer[256];
+    //format
     snprintf(szBuffer,sizeof(szBuffer),
                 "%s.%03d",
                 szFilePrefix,iOrder);
@@ -191,7 +331,7 @@ int LogFile::ShiftNext()
 }
 int LogFile::Write(const char* pBuffer,int iLen)
 {
-    if(GetFileSize() + iLen > lMaxLogSingleFileSize)
+    if(GetCurrentFileSize() + iLen > lMaxLogSingleFileSize)
     {
         ShiftNext();
     }    
