@@ -1,12 +1,14 @@
-#include "base/Singleton.hpp"
-#include "base/Log.h"
+#pragma once
 
-class Daemon : Singleton<Daemon>
+#include "base/Singleton.hpp"
+#include "base/stdinc.h"
+
+class Daemon : public Singleton<Daemon>
 {
 public:
+    //return 0 is ok, error < 0
     //enbale this process become a daemon process.
-    //todo
-    int    Create();
+    int    Create(const char* pszWorkDir = NULL,bool bCloseStdFD = true,mode_t mask = 0);
 };
 
 
