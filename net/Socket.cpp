@@ -130,7 +130,7 @@ uint32_t    SockAddress::GetSockAddrLen()
             return sizeof(addr.addr_in6);
         case AF_UNIX:
             //offsetof
-            return  (&(addr.addr_un.sun_path) - &(addr.addr_un)) + strlen(addr.addr_un.sun_path);
+            return  (&(addr.addr_un.sun_path) - &(addr.addr_un)) + strlen(addr.addr_un.sun_path) + 1;
     }
     //unspecified 
     return 0;
