@@ -29,8 +29,7 @@ class TcpClient
 public:
     //create socket
     int Init();
-    void SetPoller(Epoll*    _pEpoll);
-    void SetHandler(TcpClientHandler* pHandler);
+    void    SetPoller(Epoll*    _pEpoll);
     //connect to server
     //poller add its fd
     int     ConnectTo(const SockAddress & remote );    
@@ -48,7 +47,6 @@ public:
 private:
     TcpSocket           clientSocket;
     Epoll               *pEpoll;    
-    TcpClientHandler    *pClientHandler;    
 };
 
  

@@ -27,7 +27,6 @@ void TcpClient::SetPoller(Epoll*    _pEpoll)
 }
 void TcpClient::SetHandler(TcpClientHandler* pHandler)
 {
-    pClientHandler = pHandler;
 }
 
 int     TcpClient::Init()
@@ -82,13 +81,11 @@ TcpClient::~TcpClient()
 void    TcpClient::construct()
 {
     pEpoll = NULL;
-    pClientHandler = NULL;
 }
 
 void    TcpClient::destruct()
 {    
     pEpoll = NULL;
-    pClientHandler = NULL;    
 }
     
 
