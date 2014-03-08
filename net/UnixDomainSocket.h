@@ -5,16 +5,7 @@
 class UnixDomainSocket
 {
 public:
-    int     Init(int iSockType /*SOCK_STREAM*/)
-    {
-        int fd = socket(AF_UNIX, iSockType, 0);
-        if(fd  < 0)
-        {
-            LOG_FATAL("error create unix domain socket fd = %d errno = %d",fd,errno);
-            return -1;
-    	}
-        return 0;
-    }    
+    int     Init(int iSockType = SOCK_STREAM*);
 };
 
 
