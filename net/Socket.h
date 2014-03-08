@@ -29,13 +29,23 @@ public:
 	SockAddress(const sockaddr_in & addr_in);
 	SockAddress(const sockaddr & addr);	
 	SockAddress(uint16_t wPort,char* pszIpOrDomainName = NULL);
-	void Construct(uint16_t wPort,char* pszIpOrDomainName);
+    SockAddress(char* pszUnixDomainPath);
+	void  ConstructIN4(uint16_t wPort,char* pszIpOrDomainName);
 	const char* ToString() ;
 	uint16_t    GetPort() const;
 	uint32_t    GetIP()   const;
+    uint32_t    GetSockAddrLen();
+    //if return AF_UNSPEC is invalid address
+    //other return AF_INET/INET6/UNIX
+    uint16_t    GetAddressType() const;    
 public:
-	sockaddr_in	sock_addr;
-	bool		bIsEmpty;
+    union sock_addr_union
+    {
+        struct sockaddr_in  addr_in4;//ipv4
+        struct sockaddr_in6 addr_in6;//ipv6
+        struct sockaddr_un  addr_un;//unix domain
+    };
+    sock_addr_union addr;
 private:	
 	char szSockAddrBuffer[64];
 };

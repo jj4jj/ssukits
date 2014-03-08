@@ -22,45 +22,48 @@
 
 SockAddress::SockAddress()
 {
-    Construct(0,NULL);
-    bIsEmpty = true;
+	bzero(this,sizeof(*this));    
 }
 SockAddress::SockAddress(const sockaddr_in & addr_in)
 {
-    sock_addr = addr_in;
-    bIsEmpty=false;
+    addr.addr_in4  = addr_in;
 }
-SockAddress::SockAddress(const sockaddr & addr)
+SockAddress::SockAddress(const sockaddr & _addr)
 {
-    memcpy(&sock_addr,&addr,sizeof(sock_addr));
-    bIsEmpty=false;
+    memcpy(&(addr),&_addr,sizeof(_addr));
 }   
 SockAddress::SockAddress(uint16_t wPort,char* pszIpOrDomainName)
 {
-    Construct(wPort,pszIpOrDomainName);
+    ConstructIN4(wPort,pszIpOrDomainName);
+}
+SockAddress::SockAddress(uint16_t wPort,char* pszIpOrDomainName)
+{
+    ConstructIN4(wPort,pszIpOrDomainName);
+}
+SockAddress::SockAddress(char* pszUnixDomainPath)
+{
+    addr.addr_un.sun_family = AF_UNIX;
+	strncpy(addr.addr_un.sun_path,pszUnixDomainPath,sizeof(addr.addr_un.sun_path)-1);
 }
 
-
-void  SockAddress::Construct(uint16_t wPort,char* pszIpOrDomainName)
+void  SockAddress::ConstructIN4(uint16_t wPort,char* pszIpOrDomainName)
 {
-	bzero((char*)&sock_addr,sizeof(sock_addr));
-	bIsEmpty = true;
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(wPort);
+	bzero((char*)&(addr.addr_in4),sizeof((addr.addr_in4)));
+	(addr.addr_in4).sin_port = htons(wPort);
 	if(NULL == pszIpOrDomainName)
 	{
-		sock_addr.sin_addr.s_addr = INADDR_ANY;
+		(addr.addr_in4).sin_addr.s_addr = INADDR_ANY;
 	}
 	else
 	{
-		sock_addr.sin_addr.s_addr = inet_addr(pszIpOrDomainName);			
-		if(sock_addr.sin_addr.s_addr == (uint32_t)-1)
+		(addr.addr_in4).sin_addr.s_addr = inet_addr(pszIpOrDomainName);			
+		if((addr.addr_in4).sin_addr.s_addr == (uint32_t)-1)
 		{
 			struct hostent *host = gethostbyname(pszIpOrDomainName);			
 			if (host != NULL && host->h_length > 0) 
 			{
 				LOG_INFO("get ip by host name = %s",pszIpOrDomainName);
-				sock_addr.sin_addr = *(in_addr*)host->h_addr_list[0];
+				(addr.addr_in4).sin_addr = *(in_addr*)host->h_addr_list[0];
 			}
              else
              {
@@ -69,26 +72,68 @@ void  SockAddress::Construct(uint16_t wPort,char* pszIpOrDomainName)
              }
 		}
 	}
-	bIsEmpty = false;
+    //valid addresss
+    addr.addr_in4.sin_family = AF_INET;
 }
 const char* SockAddress::ToString()
 {
-    in_addr addr;
-    addr.s_addr = GetIP();
-	snprintf(szSockAddrBuffer,
-					sizeof(szSockAddrBuffer),"%s:%d",
-					inet_ntoa(addr),
-					GetPort());	
+    int iType = GetAddressType();
+    switch(iType)
+    {
+        case AF_INET:
+        {
+            in_addr iaddr;
+            iaddr.s_addr = GetIP();
+        	snprintf(szSockAddrBuffer,
+        					sizeof(szSockAddrBuffer),"%s:%d",
+        					inet_ntop(iaddr),
+        					GetPort());	
+        }
+            break;
+        case AF_INET6:
+        {
+            strcpy(szSockAddrBuffer,"null");
+        }
+            break;
+        case AF_UNIX:
+        {
+            strnpcy(szSockAddrBuffer,
+                        addr.addr_un.sun_path,
+                        sizeof(szSockAddrBuffer)-1);
+        }
+            break;
+
+    }
 	return szSockAddrBuffer;
 }
 
 uint16_t    SockAddress::GetPort() const
 {
-	return sock_addr.sin_port;
+	return (addr.addr_in4).sin_port;
 }
 uint32_t    SockAddress::GetIP()   const
 {
-	return sock_addr.sin_addr.s_addr;
+	return (addr.addr_in4).sin_addr.s_addr;
+}
+uint16_t    SockAddress::GetAddressType() const
+{
+    return *(uint16_t*)(&addr);
+}
+uint32_t    SockAddress::GetSockAddrLen()
+{
+    int iType = GetAddressType();
+    switch(iType)
+    {
+        case AF_INET:
+            return sizeof(addr.addr_in4);
+        case AF_INET6:
+            return sizeof(addr.addr_in6);
+        case AF_UNIX:
+            //offsetof
+            return  (&(addr.addr_un.sun_path) - &(addr.addr_un)) + strlen(addr.addr_un.sun_path);
+    }
+    //unspecified 
+    return 0;
 }
 
 //--------------------------------------------
@@ -188,8 +233,8 @@ int	Socket::SetFlag(int iFlag,bool bSetOpen)
 int Socket::Bind(const SockAddress & local)
 {
     if(::bind(GetFD(),
-        (struct sockaddr *)&(local.sock_addr), 
-		(socklen_t)sizeof(struct sockaddr) ) < 0) 
+        (struct sockaddr *)&(local.addr), 
+		(socklen_t)local.GetSockAddrLen() ) < 0) 
 	{
 		LOG_ERROR("bind error !");
 		close(GetFD());
@@ -201,8 +246,8 @@ int Socket::Bind(const SockAddress & local)
 int	Socket::ConnectTo(const SockAddress & remote)
 {
 
-	int ret = connect(GetFD(),(struct sockaddr*)&remote.sock_addr,
-                    (socklen_t)sizeof(remote.sock_addr));
+	int ret = connect(GetFD(),(struct sockaddr*)&remote.addr.addr_in4,
+                    (socklen_t)sizeof(remote.addr.addr_in4));
      if(0 == ret)
      {
         return 0;
