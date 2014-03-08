@@ -27,31 +27,14 @@ class TcpSocket : public Socket
 {
 public:	
 	//return 0 is ok. or fail.
-	int 	    Init();
-    int      Bind(const SockAddress & local);
+	int 	Init();
 	int	    AttachFD(int fd);
-	int	    SetNonBlock(bool bSet);	
 	int	    SetNagle(bool bSetOpen);
-	int	    SetOption(int iFlag,bool bSetOpen);
-	int	    Listen(int iBacklog = 128);
-    int      GetConnErrorState();
-    	SockAddress 	GetPeerAddress();
-    //return 0 , connected ok
-    //return 1 , connecting
-    //< 0:  error
-	int	    ConnectTo(const SockAddress & remote);
 	TcpSocket  Accept();		
-	// return < 0 is error. 0 is ok.
-	// it will auto call close.
-	int		Send(const Buffer & sendBuffer) ;			
-	// return < 0 is error. 0 is ok.
-	int		Recv(Buffer& recvBuff) ;	
-	void	    Close();
-	//-    
+	int	    Listen(int iBacklog = 128);
 public:
-	TcpSocket();
-    TcpSocket(int fd,const SockAddress & local);
-	virtual ~TcpSocket();	
+    //default is a error socket . uninited
+    TcpSocket(int fd = -1 );
 };
 
 

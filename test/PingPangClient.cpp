@@ -1,12 +1,40 @@
 
 #include "base/Log.h"
 #include "net/TcpClient.h"
+#include "net/BatchTcpConnection.h"
 #include "PingPangHandler.h"
 int main()
 {
 
     Log::Instance().Init("pingpang_client.log");
-    //client num     
+
+#if 1
+    //use batch connection 
+    BatchTcpConnection  btc;
+    if(btc.Init(1))
+    {
+        return -1;
+    }
+    if(btc.AddConnection(SockAddress(1234,"127.0.0.1"),new PingPangClientHandler()))
+    {
+        return -1;
+    }
+    while(true)
+    {
+       int ret = btc.Loop();
+       if(ret < 0)
+       {
+            return -1;
+       }
+       //no event occur
+       else if( 1 == ret)
+       {
+            usleep(20);
+       }
+    }
+    
+#else
+    //use client num     
     int iCliNum = 1; 
     Epoll* pPoller = new Epoll();
     if(pPoller->Init(iCliNum))
@@ -61,6 +89,7 @@ int main()
             }
         }        
     }
+#endif    
     return 0;
 }
 

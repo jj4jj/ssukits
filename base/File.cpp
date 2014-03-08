@@ -27,11 +27,8 @@ void File::Construct()
 }
 void File::Destruct()
 {
-    if(pFile)
-    {
-        fclose(pFile);
-        pFile = NULL;
-    }
+    szFilePath[0] = '.';
+    szFilePath[1] = '\0';
 }
 File::File()
 {
@@ -62,6 +59,11 @@ int File::Open(const char*  pszFileName,const char* pszMode)
 }
 void File::Close()
 {
+    if(pFile)
+    {
+        fclose(pFile);
+        pFile = NULL;
+    }
     Destruct();
 }
 long File::GetFileSize(const char* pszFilePath)
@@ -124,6 +126,7 @@ int File::Rename(const char* pszOld,const char* pszNew)
 }
 void  File::FileListSort(std::vector<string> &  files,const char* pszDir,FileAttrCompare pfnCmp)
 {
+    //见一个索引表.从小到大比较.
     typedef std::map<string,struct stat>          FileStatMap;
     //typedef FileStatMap::iterator                 FileStatMapItr;
     

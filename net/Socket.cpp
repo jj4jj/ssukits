@@ -23,7 +23,7 @@
 SockAddress::SockAddress()
 {
     Construct(0,NULL);
-
+    bIsEmpty = true;
 }
 SockAddress::SockAddress(const sockaddr_in & addr_in)
 {
@@ -134,12 +134,215 @@ void Buffer::Destroy()
 }
 
 //--------------------------------------------
+Socket::~Socket()
+{
+    //copyable , can't close the socket auto when copy.
+    //
+}     
+Socket::Socket():iFd(-1)
+{
+}
+void	Socket::Close()
+{
+	if(GetFD() >= 0)
+	{
+        LOG_INFO("close socket fd = %d",GetFD());
+		close(GetFD());
+		SetFD(-1);
+	}
+}
+int	Socket::Init()
+{
+    iFd = -1;
+    LOG_ERROR("init default socket fd = -1 ");
+    return 0;
+}
+int	Socket::SetNonBlock(bool bSet)
+{	
+	return SetFlag(O_NONBLOCK,bSet);
+}
+int Socket::ReuseAddr(bool bSet)
+{
+    int v = bSet?1:0;
+    return SetOption(SO_REUSEADDR,&v,sizeof(v));
+}
+int Socket::SetOption(int name,void* pValBuff,int iValBuff)
+{
+    return    setsockopt(GetFD(), SOL_SOCKET,name,pValBuff,iValBuff);
+}
 
+int	Socket::SetFlag(int iFlag,bool bSetOpen)
+{
+	int iFlags = fcntl(GetFD(), F_GETFL, 0);
+	if(bSetOpen)
+	{
+		iFlags |= iFlag;	
+	}
+	else
+	{
+		iFlag  &= (~iFlag);
+	}
+	return fcntl(GetFD(), F_SETFL, iFlags);	
+}
+//bind local address
+int Socket::Bind(const SockAddress & local)
+{
+    if(::bind(GetFD(),
+        (struct sockaddr *)&(local.sock_addr), 
+		(socklen_t)sizeof(struct sockaddr) ) < 0) 
+	{
+		LOG_ERROR("bind error !");
+		close(GetFD());
+        SetFD(-1);
+		return -1;
+	}
+    return 0;
+}
+int	Socket::ConnectTo(const SockAddress & remote)
+{
 
+	int ret = connect(GetFD(),(struct sockaddr*)&remote.sock_addr,
+                    (socklen_t)sizeof(remote.sock_addr));
+     if(0 == ret)
+     {
+        return 0;
+     }
+	if( ret < 0 &&
+         errno != EINTR &&
+         errno != EWOULDBLOCK &&
+         errno != EAGAIN &&
+         errno != EINPROGRESS )
+	{
+		LOG_ERROR("connect error ret = %d errorno = %d!",ret,errno);
+		return -1;
+	}
+     //connecting
+	return 1;
+}
 
+const 	SockAddress 	Socket::GetLocalAddress()
+{
+    struct sockaddr addr;
+    socklen_t   addrlen;
+    int iRet = getsockname(GetFD(),&addr,&addrlen);
+    if(iRet < 0)
+    {
+        LOG_FATAL("get fd = %d local sock name ret = %d < 0 errno = %d",GetFD(),iRet,errno);
+        static SockAddress s_empty;
+        return s_empty;
+    }
+    return SockAddress(addr);
+}
+SockAddress Socket::GetPeerAddress()
+{
+    struct sockaddr addr;
+    socklen_t   addrlen;
+    int iRet = getpeername(GetFD(),&addr,&addrlen);
+    if(iRet < 0)
+    {
+        LOG_FATAL("get fd = %d peer name ret = %d < 0 errno = %d",GetFD(),iRet,errno);
+        static SockAddress s_empty;
+        return s_empty;
+    }
+    return SockAddress(addr);
+}
+int      Socket::GetErrorState()
+{
+    int ret = 0;
+    socklen_t   len = 0;
+    int iRet = getsockopt(GetFD(),SOL_SOCKET,SO_ERROR,&ret,&len);
+    if(iRet != 0)
+    {
+        return iRet;
+    }
+    if(iRet == 0 && ret == 0)
+    {
+        return 0;
+    }
+    LOG_INFO("get socket opt so_error is not 0 but = %d",ret);
+    return ret;
+}
 
-
-
-
-
+int	Socket::Send(const Buffer & sendBuffer, int iFlags /*=0*/)
+{
+	int iSent = 0;
+    int iSentTotal = 0;
+	//just send sendBuff.iUsed bytes
+	//write <=> send(...,flag=0);
+	if(sendBuffer.iUsed <= 0)
+	{
+        LOG_ERROR("send buffer but used = %d <= 0",sendBuffer.iUsed);        
+        return -1;
+    }
+	do
+	{
+        iSent = send(GetFD(),sendBuffer.pBuffer + iSentTotal, sendBuffer.iUsed - iSentTotal,iFlags);	
+        if(iSent > 0)
+        {
+            iSentTotal += iSent;
+        }
+    }while( ((iSent < 0) && (errno == EINTR)) ||
+			(iSent > 0 && sendBuffer.iUsed - iSentTotal > 0));			
+	if(iSent > 0)
+	{
+        LOG_DEBUG("send buffer [END CHAR ASCII=0x%02x] len=%d used=%d !",sendBuffer.pBuffer[iSentTotal-1],iSentTotal,sendBuffer.iUsed);
+		return 0;
+	}
+    else if(0 == iSent)
+	{
+		//close by peer
+		return 1;
+	}
+	else if(iSent < 0 &&
+	   errno != EINTR &&
+	   errno != EAGAIN &&
+	   errno != EWOULDBLOCK )
+	{
+		LOG_ERROR("socket fd = %d error ! ret = %d eno = %d",GetFD(),iSent,errno);
+		return -1;
+	}
+    return 0;
+}
+//0:ok
+//1:close by peer , 2:socket error 
+//<0: error
+int	Socket::Recv(Buffer& recvBuff,int iFlags /*=0*/) 
+{
+	recvBuff.iUsed = 0;
+    if(recvBuff.iCap <= 0)
+    {
+        LOG_ERROR("recv but buffer cap = %d <= 0",recvBuff.iCap);
+        return -1;
+    }
+	int iRead = 0;
+	do
+	{	
+		//read <=> recv(...,flag=0);
+		iRead = recv(GetFD(),recvBuff.pBuffer + recvBuff.iUsed, recvBuff.iCap - recvBuff.iUsed,iFlags);			
+		if(iRead > 0)
+		{
+			recvBuff.iUsed += iRead;			
+		}
+	}while( ((iRead < 0) && (errno == EINTR)) ||
+			(iRead > 0 && recvBuff.iCap - recvBuff.iUsed > 0));			
+	if(iRead > 0)
+	{
+         LOG_DEBUG("read buffer [END CHAR ASCII=0x%02x] len=%d cap=%d !",recvBuff.pBuffer[recvBuff.iUsed-1],recvBuff.iUsed,recvBuff.iCap);        
+		return 0;
+	}
+	else if(0 == iRead)
+	{
+		//close by peer
+		return 1;
+	}
+	else if(iRead < 0 &&
+	   errno != EINTR &&
+	   errno != EAGAIN &&
+	   errno != EWOULDBLOCK )
+	{
+		LOG_ERROR("socket fd = %d error ! ret = %d eno = %d",GetFD(),iRead,errno);
+		return -1;
+	}	
+	return 0;
+}
 

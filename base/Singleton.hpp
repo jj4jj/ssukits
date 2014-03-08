@@ -30,7 +30,7 @@
 
 // just have single thread edition.
 template<class HostType>
-class Singleton : public NonCopyable
+class Singleton
 {
 public:
 	static HostType & Instance()

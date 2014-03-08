@@ -56,21 +56,40 @@ struct Buffer
 class Socket
 {
 public:
-	// return 0 is ok. otherwise fail.
-	int		Init(){iFd = -1;return 0;}	
+	Socket();
+	virtual ~Socket();
 	// return 0 is ok. otherwise is fail.
-	virtual int	Send(const Buffer & buffer) = 0;			
-	virtual int	Recv(Buffer& recvBuff) = 0;
-
-	// return 0 is ok. otherwise fail.
-	void	    SetLocalAddress(const SockAddress & ip){localAddress = ip;}
-	const 	SockAddress &	GetLocalAddress(){return localAddress;}
-	void	SetFD(int iFd_){iFd = iFd_;}
-	int	GetFD() const {return iFd;}
+	virtual int	    Init();
+    virtual void    Close();    
 public:
-	Socket():iFd(-1){}
-	virtual ~Socket(){}	    
+    // default implementation
+	// return < 0 is error. 0 is ok.
+	// 1 is close by peer
+	int		Send(const Buffer & sendBuffer, int iFlags = 0);			
+	int		Recv(Buffer& recvBuff , int iFlags = 0);	
+public:
+	void	SetFD(int iFd_){iFd = iFd_;}
+	int	    GetFD() const {return iFd;}
+	int	    SetNonBlock(bool bSet);	
+    int     ReuseAddr(bool bSet);
+    int     SetOption(int name,void* pValBuff,int iValBuff); 
+	int	    SetFlag(int iFlag,bool bSetOpen);
+    int     Bind(const SockAddress & local);
+    //return 0 , connected ok
+    //return 1 , connecting
+    //< 0:  error
+	int	    ConnectTo(const SockAddress & remote);
+    //must call after connect to ok.
+	SockAddress GetPeerAddress();
+    //must call after bind
+	const 	SockAddress  GetLocalAddress();
+    //get socket error state
+    int     GetErrorState();
 private:
 	SockAddress	localAddress;
 	int		iFd;//-1
 };
+
+
+
+

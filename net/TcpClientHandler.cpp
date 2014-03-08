@@ -30,7 +30,7 @@ int     TcpClientHandler::OnWritable(int fd)
         LOG_FATAL("fd = %d has no tcp socket map",fd);
         return -1;
     }
-    if(pSock->GetConnErrorState() == 0)
+    if(pSock->GetErrorState() == 0)
     {
         pEpoll->Mod(pSock->GetFD(),EPOLLIN);
         return OnConnected(*pSock);
