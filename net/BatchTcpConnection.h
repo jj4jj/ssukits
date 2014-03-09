@@ -3,13 +3,12 @@
 
 #include "TcpClient.h"
 
-
 class BatchTcpConnection
 {
 public:
     int     Init(int _iMaxConnxNum = 100);
-    int     SetDefHandler(TcpClientHandler* pHandler);
-    int     AddConnection(const SockAddress& remote,TcpClientHandler* pHandler = NULL);
+    int     SetDefHandler(TcpClientHandlerSharedPtr pHandler);
+    int     AddConnection(const SockAddress& remote,TcpClientHandlerSharedPtr pHandler );
     int     Loop(int iProcNum = 100);
     int     Shutdown();
 private:    

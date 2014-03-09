@@ -15,7 +15,7 @@ int main()
     {
         return -1;
     }
-    if(btc.AddConnection(SockAddress(1234,"127.0.0.1"),new PingPangClientHandler()))
+    if(btc.AddConnection(SockAddress(1234,"127.0.0.1"),TcpClientHandlerSharedPtr( new PingPangClientHandler())))
     {
         return -1;
     }

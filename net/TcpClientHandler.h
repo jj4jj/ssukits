@@ -18,7 +18,6 @@ public:
 
 public:
     void        SetPoller(Epoll* _pepoll);
-    void        SetFD2TcpSocketMap(FDTcpSocketMap* pMap);
     enum
     {
         DEAFAULT_MAX_RECV_BUFFER_SIZE = 65536,
@@ -30,11 +29,10 @@ public:
     virtual     int     OnReadable(int fd); 
 private:
     Epoll               *pEpoll;        
-    FDTcpSocketMap      *pMpFD2TcpSocket;
     Buffer              _recvBuffer;    
 };
 
-
+typedef shared_ptr<TcpClientHandler>    TcpClientHandlerSharedPtr;
 
 
 

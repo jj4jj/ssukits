@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <errno.h> 
 #include <fcntl.h>
+#include <stddef.h>
 
 
 //-------------------std cpp--------------------------
@@ -85,7 +86,7 @@ using std::tr1::unordered_set;
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
+#include <linux/un.h>
 
 //thread
 #include <pthread.h>

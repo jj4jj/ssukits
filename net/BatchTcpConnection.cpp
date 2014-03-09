@@ -14,17 +14,17 @@ int     BatchTcpConnection::Init(int _iMaxConnxNum)
     iMaxConnxNum = _iMaxConnxNum;
     return 0;
 }       
-int     BatchTcpConnection::SetDefHandler(TcpClientHandler* pHandler)
+int     BatchTcpConnection::SetDefHandler(TcpClientHandlerSharedPtr pHandler)
 {
-    if(NULL == pHandler)
+    if(NULL == pHandler.get())
     {
         LOG_FATAL("set default handler is null ");
         return -1;
     }
-    ptrClientDefHandler.reset(pHandler);
+    ptrClientDefHandler = pHandler;
     return 0;
 }
-int     BatchTcpConnection::AddConnection(const SockAddress& remote,TcpClientHandler* pHandler)
+int     BatchTcpConnection::AddConnection(const SockAddress& remote,TcpClientHandlerSharedPtr pHandler)
 {        
     TcpClient   tcl;
     if(tcl.Init())
@@ -38,13 +38,12 @@ int     BatchTcpConnection::AddConnection(const SockAddress& remote,TcpClientHan
         return -1;
     }
     mp.AddFDTcpSocket(tcl.GetSocket().GetFD(),tcl.GetSocket());
-    if(NULL != pHandler)
+    if(NULL != pHandler.get())
     {
         pHandler->SetPoller(&epoll);
-        pHandler->SetFD2TcpSocketMap(&mp);    
+//        pHandler->SetFD2TcpSocketMap(&mp);    
         shared_ptr<TcpClientHandler> p;
-        p.reset(pHandler);
-        mpClientHandler.insert(std::make_pair(tcl.GetSocket().GetFD(),p));
+        mpClientHandler.insert(std::make_pair(tcl.GetSocket().GetFD(),pHandler));
     }
     clientList.push_back(TcpClient());        
     return 0;

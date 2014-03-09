@@ -28,13 +28,13 @@ public:
 	SockAddress();
 	SockAddress(const sockaddr_in & addr_in);
 	SockAddress(const sockaddr & addr);	
-	SockAddress(uint16_t wPort,char* pszIpOrDomainName = NULL);
-    SockAddress(char* pszUnixDomainPath);
-	void  ConstructIN4(uint16_t wPort,char* pszIpOrDomainName);
+	SockAddress(uint16_t wPort,const char* pszIpOrDomainName = NULL);
+    SockAddress(const char* pszUnixDomainPath);
+	void  ConstructIN4(uint16_t wPort,const char* pszIpOrDomainName);
 	const char* ToString() ;
 	uint16_t    GetPort() const;
 	uint32_t    GetIP()   const;
-    uint32_t    GetSockAddrLen();
+    uint32_t    GetSockAddrLen() const;
     //if return AF_UNSPEC is invalid address
     //other return AF_INET/INET6/UNIX
     uint16_t    GetAddressType() const;    
@@ -75,8 +75,8 @@ public:
     // default implementation
 	// return < 0 is error. 0 is ok.
 	// 1 is close by peer
-	int		Send(const Buffer & sendBuffer, int iFlags = 0);			
-	int		Recv(Buffer& recvBuff , int iFlags = 0);	
+	virtual int		Send(const Buffer & sendBuffer, int iFlags = 0);			
+	virtual int		Recv(Buffer& recvBuff , int iFlags = 0);	
 public:
 	void	SetFD(int iFd_){iFd = iFd_;}
 	int	    GetFD() const {return iFd;}

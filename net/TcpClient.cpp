@@ -25,10 +25,6 @@ void TcpClient::SetPoller(Epoll*    _pEpoll)
 {
     pEpoll = _pEpoll;
 }
-void TcpClient::SetHandler(TcpClientHandler* pHandler)
-{
-}
-
 int     TcpClient::Init()
 {
     if(clientSocket.Init())
@@ -59,7 +55,6 @@ int     TcpClient::ConnectTo(const SockAddress & addr)
 
 void    TcpClient::Close()
 {
-
     if(pEpoll)
     {
         pEpoll->Del(clientSocket.GetFD());

@@ -1,5 +1,5 @@
 #include "UnixDomainSocket.h"
-
+#include "base/Log.h"
 
 int     UnixDomainSocket::Init(int iSockType /*SOCK_STREAM*/)
 {

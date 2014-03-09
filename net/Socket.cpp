@@ -32,21 +32,18 @@ SockAddress::SockAddress(const sockaddr & _addr)
 {
     memcpy(&(addr),&_addr,sizeof(_addr));
 }   
-SockAddress::SockAddress(uint16_t wPort,char* pszIpOrDomainName)
+SockAddress::SockAddress(uint16_t wPort,const char* pszIpOrDomainName)
 {
     ConstructIN4(wPort,pszIpOrDomainName);
 }
-SockAddress::SockAddress(uint16_t wPort,char* pszIpOrDomainName)
-{
-    ConstructIN4(wPort,pszIpOrDomainName);
-}
-SockAddress::SockAddress(char* pszUnixDomainPath)
+
+SockAddress::SockAddress(const char* pszUnixDomainPath)
 {
     addr.addr_un.sun_family = AF_UNIX;
 	strncpy(addr.addr_un.sun_path,pszUnixDomainPath,sizeof(addr.addr_un.sun_path)-1);
 }
 
-void  SockAddress::ConstructIN4(uint16_t wPort,char* pszIpOrDomainName)
+void  SockAddress::ConstructIN4(uint16_t wPort,const char* pszIpOrDomainName)
 {
 	bzero((char*)&(addr.addr_in4),sizeof((addr.addr_in4)));
 	(addr.addr_in4).sin_port = htons(wPort);
@@ -86,7 +83,7 @@ const char* SockAddress::ToString()
             iaddr.s_addr = GetIP();
         	snprintf(szSockAddrBuffer,
         					sizeof(szSockAddrBuffer),"%s:%d",
-        					inet_ntop(iaddr),
+        					inet_ntoa(iaddr),
         					GetPort());	
         }
             break;
@@ -97,7 +94,7 @@ const char* SockAddress::ToString()
             break;
         case AF_UNIX:
         {
-            strnpcy(szSockAddrBuffer,
+            strncpy(szSockAddrBuffer,
                         addr.addr_un.sun_path,
                         sizeof(szSockAddrBuffer)-1);
         }
@@ -119,7 +116,7 @@ uint16_t    SockAddress::GetAddressType() const
 {
     return *(uint16_t*)(&addr);
 }
-uint32_t    SockAddress::GetSockAddrLen()
+uint32_t    SockAddress::GetSockAddrLen() const
 {
     int iType = GetAddressType();
     switch(iType)
@@ -130,7 +127,7 @@ uint32_t    SockAddress::GetSockAddrLen()
             return sizeof(addr.addr_in6);
         case AF_UNIX:
             //offsetof
-            return  (&(addr.addr_un.sun_path) - &(addr.addr_un)) + strlen(addr.addr_un.sun_path) + 1;
+            return offsetof(struct sockaddr_un,sun_path) + strlen(addr.addr_un.sun_path) + 1;
     }
     //unspecified 
     return 0;
@@ -234,7 +231,7 @@ int Socket::Bind(const SockAddress & local)
 {
     if(::bind(GetFD(),
         (struct sockaddr *)&(local.addr), 
-		(socklen_t)local.GetSockAddrLen() ) < 0) 
+		local.GetSockAddrLen() ) < 0) 
 	{
 		LOG_ERROR("bind error !");
 		close(GetFD());

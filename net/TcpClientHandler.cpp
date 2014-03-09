@@ -12,10 +12,6 @@ TcpClientHandler::~TcpClientHandler()
     _recvBuffer.Destroy();
 }        
 
-void        TcpClientHandler::SetFD2TcpSocketMap(FDTcpSocketMap* pMap)
-{
-    pMpFD2TcpSocket = pMap;
-}
 void        TcpClientHandler::SetPoller(Epoll* _pepoll)
 {
     pEpoll =  _pepoll;
@@ -24,7 +20,8 @@ void        TcpClientHandler::SetPoller(Epoll* _pepoll)
 //after conecting
 int     TcpClientHandler::OnWritable(int fd)
 {
-    TcpSocket * pSock =  pMpFD2TcpSocket->GetTcpSocketFromFD(fd);
+    TcpSocket sock(fd);
+    TcpSocket * pSock = &sock;
     if(NULL == pSock)
     {
         LOG_FATAL("fd = %d has no tcp socket map",fd);
@@ -39,7 +36,8 @@ int     TcpClientHandler::OnWritable(int fd)
 }
 int     TcpClientHandler::OnReadable(int fd)
 {
-    TcpSocket * pSock = pMpFD2TcpSocket->GetTcpSocketFromFD(fd);
+    TcpSocket sock(fd);
+    TcpSocket * pSock = &sock;
     if(NULL == pSock)
     {
         LOG_FATAL("fd = %d has no tcp socket map",fd);
@@ -55,7 +53,6 @@ int     TcpClientHandler::OnReadable(int fd)
     {
          iRet =  OnDisconnected(*pSock);
          pSock->Close();           
-         pMpFD2TcpSocket->RemoveFDTcpSocket(fd);
     }
     else        
     {
