@@ -29,6 +29,5 @@ private:
         DEFAULT_RECV_BUFFER_SIZE = 65536,
     };
     Buffer              _recvBuffer;
-    FDTcpSocketMap      mpFD2TcpSocket;
 };
 

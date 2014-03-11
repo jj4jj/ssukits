@@ -12,7 +12,7 @@
  *
  *         Author:  YOUR NAME (), 
  *   Organization:  
- *   Last Changed: 05/26/2014 05时52分12秒
+ *   Last Changed: 03/11/2014 21时10分57秒
  *
  * =====================================================================================
  */
@@ -66,7 +66,7 @@ struct Buffer
 class Socket
 {
 public:
-	Socket();
+	Socket(int fd = -1);
 	virtual ~Socket();
 	// return 0 is ok. otherwise is fail.
 	virtual int	    Init();

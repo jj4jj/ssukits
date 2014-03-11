@@ -32,7 +32,6 @@ int     TcpServerHandler::OnAcceptable()
     }        
     client.SetNonBlock(true);
     client.SetNagle(true);    
-    mpFD2TcpSocket.AddFDTcpSocket(client.GetFD(),client);
     //just consider in read event
     pEpoll->Add(client.GetFD(),EPOLLIN);
     return OnNewConnection(client);        
@@ -42,7 +41,8 @@ int     TcpServerHandler::OnClientReadable(int fd)
     // < 0 .error
     // = 0 .ok
     // = 1 . peer close
-    TcpSocket* pClient = mpFD2TcpSocket.GetTcpSocketFromFD(fd);
+    TcpSocket sock(fd);
+    TcpSocket* pClient = &sock;
     if(NULL == pClient)
     {
         LOG_FATAL("client fd = %d is not exist socket object",fd);
@@ -61,7 +61,6 @@ int     TcpServerHandler::OnClientReadable(int fd)
         iRet = OnConnectionClosed(client);            
         pEpoll->Del(clifd);               
         client.Close();            
-        mpFD2TcpSocket.RemoveFDTcpSocket(clifd);
     }
     else
     {

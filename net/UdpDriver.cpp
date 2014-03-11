@@ -13,6 +13,14 @@ int     UdpDriver::Init(int maxfds)
     iProcNum = 0;        
     return 0;
 }
+UdpDriver::~UdpDriver()
+{
+    epoll.Destroy();
+    pEvents = NULL;
+    iNfds = 0;
+    iProcNum = 0;        
+}
+
 int     UdpDriver::Loop(int iProcNumOneRound,int iTimeOutMS )
 {
     if(iProcNum >= iNfds)
@@ -29,7 +37,7 @@ int     UdpDriver::Loop(int iProcNumOneRound,int iTimeOutMS )
     {
         if(pEvents[i].events & EPOLLIN)
         {
-            pHandler->OnReadable(pEvents[i].data.fd);
+            ptrHandler->OnReadable(pEvents[i].data.fd);
         }
     }
     return 0;

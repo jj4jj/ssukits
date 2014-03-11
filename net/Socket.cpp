@@ -12,7 +12,7 @@
  *
  *         Author:  YOUR NAME (), 
  *   Organization:  
- *   Last Changed: 05/22/2014 06时27分20秒
+ *   Last Changed: 03/11/2014 21时10分48秒
  *
  * =====================================================================================
  */
@@ -181,7 +181,7 @@ Socket::~Socket()
     //copyable , can't close the socket auto when copy.
     //
 }     
-Socket::Socket():iFd(-1)
+Socket::Socket(int fd):iFd(fd)
 {
 }
 void	Socket::Close()

@@ -1,9 +1,9 @@
-#include "UdpSocket.h"
+#include "UdpSocketHandler.h"
+#include "base/Log.h"
 
-virtual int UdpSocketHandler::OnReadable(int fd)
+int UdpSocketHandler::OnReadable(int fd)
 {
     UdpSocket sock(fd);
-    
     int ret = sock.Recv(_recvBuffer);
     if(ret == 0)
     {

@@ -5,27 +5,27 @@
 //a simple thread wrapper
 //Thread init , start with a function .
 //
-
-struct ThreadFunction
-{        
-};
-
-int 
 typedef void* (*ThreadCallBack)(void*);
 class Thread : NonCopyable
 {
 public:
+     Thread()
+     {
+        thread_id = 0;
+     }
+     void    SetID(pthread_t _tid)
+     {
+        thread_id = _tid;
+     }
      //create a thread , yield it.
      int    Create(pthread_attr_t * restrict attr,ThreadCallBack tcb,void* pTcbArg)
      {
-        pThreadCallBackArg = pTcbArg;
-        pfnThreadCallBack = tcb;
-        int ret = pthread_create(&tid,
+        int ret = pthread_create(&thread_id,
         	        attr,
-        	        pfnThreadCallBack,pTcbArg);
+        	        tcb,pTcbArg);
         if(ret == 0)
         {
-            LOG_DEBUG("thread id = %d is created ok !",tid);
+            LOG_DEBUG("thread id = %d is created ok !",thread_id);
         }
         else
         {
@@ -33,26 +33,34 @@ public:
         }
         return ret;
      }
-     pthread_t  GetThreadID();
-     int    Start();
-     int    Join();
-     int    Resume();
-     int    Murder();
-     int    Suicide();
-     int    Detach();
+     pthread_t  GetThreadID()
+     {
+        return thread_id;
+     }
+     // current thread join this thread
+     int    Join(void **retval = NULL)
+     {
+        return pthread_join(thread_id,retval);
+     }
+     int    Stop()
+     {
+         return pthread_cancel(thread_id);
+     }
+     int    Detach()
+     {
+         return  pthread_detach(thread_id);
+     }
 public:
-    pthread_t   GetCurrentThreadID()
+    static pthread_t   GetCurrentThreadID()
     {
         return pthread_self();
     }
+    static void     ExitCurrentThread(void* retval)
+    {
+         return pthread_exit(retval);
+    }
 private:
-    pthread_t       tid;
-    ThreadCallBack  pfnThreadCallBack;
-    void*           pThreadCallBackArg;
+    pthread_t       thread_id;
 };
-
-
-
-
 
 
