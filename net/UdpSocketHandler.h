@@ -6,7 +6,7 @@
 class UdpSocketHandler
 {
 public:
-    virtual int OnDataRecv(UdpSocket& udpSock,const Buffer & recvBuffer) = 0;
+    virtual int OnDataRecv(UdpSocket& udpSock,const Buffer & recvBuffer,const SockAddress& addr) = 0;
 public:
     virtual int OnReadable(int fd);
     UdpSocketHandler();

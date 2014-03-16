@@ -1,6 +1,7 @@
 #pragma once
 #include "net/TcpServerHandler.h"
 #include "net/TcpClientHandler.h"
+#include "net/UdpSocketHandler.h"
 
 class PingPangServerHandler: public TcpServerHandler
 {
@@ -26,5 +27,13 @@ public:
     int     OnDisconnected( TcpSocket &   client);
     ~PingPangClientHandler(){}
 };
+
+
+class PingPangUdpHandler: public UdpSocketHandler
+{
+public:    
+    int OnDataRecv(UdpSocket& udpSock,const Buffer & recvBuffer,const SockAddress & addr);
+};
+
 
 

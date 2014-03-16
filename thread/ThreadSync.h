@@ -8,6 +8,10 @@ public:
     {
         mutex = PTHREAD_MUTEX_INITIALIZER;
     }
+    void SetMutex(mutex_t _mu)
+    {
+        mutex = _mu;
+    }
     int Init(const pthread_mutexattr_t *restrict attr)
     {
         return  pthread_mutex_init(&mutex,
@@ -39,6 +43,10 @@ public:
     Condition()
     {
          cond = PTHREAD_COND_INITIALIZER;
+    }
+    void SetCond(pthread_cond_t _cond)
+    {
+        cond = _cond;
     }
     int Init(const pthread_condattr_t *restrict attr)
     {
@@ -73,6 +81,10 @@ private:
 class Semaphore
 {
 public:
+    void    SetSemphore(sem_t _sem)
+    {
+        sem = _sem;
+    }
     int Init(int pshared, unsigned int value)
     {
         return sem_init(&sem,pshared, value);

@@ -9,6 +9,7 @@ int     UnixDomainSocket::Init(int iSockType /*SOCK_STREAM*/)
         LOG_FATAL("error create unix domain socket fd = %d errno = %d",fd,errno);
         return -1;
 	}
+    SetFD(fd);
     return 0;
 }  
 

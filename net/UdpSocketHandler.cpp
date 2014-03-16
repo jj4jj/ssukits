@@ -4,12 +4,13 @@
 int UdpSocketHandler::OnReadable(int fd)
 {
     UdpSocket sock(fd);
-    int ret = sock.Recv(_recvBuffer);
+    SockAddress addr;
+    int ret = sock.RecvFrom(_recvBuffer,addr);
     if(ret == 0)
     {
-        return OnDataRecv(sock,_recvBuffer);
+        return OnDataRecv(sock,_recvBuffer,addr);
     }
-    LOG_ERROR("udp socket fd = %d read error !",fd);
+    LOG_ERROR("udp socket fd = %d read error from addr = %s!",fd,addr.ToString());
     sock.Close();            
     return -1;
 }

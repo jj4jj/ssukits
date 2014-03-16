@@ -25,6 +25,15 @@ ADD_EXECUTABLE(pingpang_client
 	${CMAKE_CURRENT_SOURCE_DIR}/PingPangClient.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/PingPangHandler.cpp
 )
+ADD_EXECUTABLE(pp_udp_server
+	${CMAKE_CURRENT_SOURCE_DIR}/UdpServer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/PingPangHandler.cpp
+)
+ADD_EXECUTABLE(pp_udp_client
+	${CMAKE_CURRENT_SOURCE_DIR}/UdpClient.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/PingPangHandler.cpp
+)
+
 ADD_EXECUTABLE(test_base
 	${CMAKE_CURRENT_SOURCE_DIR}/TestBase.cpp
 )
@@ -40,6 +49,14 @@ target_link_libraries(pingpang_client
 	libssukits_base.a
 	libssukits_net.a	
 )
+target_link_libraries(pp_udp_client
+	libssukits_base.a
+	libssukits_net.a	
+)
+target_link_libraries(pp_udp_server
+	libssukits_base.a
+	libssukits_net.a	
+)
 target_link_libraries(test_base
 	libssukits_base.a
 	libssukits_utility.a
@@ -51,6 +68,8 @@ target_link_libraries(test_base
 #installing
 INSTALL(TARGETS  pingpang_server DESTINATION net/)
 INSTALL(TARGETS  pingpang_client DESTINATION net/)
+INSTALL(TARGETS  pp_udp_client DESTINATION net/)
+INSTALL(TARGETS  pp_udp_server DESTINATION net/)
 INSTALL(TARGETS  test_base DESTINATION base/)
 
 

@@ -21,8 +21,7 @@ private:
 typedef std::map<int,shared_ptr<TcpClientHandler> > ClientHandlerMap;
 typedef ClientHandlerMap::iterator      ClientHandlerMapItr;
     ClientHandlerMap                    mpClientHandler;    
-    shared_ptr<TcpClientHandler>    ptrClientDefHandler;    
-    FDTcpSocketMap                  mp;
+    shared_ptr<TcpClientHandler>        ptrClientDefHandler;    
 };
 
 

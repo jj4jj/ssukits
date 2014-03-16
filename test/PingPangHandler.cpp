@@ -62,5 +62,18 @@ int     PingPangClientHandler::OnDisconnected( TcpSocket &   client)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+int PingPangUdpHandler::OnDataRecv(UdpSocket& udpSock,const Buffer & recvBuffer,const SockAddress& addr)
+{
+    for(int i = 0; i < recvBuffer.iUsed; ++i)
+    {
+        if(recvBuffer.pBuffer[i] == '\0')
+        {
+            LOG_INFO("client peer data idx = %d is eos %s",i,recvBuffer.pBuffer);
+            udpSock.SendTo(Buffer("Hello,Server!"),addr);
+        }
+    } 
+    return 0;
+}
 
 

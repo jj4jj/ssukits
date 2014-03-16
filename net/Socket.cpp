@@ -84,7 +84,7 @@ const char* SockAddress::ToString()
         	snprintf(szSockAddrBuffer,
         					sizeof(szSockAddrBuffer),"%s:%d",
         					inet_ntoa(iaddr),
-        					GetPort());	
+        					ntohs(GetPort()));	
         }
             break;
         case AF_INET6:

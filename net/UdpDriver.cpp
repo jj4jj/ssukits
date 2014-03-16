@@ -13,6 +13,15 @@ int     UdpDriver::Init(int maxfds)
     iProcNum = 0;        
     return 0;
 }
+int     UdpDriver::AddSocket(int fd)
+{
+    return    epoll.Add(fd,EPOLLIN);
+}
+int     UdpDriver::DelSocket(int fd)
+{
+    return epoll.Del(fd);
+}
+
 UdpDriver::~UdpDriver()
 {
     epoll.Destroy();

@@ -37,7 +37,6 @@ int     BatchTcpConnection::AddConnection(const SockAddress& remote,TcpClientHan
         tcl.Close();
         return -1;
     }
-    mp.AddFDTcpSocket(tcl.GetSocket().GetFD(),tcl.GetSocket());
     if(NULL != pHandler.get())
     {
         pHandler->SetPoller(&epoll);
