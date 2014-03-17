@@ -13,8 +13,8 @@ include_directories(
 #
 link_directories(
 	${PROJECT_SOURCE_DIR}/bin
+	${PROJECT_SOURCE_DIR}/dep/lua-5.2.3/lib	
 )
-
 
 #it will generate a exe
 ADD_EXECUTABLE(pingpang_server
@@ -38,6 +38,9 @@ ADD_EXECUTABLE(test_base
 	${CMAKE_CURRENT_SOURCE_DIR}/TestBase.cpp
 )
 
+ADD_EXECUTABLE(test_lua
+	${CMAKE_CURRENT_SOURCE_DIR}/LuaTest.cpp
+)
 
 
 #assign custrom link lib
@@ -62,6 +65,11 @@ target_link_libraries(test_base
 	libssukits_utility.a
 )
 
+target_link_libraries(test_lua
+	liblua.a
+	libssukits_script.a
+	libssukits_base.a
+)
 
 
 
@@ -71,6 +79,9 @@ INSTALL(TARGETS  pingpang_client DESTINATION net/)
 INSTALL(TARGETS  pp_udp_client DESTINATION net/)
 INSTALL(TARGETS  pp_udp_server DESTINATION net/)
 INSTALL(TARGETS  test_base DESTINATION base/)
+
+INSTALL(TARGETS  test_lua DESTINATION script/)
+INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/TestLua.lua DESTINATION script/)
 
 
 	

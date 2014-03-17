@@ -61,6 +61,9 @@ using std::tr1::unordered_map;
 using std::tr1::unordered_set;
 #include <functional>
 
+#include <iostream>
+
+
 //#include <tr1/functional>
 //using namespace std::tr1::placeholders;
 //using std::tr1::bind;

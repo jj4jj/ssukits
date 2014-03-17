@@ -34,8 +34,7 @@ int		UdpSocket::SendTo(const Buffer & sendBuffer,const SockAddress & dstAddr,int
 	do
 	{
         iSent = sendto(GetFD(),sendBuffer.pBuffer + iSentTotal,sendBuffer.iUsed - iSentTotal,
-                iFlags,&(dstAddr.addr.addr_in4),sizeof(dstAddr.addr.addr_in4));
-        iSent = send(GetFD(),sendBuffer.pBuffer + iSentTotal, sendBuffer.iUsed - iSentTotal,iFlags);	
+                iFlags,(struct sockaddr*)&(dstAddr.addr.addr_in4),sizeof(dstAddr.addr.addr_in4));
         if(iSent > 0)
         {
             iSentTotal += iSent;
@@ -79,7 +78,7 @@ int		UdpSocket::RecvFrom(Buffer& recvBuff ,SockAddress & srcAddr, int iFlags )
 		//read <=> recv(...,flag=0);
         socklen_t slen = sizeof(srcAddr.addr.addr_in4);
 		iRead = recvfrom(GetFD(),recvBuff.pBuffer + recvBuff.iUsed,
-                recvBuff.iCap - recvBuff.iUsed,iFlags,&(srcAddr.addr.addr_in4),&slen);          
+                recvBuff.iCap - recvBuff.iUsed,iFlags,(struct sockaddr*)&(srcAddr.addr.addr_in4),&slen);          
 		if(iRead > 0)
 		{
 			recvBuff.iUsed += iRead;			

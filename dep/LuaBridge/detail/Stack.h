@@ -457,7 +457,11 @@ struct Stack <std::string const&>
 {
   static inline void push (lua_State* L, std::string const& str)
   {
+#if LUA_VERSION_NUM >= 502
+    lua_pushlstring (L, str.c_str(), str.size());
+#else
     lua_pushstring (L, str.c_str(), str.size());
+#endif
   }
 
   static inline std::string get (lua_State* L, int index)

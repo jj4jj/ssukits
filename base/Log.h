@@ -53,16 +53,16 @@ private:
 
 /////////////////////////////////////////////////////////////////
 
-#define LOG(lvl, fmt, args...)	 do{\
+#define LOG_real(lvl, fmt, args...)	 do{\
 Log::Instance().Write(lvl, __FILE__, __FUNCTION__, __LINE__ , fmt, ##args);\
 }while(false)
 
-#define LOG_TRACE(fmt,args...) LOG(Log::LOG_LV_TRACE,fmt,##args)
-#define LOG_DEBUG(fmt,args...) LOG(Log::LOG_LV_DEBUG,fmt,##args)
-#define LOG_INFO(fmt,args...)  LOG(Log::LOG_LV_INFO,fmt,##args)
-#define LOG_WARN(fmt,args...)  LOG(Log::LOG_LV_WARN,fmt,##args)
-#define LOG_ERROR(fmt,args...) LOG(Log::LOG_LV_ERROR,fmt,##args)
-#define LOG_FATAL(fmt,args...) LOG(Log::LOG_LV_FATAL,fmt,##args)
+#define LOG_TRACE(fmt,args...) LOG_real(Log::LOG_LV_TRACE,fmt,##args)
+#define LOG_DEBUG(fmt,args...) LOG_real(Log::LOG_LV_DEBUG,fmt,##args)
+#define LOG_INFO(fmt,args...)  LOG_real(Log::LOG_LV_INFO,fmt,##args)
+#define LOG_WARN(fmt,args...)  LOG_real(Log::LOG_LV_WARN,fmt,##args)
+#define LOG_ERROR(fmt,args...) LOG_real(Log::LOG_LV_ERROR,fmt,##args)
+#define LOG_FATAL(fmt,args...) LOG_real(Log::LOG_LV_FATAL,fmt,##args)
 
 
 
