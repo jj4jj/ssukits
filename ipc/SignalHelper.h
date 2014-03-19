@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "base/stdinc.h"
 class SignalHelper
 {
 public:
