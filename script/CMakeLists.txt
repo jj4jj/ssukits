@@ -3,17 +3,14 @@ file(GLOB_RECURSE ssukits_script_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp
 
 #base dir depend on itself and some other lib
 include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${PROJECT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}
+	${LUA_INC}
+	${LUA_BRIDGE_INC}
 )
 
-#base dir linked lib dir
-#
-#link_directories(
-#  /usr/local/lib
-#)
 
-#it will generate a static lib for comiling faster
+#it will generate a static lib for compiling faster
 add_library(ssukits_script STATIC
   ${ssukits_script_SRCS}
 )

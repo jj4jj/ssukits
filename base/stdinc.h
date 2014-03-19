@@ -84,13 +84,15 @@ using std::tr1::unordered_set;
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 #include <arpa/inet.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <linux/un.h>
-
+#include <sys/mman.h>  
 //thread
 #include <pthread.h>
 

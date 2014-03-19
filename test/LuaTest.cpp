@@ -3,7 +3,7 @@
 
 
 #include "base/stdinc.h"
-
+#include "base/Log.h"
 using namespace std;
 
 class A
@@ -49,6 +49,7 @@ int g_Integer = 20;
 
 int main()
 {
+    Log::Instance().Init(NULL,Log::LOG_LV_NO_LIMIT);
     LuaAgent la;
     la.Init();
     using namespace luabridge;
@@ -72,9 +73,12 @@ int main()
     b._i = 30;
     //luabridge::setGlobal(la.GetLuaState(),b,"b");
     //to lua
-    //la.LoadFile("TestLua.lua");
+    if(la.LoadFile("TestLua.lua"))
+    {
+        LOG_FATAL("loading file error !");
+        return -1;
+    }
     //from lua
-        
     
     return 0;
 }

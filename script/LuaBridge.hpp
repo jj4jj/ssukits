@@ -10,10 +10,10 @@ extern "C" {
 }
 
 #else
-    #include "dep/lua-5.2.3/include/lua.hpp"
+    #include "lua.hpp"
 #endif
 
-#include "dep/LuaBridge/LuaBridge.h"
+#include "LuaBridge.h"
 
 
 

@@ -7,13 +7,15 @@ SET_SOURCE_FILES_PROPERTIES(${ssukits_test_SRCS} PROPERTIES LANGUAGE CXX )
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}
+  ${LUA_BRIDGE_INC}
 )
 
 #base dir linked lib dir
 #
 link_directories(
 	${PROJECT_SOURCE_DIR}/bin
-	${PROJECT_SOURCE_DIR}/dep/lua-5.2.3/lib	
+	${LUA_LIB}
+	/usr/lib
 )
 
 #it will generate a exe
@@ -66,9 +68,9 @@ target_link_libraries(test_base
 )
 
 target_link_libraries(test_lua
-	liblua.a
 	libssukits_script.a
 	libssukits_base.a
+	liblua.a
 )
 
 

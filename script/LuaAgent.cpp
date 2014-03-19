@@ -34,7 +34,7 @@ int  LuaAgent::Init()
         LOG_FATAL("lua new state error !");
         return -1;
     }
-    //link error
+    
     luaL_openlibs(luaState);
     LOG_TRACE("lua agent init ok .");
     return 0;
@@ -49,20 +49,38 @@ int  LuaAgent::LoadBuffer(const char* pBuffer,size_t zBuffLen)
 {
     return luaL_loadbuffer(luaState,pBuffer,zBuffLen,NULL);
 }
+int LuaAgent::DoFile(const char* pszFileName)
+{
+    return luaL_dofile(luaState,pszFileName);
+}
+int LuaAgent::LoadString(const char* pszString)
+{
+    return luaL_loadstring(luaState,pszString);
+}
+int LuaAgent::DoString(const char* pszString)
+{
+    return luaL_dostring(luaState,pszString);
+}
+
 
 //lua_close
 void     LuaAgent::Destroy()
 {
-    if(!luaState)
+    if(luaState)
     {
         lua_close(luaState);
         LOG_TRACE("lua agent close .");
+        luaState = NULL;
     }
 }
 int      LuaAgent::OpenLib(const char * szLibName)
 {
+#ifdef   LUA_COMPAT_MODULE
+    return luaL_openlib(luaState,szLibName,NULL);
+#else
+    LOG_ERROR("not support the open lib call ! for lua compat module !");
     return -1;
-//    return luaL_openlib(luaState,szLibName,NULL);
+#endif
 }
 lua_State*   LuaAgent::GetLuaState()
 {

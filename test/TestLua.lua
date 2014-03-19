@@ -1,3 +1,5 @@
+
+d=CD()
 local a = CA()
 a.f()
 a:print()

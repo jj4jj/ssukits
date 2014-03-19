@@ -6,13 +6,17 @@
 
 extern "C" 
 {
-    #include "lua.h"
-    #include "lualib.h"
-    #include "lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
 
 #else
-    #include "dep/lua-5.2.3/include/lua.hpp"
+
+
+#include "lua.hpp"
+
+
 #endif
 
 //stack model
@@ -36,8 +40,11 @@ public:
     int Init();
     //
     int LoadFile(const char* pszFileName);
-    //
+    // load buffer
     int LoadBuffer(const char* pBuffer,size_t zBuffLen);
+    int DoFile(const char* pszFileName);
+    int LoadString(const char* pszString);
+    int DoString(const char* pszString);
 
     //lua_close
     void    Destroy();
@@ -69,7 +76,7 @@ public:
     //move top elemtn to a pos (lenth--)
     void    Replace(int idx);
     //check stack size
-    int    CheckStack(int sz);
+    int     CheckStack(int sz);
     //Pop n elements from stack
     void    Pop(int n);
 
