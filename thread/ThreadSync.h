@@ -54,6 +54,21 @@ private:
 };
 
 
+///////////////////////////////////
+class RWLock
+{
+public:
+    int Init(pthread_rwlockattr_t * attr);
+    int Destroy();
+    int GetReadLock();
+    int GetWriteLock();
+    int TryGetReadLock();
+    int TryGetWriteLock();
+    int ReleaseLock();
+    
+private:
+    pthread_rwlock_t   rwlock;
+};
 
 
 

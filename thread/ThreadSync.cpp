@@ -101,3 +101,31 @@ int Semaphore::Destroy()
 ////////////////////////////////////////////////////////////////////////////////////
 
 
+int RWLock::Init(pthread_rwlockattr_t * attr)
+{
+    return pthread_rwlock_init(&rwlock,attr);
+}
+int RWLock::Destroy()
+{
+    return pthread_rwlock_destroy(&rwlock);        
+}
+int RWLock::GetReadLock()
+{
+    return pthread_rwlock_rdlock(&rwlock);
+}
+int RWLock::GetWriteLock()
+{
+    return pthread_rwlock_wrlock(&rwlock);
+}
+int RWLock::TryGetReadLock()
+{
+    return pthread_rwlock_tryrdlock(&rwlock);
+}
+int RWLock::TryGetWriteLock()
+{
+    return pthread_rwlock_trywrlock(&rwlock);
+}
+int RWLock::ReleaseLock()
+{
+    return pthread_rwlock_unlock(&rwlock);
+}
