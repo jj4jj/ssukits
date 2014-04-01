@@ -36,7 +36,8 @@ public:
         typename std::iterator_traits<ListTypeItr>::difference_type count, step;
         
         uint32_t count = std::distance(first,list.end());     
-        while (count > 0) {
+        while (count > 0)
+		{
             it = first;
             step = count>>1;
             std::advance(it, step);
