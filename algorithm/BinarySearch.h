@@ -101,7 +101,7 @@ public:
         if(it != list.begin())
         {
             //insert u into the it pos        
-            if(!bInsertWhenEual && equal(*(it-1),u)
+            if(!bInsertWhenEual && equal(*(it-1),u))
             {
                 //repeat
                 return -1;
@@ -167,7 +167,7 @@ public:
         rlst.clear();
         ListTypeItr it = LowwerBound(u);
         while(it != end() &&
-              (equal(*it,u))
+               equal(*it,u))
         {
             rlst.push_back(*it);
         }

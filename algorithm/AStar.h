@@ -1,13 +1,13 @@
 
 #pragma once
 
-
+#include "base/stdinc.h"
 
 struct Pos2D
 {
     int x;
-    int y;    
-    Pos2D(int _x,int _y):x(_x),y(_y){}
+    int y;
+    Pos2D(int _x = 0,int _y = 0):x(_x),y(_y){}
     void Reset(int _x = 0,int _y = 0)
     {
         x = _x;
@@ -15,17 +15,26 @@ struct Pos2D
     }
     Pos2D & operator = (const Pos2D& pos)
     {
+        if(&pos == this )
+        {
+            return *this;
+        }
         x = pos.x;
         y = pos.y;
+        return *this;
     }
     int ManhattonDist(const Pos2D& pos)
     {
         return sqrt((pos.x-x)*(pos.x-x) + (pos.y-y)*(pos.y-y));
     }
-    
+
     int EulerDist(const Pos2D& pos)
     {
         return abs(pos.y - y) + abs(pos.x - x);
+    }
+    bool operator == (const Pos2D& pos)
+    {
+        return (x == pos.x && y == pos.y);
     }
 };
 
@@ -35,7 +44,7 @@ struct AstarNode
     void* pData;
     int   iVisit;
     int   g;
-    AstarNode * parent;    
+    AstarNode * parent;
 };
 
 //the map position is as follow
@@ -54,12 +63,14 @@ struct AstarNode
     .   .   .     .         |
     |                       |
     iMapHeight-1  ...   ----.
-    
+
 ***************************************/
 
 
 class AStar2D
 {
+public:
+    typedef bool (* PFNIsPathNode)(AstarNode& node);
 public:
     ~AStar2D();
     int    Init(int iWidth,int iHeight);
@@ -67,9 +78,9 @@ public:
     AstarNode *   GetNode(Pos2D pos);
     int    ReCalcPath(Pos2D src,Pos2D dst);
     void    SetPosVisited(const Pos2D & pos);
-    void    InsertIntoOpenList(const Pos2D& pos);    
-    void    InsertIntoCloseList(const Pos2D& pos);       
-    bool    IsPosInValid(int x,int y);
+    void    InsertIntoOpenList(const Pos2D& pos);
+    void    InsertIntoCloseList(const Pos2D& pos);
+    bool    IsPosInValid(const Pos2D & pos);
     int     GetNodeNeighbors(Pos2D pos,vector<Pos2D> &ngbs);
      //return 0 is ok
     //else error
@@ -84,8 +95,6 @@ public:
     Pos2D GetInnerNodePos(const AstarNode* node);
     const vector<Pos2D> & GetPath();
     void   Destroy();
-public:
-    typedef (PFNIsPathNode *)(AstarNode& node);
 private:
     int    iMapWidth;
     int    iMapHeight;
