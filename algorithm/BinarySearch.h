@@ -2,7 +2,7 @@
 
 
 template<class U , class Compare = std::less<U> >
-class BinarySearch
+class BinarySearchArray
 {
 protected:
     typedef    std::vector<U>   ListType;
