@@ -36,7 +36,8 @@ public:
         typename std::iterator_traits<ListTypeItr>::difference_type count, step;
         
         uint32_t count = std::distance(first,list.end());     
-        while (count > 0) {
+        while (count > 0)
+		{
             it = first;
             step = count>>1;
             std::advance(it, step);
@@ -101,7 +102,7 @@ public:
         if(it != list.begin())
         {
             //insert u into the it pos        
-            if(!bInsertWhenEual && equal(*(it-1),u)
+            if(!bInsertWhenEual && equal(*(it-1),u))
             {
                 //repeat
                 return -1;
@@ -167,7 +168,7 @@ public:
         rlst.clear();
         ListTypeItr it = LowwerBound(u);
         while(it != end() &&
-              (equal(*it,u))
+               equal(*it,u))
         {
             rlst.push_back(*it);
         }

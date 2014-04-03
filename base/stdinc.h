@@ -3,15 +3,15 @@
  *
  *       Filename:  stdinclude.h
  *
- *    Description:  
+ *    Description:
  *
  *        Version:  1.0
  *        Created:  2014年05月22日 05时38分38秒
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *         Author:  YOUR NAME (),
+ *   Organization:
  *   Last Changed: 05/22/2014 05时43分59秒
  *
  * =====================================================================================
@@ -31,12 +31,12 @@
 #include <time.h>
 #include <strings.h>
 #include <stdint.h>
-#include <errno.h> 
+#include <errno.h>
 #include <fcntl.h>
 #include <stddef.h>
 #include <setjmp.h>
 #include <signal.h>
-
+#include <assert.h>
 //-------------------std cpp--------------------------
 
 
@@ -93,7 +93,7 @@ using std::tr1::unordered_set;
 #include <netinet/in.h>
 #include <netdb.h>
 #include <linux/un.h>
-#include <sys/mman.h>  
+#include <sys/mman.h>
 //thread
 #include <pthread.h>
 
