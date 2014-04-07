@@ -32,6 +32,24 @@ protected:
     {
         return (pNode->parent->left == pNode);
     }
+	Node*	GetMin(Node* pNode)
+	{
+		if(NULL == pNode ||
+		    NULL == pNode->left)
+		{
+			return pNode;	
+		}
+		return GetMin(pNode->left);
+	}
+	Node*	GetMax(Node* pNode)
+	{
+		if(NULL == pNode ||
+		   NULL == pNode->right)
+		{
+			return pNode;	
+		}
+		return GetMax(pNode->right);
+	}
     int     Destroy(Node* pTree)
     {
 		if(NULL == pTree)
@@ -54,79 +72,21 @@ public:
 public:
     virtual Node*   Delete(Node* pNode)
     {
-        Node* pReplaceNode = NULL;        
-        if(NULL == pNode->left && NULL == pNode->right)
-        {
-            //leaf ndoe
-            //nothing todo
-            //pReplaceNode = NULL;
-        }
-        else if(pNode->right)
-        {
-            // replace with its next node
-            pReplaceNode = pNode->right;
-            while(!pReplaceNode->left)
-            {
-                pReplaceNode = pReplaceNode->left;
-            }
+		assert(pNode);
+        Node* pReplaceNode = GetMin(pNode->right);        
+		if(NULL == pReplaceNode ||
+		   pNode == pReplaceNode)
+		{
+			pReplaceNode = GetMax(pNode->left);
+		}
 
-			pReplaceNode->parent->left = pReplaceNode->right;	
-        }
-        else if(pNode->left)
-        {
-            //replace with its previous node            
-            pReplaceNode = pNode->left;            
-			while(!pReplaceNode->right)
-			{
-				pReplaceNode = pReplaceNode->right;	
-			}
+		if(NULL != pReplaceNode)
+		{
+			//
 
-        }
-        else
-        {
-            //no this path 
-            assert(false);
-            return NULL;
-        }
-        //modify the replace node relationship
-        if(pReplaceNode )
-        {
-			if(pReplaceNode->parent)
-			{
-				if(IsLeftChild(pReplaceNode))
-				{
+		}
 
-				}
-				else
-				{
-					pReplaceNode->parent->right = pReplaceNode->right;
-					
-				}
-				if(pReplaceNode->right)
-				{
-					pReplaceNode->right->parent = pReplaceNode->parent;	
-				}
-			}
-            pReplaceNode->parent = pNode->parent;    
-        }        
-        if(pNode->parent)
-        {            
-            if(IsLeftChild(pNode))
-            {
-                pNode->parent->left = pReplaceNode;
-            }
-            else
-            {
-                pNode->parent->right = pReplaceNode;
-            }
-            //
-        }
-        else
-        {
-            assert(pNode == root);
-            root = pReplaceNode;
-        }
-        Destroy(pNode);
+        Free(pNode);
         return pReplaceNode;
     }
     virtual Node*     Insert(Node * pTree,Node* pNode)
