@@ -3,7 +3,7 @@
 
 
 
-template<class U , class Compare>
+template<class U , class Compare = std::less<U>  >
 class AVLTree:public BinarySearchTree<U,Compare>
 {
 public:
@@ -92,8 +92,18 @@ protected:
 	}
 	int	Delete(Node* pNode) 
 	{
-		
-		
+		//	
+		Node* pDeleteNode = BinarySearchTree::Delete(pNode);
+		if(NULL == pDeleteNode)
+		{
+			return -1;	
+		}
+		while(pDeleteNode)
+		{
+			BalanceNode(pDeleteNode);
+			pDeleteNode = pDeleteNode->parent;	
+		}
+		return 0;
 	}
 	int RotateR(Node* pNode)
 	{

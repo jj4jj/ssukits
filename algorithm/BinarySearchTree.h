@@ -74,18 +74,53 @@ public:
     {
 		assert(pNode);
         Node* pReplaceNode = GetMin(pNode->right);        
-		if(NULL == pReplaceNode ||
-		   pNode == pReplaceNode)
+		if(pNode == NULL)
 		{
 			pReplaceNode = GetMax(pNode->left);
+			if(pReplaceNode)
+			{
+				if(IsLeftChild(pReplaceNode))
+				{
+					pReplaceNode->parent->left = pReplaceNode->left;		
+				}
+				else
+				{
+					pReplaceNode->parent->right = pReplaceNode->left;		
+				}
+				if(pReplaceNode->left)
+				{
+					pReplaceNode->left->parent = pReplaceNode->parent;
+				}			
+			}
 		}
-
-		if(NULL != pReplaceNode)
+		else
 		{
-			//
-
+			if(IsLeftChild(pReplaceNode))
+			{
+				pReplaceNode->parent->left = pReplaceNode->right;		
+			}
+			else
+			{
+				pReplaceNode->parent->right = pReplaceNode->right;		
+			}
+			if(pReplaceNode->right)
+			{
+				pReplaceNode->right->parent = pReplaceNode->parent;
+			}
 		}
 
+		pReplaceNode->parent = pNode->parent;
+		if(pNode->parent)
+		{
+			if(IsLeftChild(pNode))
+			{
+				pNode->parent->left = pReplaceNode;	
+			}
+			else
+			{
+				pNode->parent->right = pReplaceNode;	
+			}
+		}
         Free(pNode);
         return pReplaceNode;
     }
