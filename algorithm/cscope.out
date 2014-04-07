@@ -1,0 +1,2258 @@
+cscope 15 $HOME/github/ssukits/algorithm               0000009579
+	@AStar.cpp
+
+3 
+	~"ASèr.h
+"
+
+4 
+	~"ba£/Log.h
+"
+
+5 
+	~"ba£/Comm⁄Ma¸o.h
+"
+
+7 
+	gASèr2D
+::~
+	$ASèr2D
+()
+
+9 
+	`De°roy
+();
+
+10 
+	}
+}
+
+11 
+	gASèr2D
+::
+	$Inô
+(
+iWidth
+,
+iHeight
+)
+
+13 
+iV°Magic
+ = 0;
+
+14 
+	`as£π
+(
+iWidth
+*
+iHeight
+ > 0);
+
+15 
+p2DMeshD©a
+ = 
+√w
+ 
+A°¨Node
+[
+iWidth
+*
+iHeight
+];
+
+16 if(
+NULL
+ =
+p2DMeshD©a
+)
+
+20 
+iM≠Width
+ = 
+iWidth
+;
+
+21 
+iM≠Height
+ = 
+iHeight
+;
+
+22 
+vecP©h
+.
+	`˛ór
+();
+
+23 
+›íLi°
+.
+	`˛ór
+();
+
+24 
+˛o£Li°
+.
+	`˛ór
+();
+
+25 
+p‚IsP©hNode
+ = 
+NULL
+;
+
+26 
+posSrc
+.
+	`Re£t
+();
+
+27 
+posD°
+.
+	`Re£t
+(0);
+
+29 
+	}
+}
+
+31 
+A°¨Node
+ * 
+	gASèr2D
+::
+	$GëNode
+(
+Pos2D
+ 
+pos
+)
+
+33 if(
+	`IsPosInVÆid
+(
+pos
+))
+
+35  
+NULL
+;
+
+37  
+p2DMeshD©a
+ + 
+pos
+.
+x
+*
+iM≠Width
++pos.
+y
+;
+
+38 
+	}
+}
+
+39 
+	gASèr2D
+::
+	$ReCÆcP©h
+(
+Pos2D
+ 
+§c
+,Pos2D 
+d°
+)
+
+41 
+vecP©h
+.
+	`˛ór
+();
+
+42 
+›íLi°
+.
+	`˛ór
+();
+
+43 
+˛o£Li°
+.
+	`˛ór
+();
+
+44 
+posSrc
+ = 
+§c
+;
+
+45 
+posD°
+ = 
+d°
+;
+
+48 if(
+	`ExãndNode
+(
+§c
+) < 0)
+
+52 
+iV°Magic
+++;
+
+54 
+	`as£π
+(
+iV°Magic
+ != 0);
+
+55 
+	`SëPosVisôed
+(
+§c
+);
+
+56 
+	`In£πI¡oClo£Li°
+(
+§c
+);
+
+58 
+	}
+}
+
+59 
+	gASèr2D
+::
+	$SëPosVisôed
+(c⁄° 
+Pos2D
+ & 
+pos
+)
+
+61 if(
+	`IsPosInVÆid
+(
+pos
+))
+
+65 
+A°¨Node
+* 
+node
+ = 
+	`GëNode
+(
+pos
+);
+
+66 if(
+node
+)
+
+68 
+node
+->
+iVisô
+ = 
+iV°Magic
+;
+
+70 
+	}
+}
+
+71 
+	gASèr2D
+::
+	$In£πI¡oO≥nLi°
+(c⁄° 
+Pos2D
+& 
+pos
+)
+
+73 
+	`SëPosVisôed
+(
+pos
+);
+
+75 
+›íLi°
+.
+	`push_back
+(
+pos
+);
+
+76 
+	}
+}
+
+78 
+	gASèr2D
+::
+	$In£πI¡oClo£Li°
+(c⁄° 
+Pos2D
+& 
+pos
+)
+
+80 
+˛o£Li°
+.
+	`push_back
+(
+pos
+);
+
+81 
+	}
+}
+
+83 
+boﬁ
+ 
+	gASèr2D
+::
+	$IsPosInVÆid
+(c⁄° 
+Pos2D
+ & 
+pos
+)
+
+85  (
+pos
+.
+x
+ < 0 ||Öos.x >
+iM≠Width
+ ||
+
+86 
+pos
+.
+y
+ < 0 ||Öos.y >
+iM≠Height
+);
+
+87 
+	}
+}
+
+88 
+	gASèr2D
+::
+GëNodeNeighb‹s
+(
+Pos2D
+ 
+pos
+,
+ve˘‹
+<Pos2D> &
+ngbs
+)
+
+91 
+	giDñèX
+[] = {0,1,0,-1};
+
+92 
+	giDñèY
+[] = {1,0,-1,0};
+
+93 
+	gi
+ = 0 ;i < 4; ++i)
+
+95 
+Pos2D
+ 
+≈os
+(
+pos
+.
+x
++
+iDñèX
+[
+i
+],pos.
+y
++
+iDñèY
+[i]);
+
+96 if(
+IsPosInVÆid
+(
+≈os
+))
+
+100 
+	gngbs
+.
+push_back
+(
+≈os
+);
+
+106 
+	gASèr2D
+::
+	$P›MöCo°NodePos
+(
+Pos2D
+ & 
+pos
+)
+
+109 if(
+›íLi°
+.
+	`em±y
+())
+
+114 
+pos
+ = 
+›íLi°
+.
+	`back
+();
+
+115 
+›íLi°
+.
+	`p›_back
+();
+
+119 
+	}
+}
+
+120 
+boﬁ
+ 
+	gASèr2D
+::
+	$IsPosVisôed
+(c⁄° 
+Pos2D
+& 
+pos
+)
+
+122 
+A°¨Node
+* 
+node
+ = 
+	`GëNode
+(
+pos
+);
+
+123 if(
+NULL
+ =
+node
+)
+
+125  
+åue
+;
+
+127  (
+node
+->
+iVisô
+ =
+iV°Magic
+);
+
+128 
+	}
+}
+
+129 
+	gASèr2D
+::
+	$SëPFNIsP©hNode
+(
+PFNIsP©hNode
+ 
+_p‚IsP©hNode
+)
+
+131 
+p‚IsP©hNode
+ = 
+_p‚IsP©hNode
+;
+
+132 
+	}
+}
+
+133 
+	gASèr2D
+::
+	$ExãndNode
+(
+Pos2D
+& 
+pos
+)
+
+135 
+ve˘‹
+ < 
+Pos2D
+ > 
+ngbs
+;
+
+136 
+	`GëNodeNeighb‹s
+(
+pos
+,
+ngbs
+);
+
+137 if(
+ngbs
+.
+	`em±y
+())
+
+142 
+A°¨Node
+ * 
+¢ode
+ = 
+	`GëNode
+(
+pos
+);
+
+143 if(
+NULL
+ =
+¢ode
+)
+
+148 
+i
+ = 0; i < 
+ngbs
+.
+	`size
+(); ++i)
+
+150 if(
+	`IsPosVisôed
+(
+ngbs
+[
+i
+]))
+
+155 
+A°¨Node
+ * 
+node
+ = 
+	`GëNode
+(
+ngbs
+[
+i
+]);
+
+156 
+	`as£π
+(
+node
+ !
+NULL
+);
+
+157 
+	`SëPosVisôed
+(
+ngbs
+[
+i
+]);
+
+158 if(!
+	`p‚IsP©hNode
+(*
+node
+))
+
+163 
+node
+->
+∑ª¡
+ = 
+¢ode
+;
+
+164 
+node
+->
+g
+ = 
+¢ode
+->g+1;
+
+166 if(
+ngbs
+[
+i
+] =
+posD°
+)
+
+170 
+	`In£πI¡oO≥nLi°
+(
+ngbs
+[
+i
+]);
+
+173 
+	}
+}
+
+177 
+	gASèr2D
+::
+	$CÆcSãpP©h
+(
+iSãpNum
+)
+
+179 
+Pos2D
+ 
+pos
+;
+
+180 
+iSãp
+ = 0;
+
+183 if(
+	`P›MöCo°NodePos
+(
+pos
+))
+
+187 
+	`In£πI¡oClo£Li°
+(
+pos
+);
+
+191 
+ªt
+ = 
+	`ExãndNode
+(
+pos
+);
+
+192 if(0 =
+ªt
+)
+
+196 if–
+ªt
+ < 0 )
+
+200 
+iSãp
+++;
+
+201 }
+iSãp
+ < 
+iSãpNum
+ );
+
+204 
+	}
+}
+
+205 
+Pos2D
+ 
+	gASèr2D
+::
+	$GëI¬îNodePos
+(c⁄° 
+A°¨Node
+* 
+node
+)
+
+207 
+iOff£t
+ = 
+node
+ - 
+p2DMeshD©a
+;
+
+208 
+	`as£π
+(
+iOff£t
+ >0 && iOff£à< 
+iM≠Width
+*
+iM≠Height
+);
+
+209  
+	`Pos2D
+(
+iOff£t
+/
+iM≠Width
+,iOffset%iMapWidth);
+
+210 
+	}
+}
+
+212 c⁄° 
+	gve˘‹
+<
+	gPos2D
+> & 
+	gASèr2D
+::
+	$GëP©h
+( )
+
+214 
+A°¨Node
+ * 
+node
+ = 
+	`GëNode
+(
+posD°
+);
+
+215 if(
+node
+->
+iVisô
+ !
+iV°Magic
+)
+
+217 
+vecP©h
+.
+	`˛ór
+();
+
+221 
+vecP©h
+.
+	`push_back
+(
+	`GëI¬îNodePos
+(
+node
+));
+
+222 
+node
+ =Çode->
+∑ª¡
+;
+
+224 
+node
+ !
+NULL
+);
+
+226  
+vecP©h
+;
+
+227 
+	}
+}
+
+228 
+	gASèr2D
+::
+	$De°roy
+()
+
+230 
+	`SAFE_DELETE
+(
+p2DMeshD©a
+);
+
+231 
+vecP©h
+.
+	`˛ór
+();
+
+232 
+iV°Magic
+ = 0;
+
+233 
+	}
+}
+
+	@AStar.h
+
+2 #¥agm®
+⁄˚
+
+
+4 
+	~"ba£/°döc.h
+"
+
+6 
+	sPos2D
+
+
+8 
+	mx
+;
+
+9 
+	my
+;
+
+10 
+Pos2D
+(
+_x
+ = 0,
+_y
+ = 0):
+x
+(_x),
+y
+(_y){}
+
+11 
+Re£t
+(
+_x
+ = 0,
+_y
+ = 0)
+
+13 
+x
+ = 
+_x
+;
+
+14 
+	my
+ = 
+_y
+;
+
+16 
+	mPos2D
+ & 
+	m›î©‹
+ = (c⁄° 
+Pos2D
+& 
+pos
+)
+
+18 if(&
+pos
+ =
+this
+ )
+
+20  *
+this
+;
+
+22 
+	mx
+ = 
+pos
+.
+x
+;
+
+23 
+	my
+ = 
+pos
+.
+y
+;
+
+24  *
+	mthis
+;
+
+26 
+M™h©t⁄Di°
+(c⁄° 
+Pos2D
+& 
+pos
+)
+
+28  
+sqπ
+((
+pos
+.
+x
+-x)*’os.x-xË+ (pos.
+y
+-y)*(pos.y-y));
+
+31 
+EuÀrDi°
+(c⁄° 
+Pos2D
+& 
+pos
+)
+
+33  
+abs
+(
+pos
+.
+y
+ - yË+ábs’os.
+x
+ - x);
+
+35 
+boﬁ
+ 
+	m›î©‹
+ =(c⁄° 
+Pos2D
+& 
+pos
+)
+
+37  (
+x
+ =
+pos
+.x && 
+y
+ ==Öos.y);
+
+41 
+	gA°¨Node
+;
+
+42 
+	sA°¨Node
+
+
+44 * 
+	mpD©a
+;
+
+45 
+	miVisô
+;
+
+46 
+	mg
+;
+
+47 
+A°¨Node
+ * 
+	m∑ª¡
+;
+
+70 ˛as†
+	cASèr2D
+
+
+72 
+	mpublic
+:
+
+73 
+	$boﬁ
+ (* 
+	tPFNIsP©hNode
+)(
+	tA°¨Node
+& 
+	tnode
+);
+
+74 
+public
+:
+
+75 ~
+	`ASèr2D
+();
+
+76 
+	`Inô
+(
+iWidth
+,
+iHeight
+);
+
+78 
+A°¨Node
+ * 
+	`GëNode
+(
+Pos2D
+ 
+pos
+);
+
+79 
+	`ReCÆcP©h
+(
+Pos2D
+ 
+§c
+,Pos2D 
+d°
+);
+
+80 
+	`SëPosVisôed
+(c⁄° 
+Pos2D
+ & 
+pos
+);
+
+81 
+	`In£πI¡oO≥nLi°
+(c⁄° 
+Pos2D
+& 
+pos
+);
+
+82 
+	`In£πI¡oClo£Li°
+(c⁄° 
+Pos2D
+& 
+pos
+);
+
+83 
+boﬁ
+ 
+	`IsPosInVÆid
+(c⁄° 
+Pos2D
+ & 
+pos
+);
+
+84 
+	`GëNodeNeighb‹s
+(
+Pos2D
+ 
+pos
+,
+ve˘‹
+<Pos2D> &
+ngbs
+);
+
+87 
+	`P›MöCo°NodePos
+(
+Pos2D
+ & 
+pos
+);
+
+88 
+boﬁ
+ 
+	`IsPosVisôed
+(c⁄° 
+Pos2D
+& 
+pos
+);
+
+89 
+	`SëPFNIsP©hNode
+(
+PFNIsP©hNode
+ 
+_p‚IsP©hNode
+);
+
+90 
+	`ExãndNode
+(
+Pos2D
+& 
+pos
+);
+
+94 
+	`CÆcSãpP©h
+(
+iSãpNum
+);
+
+95 
+Pos2D
+ 
+	`GëI¬îNodePos
+(c⁄° 
+A°¨Node
+* 
+node
+);
+
+96 c⁄° 
+ve˘‹
+<
+Pos2D
+> & 
+	`GëP©h
+();
+
+97 
+	`De°roy
+();
+
+98 
+¥iv©e
+:
+
+99 
+iM≠Width
+;
+
+100 
+iM≠Height
+;
+
+101 
+Pos2D
+ 
+posSrc
+;
+
+102 
+Pos2D
+ 
+posD°
+;
+
+103 
+A°¨Node
+* 
+p2DMeshD©a
+;
+
+104 
+ve˘‹
+<
+Pos2D
+> 
+vecP©h
+;
+
+105 
+ve˘‹
+<
+Pos2D
+> 
+›íLi°
+;
+
+106 
+ve˘‹
+<
+Pos2D
+> 
+˛o£Li°
+;
+
+107 
+iV°Magic
+;
+
+108 
+PFNIsP©hNode
+ 
+p‚IsP©hNode
+;
+
+	@BinarySearch.h
+
+1 #¥agm®
+⁄˚
+
+
+4 
+	gãm∂©e
+<
+˛ass
+ 
+	gU
+ , cœs†
+	gCom∑ª
+ = 
+°d
+::
+Àss
+<
+U
+> >
+
+5 ˛as†
+	cBö¨ySórch
+
+
+7 
+¥Ÿe˘ed
+:
+
+8 
+°d
+::
+	tve˘‹
+<
+	tU
+> 
+	tLi°Ty≥
+;
+
+9 
+	mLi°Ty≥
+::
+	tôî©‹
+ 
+	tLi°Ty≥Iå
+;
+
+11 
+	mpublic
+:
+
+13 
+ãm∂©e
+<
+˛ass
+ 
+Iå
+>
+
+15 
+	$Inô
+(
+Iå
+ 
+fú°
+,Iå 
+œ°
+)
+
+17 
+li°
+.
+	`assign
+(
+fú°
+,
+œ°
+);
+
+18 
+Com∑ª
+ 
+comp
+;
+
+19 
+°d
+::
+	`s‹t
+(
+li°
+.
+	`begö
+(),li°.
+	`íd
+(),
+comp
+);
+
+22 
+	$Inô
+(
+iRe£rveSize
+ = 16)
+
+24 
+li°
+.
+	`ª£rve
+(
+iRe£rveSize
+);
+
+25 
+	}
+}
+
+29 
+Li°Ty≥Iå
+ 
+	$LowwîBound
+(c⁄° 
+U
+ & 
+u
+)
+
+33 
+Com∑ª
+ 
+comp
+;
+
+34 
+Li°Ty≥Iå
+ 
+ô
+ = 
+li°
+.
+	`begö
+(),
+
+35 
+fú°
+ = 
+li°
+.
+	`begö
+();
+
+36 
+ty≥«me
+ 
+°d
+::
+ôî©‹_åaôs
+<
+Li°Ty≥Iå
+>::
+dif„ªn˚_ty≥
+ 
+cou¡
+, 
+°ï
+;
+
+38 
+uöt32_t
+ 
+cou¡
+ = 
+°d
+::
+	`di°™˚
+(
+fú°
+,
+li°
+.
+	`íd
+());
+
+39 
+cou¡
+ > 0)
+
+41 
+ô
+ = 
+fú°
+;
+
+42 
+°ï
+ = 
+cou¡
+>>1;
+
+43 
+°d
+::
+	`adv™˚
+(
+ô
+, 
+°ï
+);
+
+44 i‡(
+	`comp
+(*
+ô
+,
+u
+))
+
+46 
+fú°
+ = ++
+ô
+;
+
+47 
+cou¡
+ -
+°ï
+ + 1;
+
+51 
+cou¡
+ = 
+°ï
+;
+
+54  
+fú°
+;
+
+55 
+	}
+}
+
+58 
+Li°Ty≥Iå
+ 
+	$UµîBound
+(c⁄° 
+U
+ & 
+u
+)
+
+61 
+Com∑ª
+ 
+comp
+;
+
+62 
+Li°Ty≥Iå
+ 
+ô
+ = 
+li°
+.
+	`begö
+(),
+
+63 
+fú°
+ = 
+li°
+.
+	`begö
+();
+
+64 
+ty≥«me
+ 
+°d
+::
+ôî©‹_åaôs
+<
+Li°Ty≥Iå
+>::
+dif„ªn˚_ty≥
+ 
+cou¡
+, 
+°ï
+;
+
+66 
+uöt32_t
+ 
+cou¡
+ = 
+°d
+::
+	`di°™˚
+(
+fú°
+,
+li°
+.
+	`íd
+());
+
+67 
+cou¡
+ > 0) {
+
+68 
+ô
+ = 
+fú°
+;
+
+69 
+°ï
+ = 
+cou¡
+>>1;
+
+70 
+°d
+::
+	`adv™˚
+(
+ô
+, 
+°ï
+);
+
+71 if(!
+	`comp
+(*
+ô
+,
+u
+))
+
+73 
+fú°
+ = ++
+ô
+;
+
+74 
+cou¡
+ -
+°ï
+ + 1;
+
+78 
+cou¡
+ = 
+°ï
+;
+
+81  
+fú°
+;
+
+82 
+	}
+}
+
+83 
+Li°Ty≥Iå
+ 
+	$íd
+()
+
+85  
+li°
+.
+	`íd
+();
+
+86 
+	}
+}
+
+92 
+	$In£π
+(c⁄° 
+U
+& 
+u
+ , 
+boﬁ
+ 
+bIn£πWhíEuÆ
+ = 
+Ál£
+ )
+
+96 
+Li°Ty≥Iå
+ 
+ô
+ = 
+	`UµîBound
+(
+u
+);
+
+97 if(
+ô
+ =
+	`íd
+())
+
+99 
+	`Aµíd
+(
+u
+);
+
+102 if(
+ô
+ !
+li°
+.
+	`begö
+())
+
+105 if(!
+bIn£πWhíEuÆ
+ && 
+	`equÆ
+(*(
+ô
+-1),
+u
+))
+
+112 
+li°
+.
+	`ö£π
+(
+ô
+,
+u
+);
+
+113 
+	}
+}
+
+114 
+boﬁ
+ 
+	$equÆ
+(c⁄° 
+U
+& 
+u1
+,c⁄° U& 
+u2
+)
+
+116  !
+	`Com∑ª
+()(
+u1
+,
+u2
+) && !Compare()(u2,u1);
+
+117 
+	}
+}
+
+118 
+	$Aµíd
+(c⁄° 
+U
+& 
+u
+)
+
+120 if(!
+li°
+.
+	`em±y
+())
+
+122 
+	`as£π
+(!
+	`Com∑ª
+()(
+u
+,
+li°
+.
+	`back
+()));
+
+124 
+li°
+.
+	`push_back
+(
+u
+);
+
+125 
+	}
+}
+
+127 
+	$Remove1°
+(c⁄° 
+U
+& 
+u
+)
+
+129 
+Li°Ty≥Iå
+ 
+ô
+ = 
+	`LowwîBound
+(
+u
+);
+
+130 if(
+ô
+ !
+	`íd
+())
+
+132 if(
+	`equÆ
+(*
+ô
+,
+u
+))
+
+135 
+li°
+.
+	`îa£
+(
+ô
+);
+
+141 
+	}
+}
+
+142 
+	$RemoveAŒ
+(c⁄° 
+U
+& 
+u
+)
+
+144 
+Li°Ty≥Iå
+ 
+ô1
+ = 
+	`LowwîBound
+(
+u
+);
+
+145 
+Li°Ty≥Iå
+ 
+ô2
+ = 
+	`UµîBound
+(
+u
+);
+
+146 if(
+ô1
+ !
+ô2
+)
+
+148 
+li°
+.
+	`îa£
+(
+ô1
+,
+ô2
+);
+
+152 
+	}
+}
+
+154 
+U
+* 
+	$Föd1°
+(c⁄° 
+U
+ & 
+u
+)
+
+156 
+Li°Ty≥Iå
+ 
+ô
+ = 
+	`LowwîBound
+(
+u
+);
+
+157 if(
+ô
+ !
+	`íd
+())
+
+159 if(
+	`equÆ
+(*
+ô
+,
+u
+))
+
+161  &(
+li°
+.
+	`©
+(
+ô
+-li°.
+	`begö
+()));
+
+164  
+NULL
+;
+
+165 
+	}
+}
+
+166 
+FödAŒ
+(c⁄° 
+U
+ & 
+u
+,
+°d
+::
+ve˘‹
+<U> & 
+æ°
+)
+
+168 
+æ°
+.
+˛ór
+();
+
+169 
+Li°Ty≥Iå
+ 
+	gô
+ = 
+LowwîBound
+(
+u
+);
+
+170 
+	gô
+ !
+íd
+() &&
+
+171 
+equÆ
+(*
+ô
+,
+u
+))
+
+173 
+	gæ°
+.
+push_back
+(*
+ô
+);
+
+176 
+	g¥iv©e
+:
+
+177 
+°d
+::
+ve˘‹
+<
+U
+> 
+li°
+;
+
+	@BinarySearchTree.h
+
+1 #¥agm®
+⁄˚
+
+
+4 
+	gãm∂©e
+ <
+˛ass
+ 
+	gU
+>
+
+5 
+˛ass
+ 
+	gBö¨ySórchTªe
+.
+	gh
+
+
+7 
+	gpublic
+:
+
+8 
+In£π
+(c⁄° 
+U
+ & 
+u
+);
+
+9 
+Remove
+(c⁄° 
+U
+ & 
+u
+);
+
+10 
+U
+ * 
+Föd
+(c⁄° U & 
+u
+);
+
+	@Heap.hpp
+
+2 #¥agm®
+⁄˚
+
+
+4 
+	~"ba£/°döc.h
+"
+
+6 
+	gãm∂©e
+<
+˛ass
+ 
+	gU
+,˛as†
+	gCom∑ª
+ = 
+°d
+::
+Àss
+<
+U
+> >
+
+7 ˛as†
+	cHóp
+
+
+9 
+public
+:
+
+10 
+ãm∂©e
+< 
+˛ass
+ 
+F‹w¨dIt
+ >
+
+11 
+	$Push
+(
+F‹w¨dIt
+ 
+fú°
+,F‹w¨dIà
+œ°
+)
+
+13 
+F‹w¨dIt
+ 
+ô
+ = 
+fú°
+;
+
+14 
+ô
+ !
+œ°
+)
+
+16 
+	`Push
+(*
+ô
+);
+
+17 ++
+ô
+;
+
+21 
+	$Push
+(c⁄° 
+U
+ & 
+u
+)
+
+23 
+hóp
+.
+	`push_back
+(
+u
+);
+
+24 
+°d
+::
+	`push_hóp
+(
+hóp
+.
+	`begö
+(),hóp.
+	`íd
+(),
+	`Com∑ª
+());
+
+26 
+	}
+}
+
+27 
+	$P›
+(
+U
+& 
+u
+)
+
+29 if(
+hóp
+.
+	`em±y
+())
+
+33 
+°d
+::
+	`p›_hóp
+(
+hóp
+.
+	`begö
+(),hóp.
+	`íd
+(),
+	`Com∑ª
+());
+
+34 
+u
+ = 
+hóp
+.
+	`back
+();
+
+35 
+hóp
+.
+	`p›_back
+();
+
+37 
+	}
+}
+
+38 
+	$Cou¡
+()
+
+40  
+hóp
+.
+	`size
+();
+
+41 
+	}
+}
+
+42 
+	gãm∂©e
+< 
+˛ass
+ 
+	gCom∑ª
+ >
+
+43 
+S‹t
+(
+ve˘‹
+<
+U
+> & 
+s‹ãdHóp
+)
+
+45 
+	gs‹ãdHóp
+ = 
+hóp
+;
+
+46 
+s‹t_hóp
+(
+s‹ãdHóp
+.
+begö
+(),s‹ãdHóp.
+íd
+(),
+Com∑ª
+());
+
+48 
+	g¥iv©e
+:
+
+49 
+°d
+::
+ve˘‹
+<
+U
+> 
+hóp
+;
+
+	@RBTree.h
+
+1 #¥agm®
+⁄˚
+
+
+5 ˛as†
+	cRBTªe
+
+
+	@
+1
+.
+1
+/usr/include
+6
+70
+AStar.cpp
+AStar.h
+BinarySearch.h
+BinarySearchTree.h
+Heap.hpp
+RBTree.h
