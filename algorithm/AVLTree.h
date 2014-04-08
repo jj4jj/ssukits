@@ -1,7 +1,7 @@
 #pragma once
 
 
-
+#include "BinarySearchTree.h"
 
 template<class U , class Compare = std::less<U>  >
 class AVLTree:public BinarySearchTree<U,Compare>
@@ -77,7 +77,7 @@ protected:
 		}
 		return 0;
 	}
-	int	Insert(Node* pTree,Node* pNode)
+	Node* Insert(Node* pTree,Node* pNode)
 	{
 		//		
 		Node* pInsertNode = BinarySearchTree::Insert(pTree,pNode);
@@ -88,22 +88,22 @@ protected:
 			BalanceNode(p);	
 			p = p->parent;	
 		}
-		return 0;
+		return pInsertNode;
 	}
-	int	Delete(Node* pNode) 
+	Node* Delete(Node* pNode) 
 	{
 		//	
 		Node* pDeleteNode = BinarySearchTree::Delete(pNode);
 		if(NULL == pDeleteNode)
 		{
-			return -1;	
+			return NULL;
 		}
-		while(pDeleteNode)
+		while(pNode)
 		{
-			BalanceNode(pDeleteNode);
-			pDeleteNode = pDeleteNode->parent;	
+			BalanceNode(pNode);
+			pNode = pNode->parent;	
 		}
-		return 0;
+		return pDeleteNode;
 	}
 	int RotateR(Node* pNode)
 	{

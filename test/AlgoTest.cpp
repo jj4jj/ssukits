@@ -1,22 +1,26 @@
-#include "TestBase.h"
+
+#incldue "utility/UnitTest.h"
+#include "algorithm/AVLTree.h"
 
 
 
-
-
-
-
-int TestBST()
+int main()
 {
-	vector<int>		vecRand;
-	RandVector(vecRand,10);	
-	for(int i = 0;i < 	
-	
-	
-	
-	
-}
+	vector<int>		data;
+	UnitTest::Instance().GenerateArray(14,-100,100,data);
+	AVLTree<int>	avl;
+	BinarySearchTree<int>	bst;	
+	BinarySearArray<int>		bsa;
+	for(int i = 0;i < data.size();++i)
+	{
+		bst.Insert(data[i]);
+		avl.Insert(data[i]);	
+	}
 
+
+	UnitTest::Test();				
+	return 0;	
+}
 
 
 

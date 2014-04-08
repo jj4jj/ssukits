@@ -121,7 +121,6 @@ public:
 				pNode->parent->right = pReplaceNode;	
 			}
 		}
-        Free(pNode);
         return pReplaceNode;
     }
     virtual Node*     Insert(Node * pTree,Node* pNode)
@@ -130,7 +129,7 @@ public:
         {
             if(pTree->left != NULL)
             {
-                return Insert(pTree->left);
+                return Insert(pTree->left,pNode);
             }
             else
             {
@@ -144,7 +143,7 @@ public:
         {
             if(pTree->right != NULL)
             {
-                return Insert(pTree->right);
+                return Insert(pTree->right,pNode);
             }
             else
             {
@@ -180,7 +179,13 @@ public:
         {
             return -1;
         }        
-        return Delete(p)!=NULL;        
+        Node* pNewNode = Delete(p);        
+		if(pNode != NULL)
+		{
+			Free(p);  		
+			return 0;
+		}
+		return -1; 
     }
 	U *		Find(const U & u)
 	{
