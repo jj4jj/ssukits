@@ -2,7 +2,7 @@
 
 #include "BinarySearchTree.h"
 
-#include "BinarySearchTree.h"
+
 
 template <class U>
 struct  AVLNode : public BSTNode<U>
@@ -14,7 +14,6 @@ template<class U,class Compare = std::less<U>  >
 class AVLTree : public BinarySearchTree<U,Compare,AVLNode<U> >
 {    
 public:
-<<<<<<< HEAD
     using     typename BinarySearchTree<U,Compare>::Node;
     using     typename BinarySearchTree<U,Compare>::NodePtr;
     using     typename BinarySearchTree<U,Compare>::NodeRef;  
@@ -26,15 +25,11 @@ protected:
     
 public:
     inline int     GetHeight(NodePtr pNode)
-=======
-	int     GetBalanceFactor(Node* pNode)
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
     {
         if(NULL == pNode)
         {
             return 0;
         }
-<<<<<<< HEAD
         else
         {
 			return pNode->height;
@@ -44,11 +39,6 @@ public:
     }
 	void	UpdateHeight(NodePtr pNode,int iChg);
 	int     GetBalanceFactor(NodePtr pNode);    
-=======
-        return GetHeight(pNode->left) - GetHeight(pNode->right);
-    }
-    
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 protected:
 	int RotateR(NodePtr pNode);
 	//the mirror of RotateR
@@ -119,18 +109,13 @@ void AVLTree<U,Compare>::BalanceNode(AVLTree<U,Compare>::NodePtr pNode)
 			assert(false);	
 		}
 	}
-<<<<<<< HEAD
 	else if(-2 == iFac)
-=======
-	Node* Insert(Node* pTree,Node* pNode)
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 	{
 		int iChildFac =  GetBalanceFactor(pNode->left);
 		if(1 == iChildFac)
 		{
 			RotateL(pNode);	
 		}
-<<<<<<< HEAD
 		else if(-1 == iChildFac)
 		{
 			RotateR(pNode->right);
@@ -140,24 +125,6 @@ void AVLTree<U,Compare>::BalanceNode(AVLTree<U,Compare>::NodePtr pNode)
 		{
 			assert(false);	
 		}
-=======
-		return pInsertNode;
-	}
-	Node* Delete(Node* pNode) 
-	{
-		//	
-		Node* pDeleteNode = BinarySearchTree::Delete(pNode);
-		if(NULL == pDeleteNode)
-		{
-			return NULL;
-		}
-		while(pNode)
-		{
-			BalanceNode(pNode);
-			pNode = pNode->parent;	
-		}
-		return pDeleteNode;
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 	}
 	else
 	{
@@ -237,13 +204,6 @@ int AVLTree<U,Compare>::RotateR(AVLTree<U,Compare>::NodePtr pNode)
 		{
 			pNode->parent->right = pNode->left;
 		}
-<<<<<<< HEAD
-=======
-		UpdateHeight(pNode->parent,-1);
-		pNode->height -= 2;
-		pNode->parent = pNode->left;
-		pNode->left = pNode->left->right;
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 	}
 	else
 	{
@@ -285,13 +245,6 @@ int	AVLTree<U,Compare>::RotateL(AVLTree<U,Compare>::NodePtr pNode)
 		{
 			pNode->parent->right = pNode->right;
 		}
-<<<<<<< HEAD
-=======
-		pNode->height -= 2;
-		UpdateHeight(pNode->parent,-1);
-		pNode->parent = pNode->right;
-		pNode->right = pNode->right->left;	
->>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 	}
 	else
 	{
