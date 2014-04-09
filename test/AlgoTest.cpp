@@ -1,5 +1,5 @@
 
-#incldue "utility/UnitTest.h"
+#include "utility/UnitTest.h"
 #include "algorithm/AVLTree.h"
 
 
@@ -18,7 +18,7 @@ int main()
 	}
 
 
-	UnitTest::Test();				
+	//UnitTest::Test();				
 	return 0;	
 }
 

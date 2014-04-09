@@ -15,11 +15,13 @@ public:
     };
 private:
     Node*   root;
+	Compare	comp;
 protected:    
     Node*   Alloc()
     {
         Node* p = new Node();
         p->left = p->right = p->parent = NULL;
+		p->height = 0;
         return p;
     }
     void    Free(Node* & p)
@@ -50,6 +52,37 @@ protected:
 		}
 		return GetMax(pNode->right);
 	}
+	inline int     GetHeight(Node* pNode)
+    {
+        if(NULL == pNode)
+        {
+            return 0;
+        }
+        else
+        {
+			return pNode->height;
+        }
+        //no this path
+        return 0;
+    }
+	void	UpdateHeight(Node* pNode,int iChg)
+	{
+		if(0 == iChg)
+		{
+			return;	
+		}
+		pNode->height += iChg;
+		while(pNode->parent)
+		{
+			int newHeight = MAX(GetHeight(pNode->parent->left),
+										GetHeight(pNode->parent->right))+1;
+			if(pNode->parent->height == newHeight)
+			{
+				break;
+			}
+			pNode->parent->height = newHeight;
+		}
+	}
     int     Destroy(Node* pTree)
     {
 		if(NULL == pTree)
@@ -79,6 +112,8 @@ public:
 			pReplaceNode = GetMax(pNode->left);
 			if(pReplaceNode)
 			{
+				//will delete
+				UpdateHeight(pReplaceNode,-1);
 				if(IsLeftChild(pReplaceNode))
 				{
 					pReplaceNode->parent->left = pReplaceNode->left;		
@@ -95,6 +130,8 @@ public:
 		}
 		else
 		{
+			//will delete
+			UpdateHeight(pReplaceNode,-1);
 			if(IsLeftChild(pReplaceNode))
 			{
 				pReplaceNode->parent->left = pReplaceNode->right;		
@@ -110,6 +147,7 @@ public:
 		}
 
 		pReplaceNode->parent = pNode->parent;
+		pReplaceNode->height = pNode->height;
 		if(pNode->parent)
 		{
 			if(IsLeftChild(pNode))
@@ -123,9 +161,14 @@ public:
 		}
         return pReplaceNode;
     }
+	
     virtual Node*     Insert(Node * pTree,Node* pNode)
     {        
-        if( comp(pNode->u,pTree->data) )
+		if( equal(pNode->u,pTree->data))
+		{
+			return NULL;	
+		}
+        else if( comp(pNode->u,pTree->data) )
         {
             if(pTree->left != NULL)
             {
@@ -136,6 +179,7 @@ public:
                 //conserder the thread safe ?
                 pTree->left = pNode;
                 pNode->parent = pTree;
+				UpdateHeight(pNode,1);
                 return pTree;
             }
         }
@@ -149,6 +193,7 @@ public:
             {
                 pTree->right = pNode;
                 pNode->parent = pTree;
+				UpdateHeight(pNode,1);
                 return pTree;
             }
         }
@@ -165,9 +210,10 @@ public:
             return -1;
         }
         p->data = u;
-        if(Insert(root,p))
+        if(NULL == Insert(root,p))
         {
             Free(p);
+			return 1;
         }
         return 0;
     }

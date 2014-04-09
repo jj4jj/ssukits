@@ -30,7 +30,7 @@ public:
 	int	Init();
 	#define	Test(casename,expectrval,functionv,...params) do{\
 		UnitTest::Instance().BeginTest();\
-		UnitTest::Instance().EndTest(casename,expectrval == functionv(...params)?0:-1);
+		UnitTest::Instance().EndTest(casename,expectrval == functionv(...params)?0:-1);\
 	}while(false)
 	int		PrintReport();
 	const vector<TestCaseResult>	& GetReport();

@@ -15,19 +15,7 @@ public:
         }
         return GetHeight(pNode->left) - GetHeight(pNode->right);
     }
-    int     GetHeight(Node* pNode)
-    {
-        if(NULL == pNode)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1 + MAX(GetHeight(pNode->left,pNode->right));
-        }
-        //no this path
-        return 0;
-    }
+    
 protected:
 	void BalanceNode(Node* pNode)
 	{
@@ -144,6 +132,8 @@ protected:
 		{
 			root = pNode->left;	
 		}
+		UpdateHeight(pNode->parent,-1);
+		pNode->height -= 2;
 		pNode->parent = pNode->left;
 		pNode->left = pNode->left->right;
 	}
@@ -179,6 +169,8 @@ protected:
 		{
 			root = pNode->right;	
 		}
+		pNode->height -= 2;
+		UpdateHeight(pNode->parent,-1);
 		pNode->parent = pNode->right;
 		pNode->right = pNode->right->left;	
 	}
