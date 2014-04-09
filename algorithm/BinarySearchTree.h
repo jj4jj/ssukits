@@ -29,6 +29,7 @@ protected:
     }
     inline NodePtr  GetRoot()
     {
+<<<<<<< HEAD
         return root;
     }
     inline bool    EQ(const U& u1,const U& u2)
@@ -40,10 +41,23 @@ protected:
         return comp(u1,u1);
     }
     NodePtr   Alloc()
+=======
+        Node* left,*right,*parent;
+		int	  height;
+        //////////////////////////
+        U   data;
+    };
+private:
+    Node*   root;
+	Compare	comp;
+protected:    
+    Node*   Alloc()
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
     {
         NodePtr p = new Node();
         memset(p,0,sizeof(Node));
         p->left = p->right = p->parent = NULL;
+		p->height = 0;
         return p;
     }
     void      Free(NodePtr & p)
@@ -170,10 +184,47 @@ typename BinarySearchTree<U,Compare,NodeType>::NodePtr
 			}			
 		}
 	}
+<<<<<<< HEAD
 	else
 	{
 		//will delete
 		if(IsLeftChild(pReplaceNode))
+=======
+	inline int     GetHeight(Node* pNode)
+    {
+        if(NULL == pNode)
+        {
+            return 0;
+        }
+        else
+        {
+			return pNode->height;
+        }
+        //no this path
+        return 0;
+    }
+	void	UpdateHeight(Node* pNode,int iChg)
+	{
+		if(0 == iChg)
+		{
+			return;	
+		}
+		pNode->height += iChg;
+		while(pNode->parent)
+		{
+			int newHeight = MAX(GetHeight(pNode->parent->left),
+										GetHeight(pNode->parent->right))+1;
+			if(pNode->parent->height == newHeight)
+			{
+				break;
+			}
+			pNode->parent->height = newHeight;
+		}
+	}
+    int     Destroy(Node* pTree)
+    {
+		if(NULL == pTree)
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 		{
 			pReplaceNode->parent->left = pReplaceNode->right;		
 		}
@@ -193,16 +244,55 @@ typename BinarySearchTree<U,Compare,NodeType>::NodePtr
 	{
 		if(IsLeftChild(pNode))
 		{
+<<<<<<< HEAD
 			pNode->parent->left = pReplaceNode;	
 		}
 		else
 		{
 			pNode->parent->right = pReplaceNode;	
+=======
+			pReplaceNode = GetMax(pNode->left);
+			if(pReplaceNode)
+			{
+				//will delete
+				UpdateHeight(pReplaceNode,-1);
+				if(IsLeftChild(pReplaceNode))
+				{
+					pReplaceNode->parent->left = pReplaceNode->left;		
+				}
+				else
+				{
+					pReplaceNode->parent->right = pReplaceNode->left;		
+				}
+				if(pReplaceNode->left)
+				{
+					pReplaceNode->left->parent = pReplaceNode->parent;
+				}			
+			}
+		}
+		else
+		{
+			//will delete
+			UpdateHeight(pReplaceNode,-1);
+			if(IsLeftChild(pReplaceNode))
+			{
+				pReplaceNode->parent->left = pReplaceNode->right;		
+			}
+			else
+			{
+				pReplaceNode->parent->right = pReplaceNode->right;		
+			}
+			if(pReplaceNode->right)
+			{
+				pReplaceNode->right->parent = pReplaceNode->parent;
+			}
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
 		}
 	}
     return pReplaceNode;
 }
 
+<<<<<<< HEAD
 
 template <class U , class Compare ,class NodeType  >    
 typename  BinarySearchTree<U,Compare,NodeType>::NodePtr
@@ -225,6 +315,58 @@ typename  BinarySearchTree<U,Compare,NodeType>::NodePtr
             pTree->left = pNode;
             pNode->parent = pTree;
             return pTree;
+=======
+		pReplaceNode->parent = pNode->parent;
+		pReplaceNode->height = pNode->height;
+		if(pNode->parent)
+		{
+			if(IsLeftChild(pNode))
+			{
+				pNode->parent->left = pReplaceNode;	
+			}
+			else
+			{
+				pNode->parent->right = pReplaceNode;	
+			}
+		}
+        return pReplaceNode;
+    }
+	
+    virtual Node*     Insert(Node * pTree,Node* pNode)
+    {        
+		if( equal(pNode->u,pTree->data))
+		{
+			return NULL;	
+		}
+        else if( comp(pNode->u,pTree->data) )
+        {
+            if(pTree->left != NULL)
+            {
+                return Insert(pTree->left,pNode);
+            }
+            else
+            {
+                //conserder the thread safe ?
+                pTree->left = pNode;
+                pNode->parent = pTree;
+				UpdateHeight(pNode,1);
+                return pTree;
+            }
+        }
+        else
+        {
+            if(pTree->right != NULL)
+            {
+                return Insert(pTree->right,pNode);
+            }
+            else
+            {
+                pTree->right = pNode;
+                pNode->parent = pTree;
+				UpdateHeight(pNode,1);
+                return pTree;
+            }
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
         }
     }
     else
@@ -233,13 +375,22 @@ typename  BinarySearchTree<U,Compare,NodeType>::NodePtr
         {
             return Insert(pTree->right,pNode);
         }
+<<<<<<< HEAD
         else
         {
             pTree->right = pNode;
             pNode->parent = pTree;
             return pTree;
+=======
+        p->data = u;
+        if(NULL == Insert(root,p))
+        {
+            Free(p);
+			return 1;
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
         }
     }
+<<<<<<< HEAD
     //no this path
     return NULL;            
 }
@@ -259,6 +410,23 @@ int		BinarySearchTree<U,Compare,NodeType>::Insert(const U & u)
     {
         Free(p);
 		return 1;
+=======
+	int		Remove(const U & u)
+	{
+        ///
+        Node* p = Find(u);
+        if(NULL == p)
+        {
+            return -1;
+        }        
+        Node* pNewNode = Delete(p);        
+		if(pNode != NULL)
+		{
+			Free(p);  		
+			return 0;
+		}
+		return -1; 
+>>>>>>> ffb804a3de66b8794d53bb63a12b28ec59a73ba9
     }
     return 0;
 }
