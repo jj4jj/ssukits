@@ -1,205 +1,303 @@
 #pragma once
 
+#include "base/stdinc.h"
 
-template <class U , class Compare = std::less<U> >
+
+template <class U>
+struct  BSTNode
+{
+    BSTNode<U>* left,*right,*parent;
+    //////////////////////////
+    U   data;
+};
+template <class U , class Compare = std::less<U> ,class NodeType = BSTNode<U> >
 class BinarySearchTree
 {
-public:    
-    struct  Node;
-    struct  Node
+public:
+    typedef     NodeType        Node;
+    typedef     NodeType*       NodePtr;
+    typedef     NodeType&       NodeRef;
+	Compare	    comp;
+
+protected:
+    NodePtr   root;
+
+protected:
+    inline    void    SetRoot(NodePtr _root)
     {
-        Node* left,*right,*parent;
-		int	  height;
-        //////////////////////////
-        U   data;
-    };
-private:
-    Node*   root;
-protected:    
-    Node*   Alloc()
+        root = _root;
+    }
+    inline NodePtr  GetRoot()
     {
-        Node* p = new Node();
+        return root;
+    }
+    inline bool    EQ(const U& u1,const U& u2)
+    {
+        return !comp(u1,u2) && !(u2,u1);
+    }
+    inline bool    LT(const U& u1,const U& u2)
+    {
+        return comp(u1,u1);
+    }
+    NodePtr   Alloc()
+    {
+        NodePtr p = new Node();
+        memset(p,0,sizeof(Node));
         p->left = p->right = p->parent = NULL;
         return p;
     }
-    void    Free(Node* & p)
+    void      Free(NodePtr & p)
     {
         delete p;
         p = NULL;        
     }
 	///////////////////////////////////////////////
-    inline bool    IsLeftChild(Node* pNode)
+    inline bool    IsLeftChild(NodePtr pNode)
     {
         return (pNode->parent->left == pNode);
     }
-	Node*	GetMin(Node* pNode)
-	{
-		if(NULL == pNode ||
-		    NULL == pNode->left)
-		{
-			return pNode;	
-		}
-		return GetMin(pNode->left);
-	}
-	Node*	GetMax(Node* pNode)
-	{
-		if(NULL == pNode ||
-		   NULL == pNode->right)
-		{
-			return pNode;	
-		}
-		return GetMax(pNode->right);
-	}
-    int     Destroy(Node* pTree)
-    {
-		if(NULL == pTree)
-		{
-			return -1;	
-		}
-		if(pTree->left)
-		{
-			Destroy(pTree->left);	
-		}
-		if(pTree->right)
-		{
-			Destroy(pTree->right);
-		}
-		Free(p);
-		return 0;
-    }
 public:
     BinarySearchTree():root(NULL){}    
+public:    
+	NodePtr	GetMin(NodePtr pNode);
+	NodePtr	GetMax(NodePtr pNode);
+    int     Destroy(NodePtr pTree);
+protected:
+    virtual NodePtr     Delete(NodePtr pNode);	
+    virtual NodePtr     Insert(NodePtr pTree,NodePtr pNode);
 public:
-    virtual Node*   Delete(Node* pNode)
+	int		Insert(const U & u);
+	int		Remove(const U & u);
+	U *		Find(const U & u);
+    void    GetSortedList(vector<U> & vec)
     {
-		assert(pNode);
-        Node* pReplaceNode = GetMin(pNode->right);        
-		if(pNode == NULL)
+        vec.clear();
+        stack<NodePtr>  history;
+        Node* p = root;
+        history.push(root);
+        while(!history.empty())
+        {
+            Node* p = history.top();
+            if(p->left)
+            {
+                p = p->left;
+                history.push(p);
+            }
+            else if(p->right)
+            {
+                vec.push_back(p);
+                history.pop();
+                p = p->right;
+                history.push(p);
+            }
+            else
+            {
+                vec.push_back(p);
+                history.pop();
+            }
+        }
+    }
+};
+
+
+
+////////////////////////////////////////////////////////////////////
+
+template <class U , class Compare ,class NodeType  >
+typename BinarySearchTree<U,Compare,NodeType>::NodePtr	BinarySearchTree<U,Compare,NodeType>::GetMin(NodePtr pNode)
+{
+	if(NULL == pNode ||
+	    NULL == pNode->left)
+	{
+		return pNode;	
+	}
+	return GetMin(pNode->left);
+}
+template <class U , class Compare ,class NodeType  >
+typename BinarySearchTree<U,Compare,NodeType>::NodePtr	
+    BinarySearchTree<U,Compare,NodeType>::GetMax(typename BinarySearchTree<U,Compare,NodeType>::NodePtr pNode)
+{
+	if(NULL == pNode ||
+	   NULL == pNode->right)
+	{
+		return pNode;	
+	}
+	return GetMax(pNode->right);
+}
+	
+template <class U , class Compare ,class NodeType  >
+int     BinarySearchTree<U,Compare,NodeType>::Destroy(typename BinarySearchTree<U,Compare,NodeType>::NodePtr pTree)
+{
+	if(NULL == pTree)
+	{
+		return -1;	
+	}
+	if(pTree->left)
+	{
+		Destroy(pTree->left);	
+	}
+	if(pTree->right)
+	{
+		Destroy(pTree->right);
+	}
+	Free(pTree);
+	return 0;
+}
+
+template <class U , class Compare ,class NodeType  >
+typename BinarySearchTree<U,Compare,NodeType>::NodePtr   
+    BinarySearchTree<U,Compare,NodeType>::Delete(typename BinarySearchTree<U,Compare,NodeType>::NodePtr pNode)
+{
+	assert(pNode);
+    NodePtr pReplaceNode = GetMin(pNode->right);        
+	if(pNode == NULL)
+	{
+		pReplaceNode = GetMax(pNode->left);
+		if(pReplaceNode)
 		{
-			pReplaceNode = GetMax(pNode->left);
-			if(pReplaceNode)
+			//will delete
+			if(IsLeftChild(pReplaceNode))
 			{
-				if(IsLeftChild(pReplaceNode))
-				{
-					pReplaceNode->parent->left = pReplaceNode->left;		
-				}
-				else
-				{
-					pReplaceNode->parent->right = pReplaceNode->left;		
-				}
-				if(pReplaceNode->left)
-				{
-					pReplaceNode->left->parent = pReplaceNode->parent;
-				}			
+				pReplaceNode->parent->left = pReplaceNode->left;		
 			}
+			else
+			{
+				pReplaceNode->parent->right = pReplaceNode->left;		
+			}
+			if(pReplaceNode->left)
+			{
+				pReplaceNode->left->parent = pReplaceNode->parent;
+			}			
+		}
+	}
+	else
+	{
+		//will delete
+		if(IsLeftChild(pReplaceNode))
+		{
+			pReplaceNode->parent->left = pReplaceNode->right;		
 		}
 		else
 		{
-			if(IsLeftChild(pReplaceNode))
-			{
-				pReplaceNode->parent->left = pReplaceNode->right;		
-			}
-			else
-			{
-				pReplaceNode->parent->right = pReplaceNode->right;		
-			}
-			if(pReplaceNode->right)
-			{
-				pReplaceNode->right->parent = pReplaceNode->parent;
-			}
+			pReplaceNode->parent->right = pReplaceNode->right;		
 		}
-
-		pReplaceNode->parent = pNode->parent;
-		if(pNode->parent)
+		if(pReplaceNode->right)
 		{
-			if(IsLeftChild(pNode))
-			{
-				pNode->parent->left = pReplaceNode;	
-			}
-			else
-			{
-				pNode->parent->right = pReplaceNode;	
-			}
+			pReplaceNode->right->parent = pReplaceNode->parent;
 		}
-        Free(pNode);
-        return pReplaceNode;
-    }
-    virtual Node*     Insert(Node * pTree,Node* pNode)
-    {        
-        if( comp(pNode->u,pTree->data) )
+	}
+
+	pReplaceNode->parent = pNode->parent;
+	pReplaceNode->height = pNode->height;
+	if(pNode->parent)
+	{
+		if(IsLeftChild(pNode))
+		{
+			pNode->parent->left = pReplaceNode;	
+		}
+		else
+		{
+			pNode->parent->right = pReplaceNode;	
+		}
+	}
+    return pReplaceNode;
+}
+
+
+template <class U , class Compare ,class NodeType  >    
+typename  BinarySearchTree<U,Compare,NodeType>::NodePtr
+    BinarySearchTree<U,Compare,NodeType>::Insert(typename BinarySearchTree<U,Compare,NodeType>::NodePtr pTree,
+                                                 typename BinarySearchTree<U,Compare,NodeType>::NodePtr pNode)
+{        
+	if( EQ(pNode->u,pTree->data))
+	{
+		return NULL;	
+	}
+    else if( LT(pNode->u,pTree->data) )
+    {
+        if(pTree->left != NULL)
         {
-            if(pTree->left != NULL)
-            {
-                return Insert(pTree->left);
-            }
-            else
-            {
-                //conserder the thread safe ?
-                pTree->left = pNode;
-                pNode->parent = pTree;
-                return pTree;
-            }
+            return Insert(pTree->left,pNode);
         }
         else
         {
-            if(pTree->right != NULL)
-            {
-                return Insert(pTree->right);
-            }
-            else
-            {
-                pTree->right = pNode;
-                pNode->parent = pTree;
-                return pTree;
-            }
+            //conserder the thread safe ?
+            pTree->left = pNode;
+            pNode->parent = pTree;
+            return pTree;
         }
-        //no this path
-        return NULL;            
     }
+    else
+    {
+        if(pTree->right != NULL)
+        {
+            return Insert(pTree->right,pNode);
+        }
+        else
+        {
+            pTree->right = pNode;
+            pNode->parent = pTree;
+            return pTree;
+        }
+    }
+    //no this path
+    return NULL;            
+}
 
-public:
-	int		Insert(const U & u)
-	{
-        Node* p = Alloc();
-        if(NULL == p)
-        {
-            return -1;
-        }
-        p->data = u;
-        if(Insert(root,p))
-        {
-            Free(p);
-        }
-        return 0;
+///////////////////////////////////////////////////////////////////////////
+
+template <class U , class Compare ,class NodeType  >
+int		BinarySearchTree<U,Compare,NodeType>::Insert(const U & u)
+{
+    NodePtr p = Alloc();
+    if(NULL == p)
+    {
+        return -1;
     }
-	int		Remove(const U & u)
+    p->data = u;
+    if(NULL == Insert(root,p))
+    {
+        Free(p);
+		return 1;
+    }
+    return 0;
+}
+
+template <class U , class Compare ,class NodeType  >
+int		BinarySearchTree<U,Compare,NodeType>::Remove(const U & u)
+{
+    ///
+    NodePtr p = Find(u);
+    if(NULL == p)
+    {
+        return -1;
+    }        
+    NodePtr pNewNode = Delete(p);        
+	if(pNewNode != NULL)
 	{
-        ///
-        Node* p = Find(u);
-        if(NULL == p)
+		Free(p);  		
+		return 0;
+	}
+	return -1; 
+}
+
+template <class U , class Compare ,class NodeType  >
+U *		BinarySearchTree<U,Compare,NodeType>::Find(const U & u)
+{
+    NodePtr p = root;
+    while(p != NULL && ! EQ(u,p->data))
+    {            
+        if(LT(u,p->data))
         {
-            return -1;
-        }        
-        return Delete(p)!=NULL;        
-    }
-	U *		Find(const U & u)
-	{
-        Node* p = root;
-        Compare comp;
-        while(p!=NULL && !equal(u,p->data))
-        {            
-            if(comp(u,p->data))
-            {
-                p = p->left;
-            }
-            else
-            {
-                p = p->right;
-            }
+            p = p->left;
         }
-        return p;
+        else
+        {
+            p = p->right;
+        }
     }
-};
+    return p;
+}
 
 
 
