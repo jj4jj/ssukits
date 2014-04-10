@@ -20,9 +20,8 @@
 
 #pragma once
 
-#if 1
 
-
+#ifndef SAFE_DELETE
 #define SAFE_DELETE(p)	do{\
 if((p)!= NULL)\
 {\
@@ -30,6 +29,8 @@ if((p)!= NULL)\
 	(p) = NULL;\
 }}while(0)
 
+
+#ifndef SAFE_FREE
 #define SAFE_FREE(p)    do{\
 if((p)!= NULL)\
 {\
@@ -38,9 +39,20 @@ if((p)!= NULL)\
 }}while(0)
 
 
-
-
+#ifndef MAX
+#define MAX(a,b)	((a)>(b)?(a):(b))
 #endif
+
+#ifndef MIN
+#define MIN(a,b)	((a)<(b)?(a):(b))
+#endif
+
+
+#ifndef
+#define SWAP(a,b)	do{(a)=(a)+(b);(b)=(a)-(b);(a)=(a)-(b);}while(false)
+#endif
+
+
 
 
 
