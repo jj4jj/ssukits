@@ -53,6 +53,56 @@ if((p)!= NULL)\
 #endif
 
 
+//since before c99, snprintf is depend on implementation
+//maybe it's not end with \0
+#ifndef SNPRINTF
+#define SNPRINTF(s,n,f,...args) do{\
+    if(n>0)\
+    {\        
+        snprintf((s),(n),(f),##args);\
+        (s)[n-1] = '\0';\
+    }\
+}while(false)
+#endif
+
+#ifndef STRNCPY
+#define STRNCPY(d,s,n)  do{\
+    if(n>0)\
+    {\
+        strncpy((d),n,(s));\
+        (d)[(n)-1] = '\0';\
+    }
+}while(false)
+#endif
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//must be a array , but a pointer
+#ifndef DIM_OF_ARRAY
+#define DIM_OF_ARRAY(array)     (sizeof((array))/sizeof((array)[0]))
+#endif
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+
+#define IN
+#define OUT
+#define INOUT
+
+#define USE_SSUKITS     using namespace ssukits;
+#define BEGIN_NS_SSUKITS    namespace ssukits{ //begin for ssukits
+#define END_NS_SSUKITS      };//end for ssukits
+
+
+
 
 
 
