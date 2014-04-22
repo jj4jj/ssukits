@@ -42,8 +42,7 @@ protected:
     NodePtr   Alloc()
     {
         NodePtr p = new Node();
-        memset(p,0,sizeof(Node));
-        p->left = p->right = p->parent = NULL;
+        ///////////////////////////
         return p;
     }
     void      Free(NodePtr & p)
@@ -56,6 +55,22 @@ protected:
     {
         return (pNode->parent->left == pNode);
     }
+    NodePtr GetUncle(NodePtr pNode)
+    {
+        if(NULL == pNode)
+        {
+            return NULL;
+        }
+        if(IsLeftChild(pNode))
+        {
+            return pNode->parent->right;
+        }
+        else
+        {
+            return pNode->parent->left;
+        }
+    }
+
 public:
     BinarySearchTree():root(NULL){}    
 public:    
