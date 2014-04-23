@@ -1,9 +1,15 @@
 ##ssukits is a simple (game) server tookits package.
-* now , ssukits  only running it in Linux evironment , and implementing of it's function is just for studying and for fun .
+* Creating this rep just for studying and for fun . 
+* Now , ssukits  only running it in Linux evironment , and implementing of it's function is just for studying and for fun .
 	anyone can use it and distribute it , whatever you did with it .
+* It's a study job , so there are many bugs in it . . . 
 
 
-##What function every directorie included
+##Warnning
+* Maybe u can't compile it succesfully , don't be panic or angry  ! since I commit code at any time ...
+* Don't use it in your commercial project now for many bugs in it !!
+
+##What functions every directory included
 
 * 1.base
 	* it's the basic function of ssukits . with supporting Log ,File heper,
@@ -45,11 +51,12 @@ you need a linux eviroment , and cmake program , at least 2.6 version.
 	* including some rigid body to calculate the mass and vol or sth.  just a stub , nothing done .
 
 ##Depends and testing
+```shell
 * 1.use cmake generate makefiles compiling .
 	the buiding dir must not be in the source dir.
 * 2.make install
 	you modify the install dir in SRC/CMakeLists.txt 
 * 3.run the testing ..
 	...
-
+```
 
