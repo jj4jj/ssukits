@@ -69,34 +69,7 @@ public:
 	int		Insert(const U & u);
 	int		Remove(const U & u);
 	U *		Find(const U & u);
-    void    GetSortedList(vector<U> & vec)
-    {
-        vec.clear();
-        stack<NodePtr>  history;
-        Node* p = root;
-        history.push(root);
-        while(!history.empty())
-        {
-            Node* p = history.top();
-            if(p->left)
-            {
-                p = p->left;
-                history.push(p);
-            }
-            else if(p->right)
-            {
-                vec.push_back(p);
-                history.pop();
-                p = p->right;
-                history.push(p);
-            }
-            else
-            {
-                vec.push_back(p);
-                history.pop();
-            }
-        }
-    }
+    void    GetSortedList(vector<U> & vec);
 };
 
 
@@ -299,6 +272,34 @@ U *		BinarySearchTree<U,Compare,NodeType>::Find(const U & u)
     return p;
 }
 
-
+template <class U , class Compare ,class NodeType  >
+void    BinarySearchTree<U,Compare,NodeType>::GetSortedList(vector<U> & vec)
+{
+	vec.clear();
+	stack<NodePtr>  history;
+	Node* p = root;
+	history.push(root);
+	while(!history.empty())
+	{
+		Node* p = history.top();
+		if(p->left)
+		{
+			p = p->left;
+			history.push(p);
+		}
+		else if(p->right)
+		{
+			vec.push_back(p);
+			history.pop();
+			p = p->right;
+			history.push(p);
+		}
+		else
+		{
+			vec.push_back(p);
+			history.pop();
+		}
+	}
+}
 
 

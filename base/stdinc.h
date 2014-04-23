@@ -53,6 +53,7 @@ using std::vector;
 #include <stack>
 #include <iterator>
 #include <bitset>
+#include <stack>
 
 #include <tr1/memory>
 using std::tr1::shared_ptr;
