@@ -1,13 +1,13 @@
 ##ssukits is a simple (game) server tookits package.
 * Creating this rep just for studying and for fun . 
-* Now , ssukits  only running it in Linux evironment , and implementing of it's function is just for studying and for fun .
+* Now , ssukits  only running in Linux evironment , and the implementing of it's function is just for studying and for fun .
 	anyone can use it and distribute it , whatever you did with it .
-* It's a study job , so there are many bugs in it . . . 
+* It's a study job , so there are many bugs in it . . . o__o
 
 
 ##Warnning
 * Maybe u can't compile it succesfully , don't be panic or angry  ! since I commit code at any time ...
-* Don't use it in your commercial project now for many bugs in it !!
+* I don't recommend you using it in your commercial project now , for many bugs in it !!  O__O (I'm decreasing them)
 
 ##What functions every directory included
 
@@ -44,19 +44,19 @@ studying and for fun .
 
 * 8.utility
 	* some misc tools set . like Daemon implementing ,debug info ,Debuger,
-crt , excutable file format and regexp , etc.  
+crt , excutable file format and regexp , etc.  distance 
 	* if you want to compile it to see the result ,
 you need a linux eviroment , and cmake program , at least 2.6 version.
-* 9.physics
-	* including some rigid body to calculate the mass and vol or sth.  just a stub , nothing done .
+* 9.ai & machine learnning
+	* some algorithm in ai and ml , just for my study ...
 
 ##Depends and testing
-```shell
+```
 * 1.use cmake generate makefiles compiling .
-	the buiding dir must not be in the source dir.
+	* the buiding dir must not be in the source dir.
 * 2.make install
-	you modify the install dir in SRC/CMakeLists.txt 
+	* you modify the install dir in SRC/CMakeLists.txt 
 * 3.run the testing ..
-	...
+	* ...
 ```
 
