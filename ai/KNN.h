@@ -1,16 +1,11 @@
 #pragma once
 
-
-class Fraction
+//todo
+class KNN
 {
 
+
 };
-
-
-
-
-
-
 
 
 
