@@ -14,8 +14,11 @@ struct	Coroutine
 	//context
 	ucontext_t	ctx;
 	Coroutine	*from;
-	enum {
-		DEFAULT_STACK_SIZE=8192,	
+	enum
+	{
+		COROUTINE_STATUS_SUSPEND = 1,
+		COROUTINE_STATUS_RUNNING = 2,
+		COROUTINE_STATUS_STOP    = 3,
 	};
 };
 
@@ -23,16 +26,108 @@ struct	Coroutine
 class CoroutineMgr
 {
 public:
-    int	Create(CoroutineFunc f,void * arg);
-	int	Resume(int coid);
-	int	Yield(int coid);
-	int	GetStatus(int coid);
-	Coroutine*	Find(int id);
+enum {
+		DEFAULT_STACK_SIZE=8192,	
+	};
+public:
+	Coroutine * Alloc()
+	{
+		int iID = 1;
+		while(iID < iCosCount &&
+			  Find(iID) != NULL)
+		{
+			iID++;
+		}
+
+
+		if(iID == iCosCount )//iCosCount >= iCosCap)
+		{
+			if(iCosCount >= iCosCap)
+			{
+				cos = realloc(cos,2*iCosCap);
+				if(!cos)
+				{
+					//no mem more
+					return NULL;	
+				}
+				iCosCap *= 2;
+			}
+			iCosCount++;
+		}
+		else
+		{
+			assert(iID < iCosCount && iID > 0);
+		}
+		Coroutine & co =  cos[iID];
+		co.iID = iID;
+		return &co;
+	}
+    int	Create(CoroutineFunc f,void * arg)
+	{
+		Coroutine * co = Alloc();
+		if(!co)
+		{
+			return -1;	
+		}
+		co->iID = iNextId;
+		co->stack.Create(DEFAULT_STACK_SIZE);
+		co->from = GetCurrent();
+		//co.ctx = 
+		//set co.ctx.start = f.
+		//set co.ctx.
+		return co->iID;
+	}
+	int	Resume(int coid)
+	{
+		Coroutine * co = Find(coid);
+		if(!co)
+		{
+			return -1;	
+		}
+		Coroutine * cur = GetCurrent();
+		co->from = cur;
+		co->bState = Coroutine:: COROUTINE_STATUS_RUNNING
+		//make ctx
+		
+		return 0;
+	}
+	int	Yield(int coid)
+	{
+		Coroutine * co = Find(coid);
+		if(0 == coid)
+		{
+			//switch to prev
+		}
+		co->bState = Coroutine::COROUTINE_STATUS_SUSPEND;
+	}
+	int	GetStatus(int coid)
+	{
+		Coroutine * co = Find(coid);
+		if(!co)
+		{
+			
+			return -1;
+		}
+		return co->bState;
+	}
+
+	Coroutine*	Find(int id)
+	{
+		if(id >= iCosCap)
+		{
+			return NULL;	
+		}
+		Coroutine * co =  cos[id];
+		if(co.iID == id)
+		{
+			return &co;	
+		}
+		return NULL;	
+	}
 private:
 	int				iCosCap;
 	int				iCosCount;
-	Coroutine*		cos;	
-	int				iNextId;
+	Coroutine	*	cos;	
 public:
 	static void	f1(int,void* p)
 	{
