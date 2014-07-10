@@ -23,11 +23,10 @@
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(p)	do{\
-if((p)!= NULL)\
-{\
 	delete (p);\
 	(p) = NULL;\
-}}while(0)
+}while(0)
+#endif
 
 
 #ifndef SAFE_FREE
@@ -37,6 +36,7 @@ if((p)!= NULL)\
 	free((p));\
 	(p) = NULL;\
 }}while(0)
+#endif
 
 
 #ifndef MAX
@@ -48,19 +48,15 @@ if((p)!= NULL)\
 #endif
 
 
-#ifndef
-#define SWAP(a,b)	do{(a)=(a)+(b);(b)=(a)-(b);(a)=(a)-(b);}while(false)
-#endif
-
 
 //since before c99, snprintf is depend on implementation
 //maybe it's not end with \0
 #ifndef SNPRINTF
-#define SNPRINTF(s,n,f,...args) do{\
+#define SNPRINTF(s,n,f,args...)		do{\
     if(n>0)\
     {\        
         snprintf((s),(n),(f),##args);\
-        (s)[n-1] = '\0';\
+        (s)[n-1]='\0';\
     }\
 }while(false)
 #endif
@@ -71,7 +67,7 @@ if((p)!= NULL)\
     {\
         strncpy((d),n,(s));\
         (d)[(n)-1] = '\0';\
-    }
+    }\
 }while(false)
 #endif
 /////////////////////////////////////////////////////////////////////////////////
@@ -98,8 +94,8 @@ if((p)!= NULL)\
 #define INOUT
 
 #define USE_SSUKITS     using namespace ssukits;
-#define BEGIN_NS_SSUKITS    namespace ssukits{ //begin for ssukits
-#define END_NS_SSUKITS      };//end for ssukits
+#define BEGIN_NS_SSUKITS    namespace ssukits{		//begin for ssukits
+#define END_NS_SSUKITS      };						//end for ssukits
 
 
 

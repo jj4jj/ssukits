@@ -93,9 +93,10 @@ int     RingBuffer::Write(const Buffer& buffer)
     }
     int iWrite = MIN(buffer.iUsed,iCap-iTail);
     memcpy(pBuffer+iTail,buffer.pBuffer,iWrite);
-    buffer.iUsed -= iWrite;
-    memcpy(pBuffer,buffer.pBuffer+iWrite,buffer.iUsed);        
-    iTail = (iTail + iWrite + buffer.iUsed)%iCap;
+	int iBfUsed = buffer.iUsed;
+    iBfUsed -= iWrite;
+    memcpy(pBuffer,buffer.pBuffer+iWrite,iBfUsed);        
+    iTail = (iTail + iWrite + iBfUsed)%iCap;
     return 0;
 }
 int     RingBuffer::GetAvailBytes()
