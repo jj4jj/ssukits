@@ -5,7 +5,7 @@
 #include "ucontext.h"
 #include "base/Buffer.h"
 #include "base/Singleton.hpp"
-
+#include "base/Log.h"
 
 struct Coroutine;
 typedef void	CoroutineFunc(Coroutine* co,void* arg);
@@ -129,7 +129,7 @@ public:
         co->ctx.uc_link = 0;
         co->ctx.uc_stack.ss_sp = co->stack.pBuffer;
         co->ctx.uc_stack.ss_size = co->stack.iCap;
-        makecontext(&co->ctx, (void(*)(void))&f,2,(uint32_t)co->iID,arg);
+        makecontext(&co->ctx, (void(*)(void))f,2,co,arg);
         co->bState = Coroutine::COROUTINE_STATUS_SUSPEND;        
 		return co->iID;
 	}
@@ -145,7 +145,7 @@ public:
 		co->bState = Coroutine:: COROUTINE_STATUS_RUNNING;
 		//make ctx
         SetCurrent(co);
-        swapcontext(&(co->ctx),&(cur->ctx));
+        swapcontext(&(cur->ctx),&(co->ctx));
 		return 0;
 	}
 	int	Yield(int coid = 0)
@@ -168,7 +168,7 @@ public:
         cur->bState = Coroutine::COROUTINE_STATUS_SUSPEND;
 		co->bState = Coroutine::COROUTINE_STATUS_RUNNING;
         SetCurrent(co);
-        swapcontext(&(co->ctx),&(cur->ctx));
+        swapcontext(&(cur->ctx),&(co->ctx));
         return 0;
 	}
 	int	GetStatus(int coid)
@@ -200,7 +200,7 @@ public:
         int i = 0;
         while(co)
         {
-            printf("coroutine %03d:[id=%04d,addr=0x%08x]",i,co->iID,(ptrdiff_t)co);
+            printf("coroutine chain:%03d: [id=%04d,addr=0x%08x]\n",i,co->iID,(ptrdiff_t)co);
             co = co->from;
             ++i;
         }
@@ -214,12 +214,12 @@ private:
 public:
 	static void	f1(Coroutine* co,void* p)
 	{
-
 		const char * s = (const char*)p;
 		printf("%s:%s\n",__FUNCTION__,s);
 		printf("%s:before yield\n",__FUNCTION__);
 		CoroutineMgr::Instance().Yield();
 		printf("%s:after yield\n",__FUNCTION__);
+		CoroutineMgr::Instance().BackTrace();
 	}
 	static void	f2(Coroutine* co,void* p)
 	{
@@ -229,6 +229,7 @@ public:
 		printf("%s:before yield\n",__FUNCTION__);
 		CoroutineMgr::Instance().Yield(co2);//equal to resume(co);
 		printf("%s:after yield\n",__FUNCTION__);
+		CoroutineMgr::Instance().BackTrace();
 	}
 	void	Test()
 	{
