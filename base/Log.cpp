@@ -35,11 +35,11 @@ int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,
         return -1;
     }
     static char szBuffer[MAX_SZ_BUFFER_SIZE];// = new char[MAX_SZ_BUFFER_SIZE];
-    const char * pszLineHeadFmt = "%s || %s:%d || %s || %s || ";
+    const char * pszLineHeadFmt = "%s | %s | %s:%d | %s | ";
     snprintf(szBuffer,MAX_SZ_BUFFER_SIZE,pszLineHeadFmt,
             Time::now().ToString().c_str(),
-            pszFile,line,pszFunction,
-            pszLogLv[lv]);
+			pszLogLv[lv],
+            pszFile,line,pszFunction);
     int iLineLen = strlen(szBuffer);
 
     va_list marker;

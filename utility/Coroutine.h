@@ -86,9 +86,13 @@ private:
 		co.iID = iID;
 		return &co;
 	}
-    
+	void Free(Coroutine* co)
+	{
+		co->stack.Destroy();
+		co->construct();
+	}
 public:
-	int Init()
+ 	int Init()
     {
         iCosCap = DEFAULT_COROUTINE_NUM;
         iCosCount = 1;
@@ -110,8 +114,28 @@ public:
         getcontext(&(co.ctx));//just for initializing
         return 0;
     }
+	~CoroutineMgr()
+	{
+		for(int i = 0;i < iCosCount; ++i)
+		{
+			Free(&(cos[i]));
+		}
+		free(cos);
+		iCosCount = 0;
+		iCosCap = 0;
+	}   
+public:
 
-
+	static void	CoroutineFuncStub(Coroutine* co,CoroutineFunc f,void* arg)
+	{
+		LOG_INFO("co = %d is start , it is from co = %d",co->iID,co->from->iID);
+		f(co,arg);
+		co->bState = Coroutine::COROUTINE_STATUS_STOP;
+		//co->iID = 0;
+		LOG_INFO("co = %d is stoped , destroy it . decide next co = %d",co->iID,co->from->iID);
+		CoroutineMgr::Instance().Yield(co->from->iID);
+		LOG_FATAL("shouldn't be called ");
+	}
 	
     int	Create(CoroutineFunc f,void * arg)
 	{
@@ -129,8 +153,9 @@ public:
         co->ctx.uc_link = 0;
         co->ctx.uc_stack.ss_sp = co->stack.pBuffer;
         co->ctx.uc_stack.ss_size = co->stack.iCap;
-        makecontext(&co->ctx, (void(*)(void))f,2,co,arg);
+        makecontext(&co->ctx, (void(*)(void))CoroutineFuncStub,3,co,f,arg);
         co->bState = Coroutine::COROUTINE_STATUS_SUSPEND;        
+		LOG_INFO("co = %d is create ",co->iID);
 		return co->iID;
 	}
 	int	Resume(int coid)
@@ -138,6 +163,7 @@ public:
 		Coroutine * co = Find(coid);
 		if(!co || co->bState == Coroutine::COROUTINE_STATUS_STOP )
 		{
+			LOG_FATAL("coid = %d pointer = %p",coid,co);
 			return -1;	
 		}
 		Coroutine * cur = GetCurrent();
@@ -145,6 +171,7 @@ public:
 		co->bState = Coroutine:: COROUTINE_STATUS_RUNNING;
 		//make ctx
         SetCurrent(co);
+		LOG_INFO("co = %d status = %d is resume from = %d",co->iID,co->bState,cur->iID);
         swapcontext(&(cur->ctx),&(co->ctx));
 		return 0;
 	}
@@ -163,11 +190,16 @@ public:
 		}
         if(!co)
         {
+			LOG_FATAL("current from co is null !");
             return -1;
         }
-        cur->bState = Coroutine::COROUTINE_STATUS_SUSPEND;
+		if(cur->bState == Coroutine::COROUTINE_STATUS_RUNNING)
+		{
+			cur->bState = Coroutine::COROUTINE_STATUS_SUSPEND;
+		}
 		co->bState = Coroutine::COROUTINE_STATUS_RUNNING;
         SetCurrent(co);
+		LOG_INFO("co = %d is yield schedule next = %d for = %d",cur->iID,co->iID,coid);
         swapcontext(&(cur->ctx),&(co->ctx));
         return 0;
 	}
@@ -198,6 +230,7 @@ public:
     {
         Coroutine* co = GetCurrent();
         int i = 0;
+		printf("current coroutine = %d\n",co->iID);
         while(co)
         {
             printf("coroutine chain:%03d: [id=%04d,addr=0x%08x]\n",i,co->iID,(ptrdiff_t)co);
@@ -216,9 +249,9 @@ public:
 	{
 		const char * s = (const char*)p;
 		printf("%s:%s\n",__FUNCTION__,s);
-		printf("%s:before yield\n",__FUNCTION__);
+		printf("%s:before yield co=%d\n",__FUNCTION__,co->iID);
 		CoroutineMgr::Instance().Yield();
-		printf("%s:after yield\n",__FUNCTION__);
+		printf("%s:after yield co=%d\n",__FUNCTION__,co->iID);
 		CoroutineMgr::Instance().BackTrace();
 	}
 	static void	f2(Coroutine* co,void* p)
@@ -226,9 +259,10 @@ public:
 		const char * s = (const char*)p;
 		printf("%s:%s\n",__FUNCTION__,s);
 		int co2 = CoroutineMgr::Instance().Create(f1,(void*)"in f2 create co");		
-		printf("%s:before yield\n",__FUNCTION__);
+		printf("%s:before yield co=%d\n",__FUNCTION__,co->iID);
 		CoroutineMgr::Instance().Yield(co2);//equal to resume(co);
-		printf("%s:after yield\n",__FUNCTION__);
+		printf("%s:after yield co=%d\n",__FUNCTION__,co->iID);
+		CoroutineMgr::Instance().Resume(co2);
 		CoroutineMgr::Instance().BackTrace();
 	}
 	void	Test()
@@ -236,12 +270,15 @@ public:
 		
 		int coid1 = Create(f1,(void*)"hello,world!");		
 		int coid2 = Create(f2,(void*)"nihao,shijie!");		
-		printf("co1 status %d\n",GetStatus(coid1));
-		printf("co1 status %d\n",GetStatus(coid2));
 		Resume(coid1);
-		printf("co1 status %d\n",GetStatus(coid1));
 		Resume(coid2);
-		printf("co1 status %d\n",GetStatus(coid2));
+		Resume(coid1);
+		Resume(coid2);
+		Resume(coid2);
+		Resume(coid1);
+		Resume(coid2);
+
+		
 	}
 
 };
