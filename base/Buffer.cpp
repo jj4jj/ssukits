@@ -1,7 +1,7 @@
 #include "Buffer.h"
 
 
-#include "base/CommonMacro.h"
+#include "CommonMacro.h"
 //--------------------------------------------
 Buffer::Buffer()
 {
