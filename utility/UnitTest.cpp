@@ -5,6 +5,7 @@ int	UnitTest::Init()
 {
 	srand(time(NULL));	
 	results.clear();
+	return 0;
 }
 
 
@@ -21,6 +22,7 @@ int	UnitTest::PrintReport()
 				results[i].runningTime.tv_sec,
 				results[i].runningTime.tv_usec);
 	}
+	return 0;
 
 }
 inline const vector<TestCaseResult>	& UnitTest::GetReport()
@@ -29,12 +31,12 @@ inline const vector<TestCaseResult>	& UnitTest::GetReport()
 }
 inline void	UnitTest::BeginTest()
 {
-		gettimeofday();	
+		gettimeofday(&lastbegintime,NULL);	
 }
 inline void	UnitTest::EndTest(string casename,int stat)
 {
-		time_val	endtime;
-		gettimeofday(&endtime);
+		timeval	endtime;
+		gettimeofday(&endtime,NULL);
 		TestCaseResult	tcr;
 		tcr.runningTime.tv_sec = endtime.tv_sec - lastbegintime.tv_sec;
 		tcr.runningTime.tv_usec = endtime.tv_usec - lastbegintime.tv_usec;

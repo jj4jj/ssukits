@@ -1,11 +1,9 @@
-
 #pragma once
 
 #include "base/stdinc.h"
+#include "base/Singleton.hpp"
 
 //support a simple unit test framwork ..
-
-
 
 //1.AddTestCase	->	Function	->in	-> out	compare with expect
 //2.Utility
@@ -17,7 +15,7 @@
 
 struct TestCaseResult
 {
-	time_val	runningTime;
+	timeval	runningTime;
 	//ok = 0
 	//otherwise , ec 
 	int			status;
@@ -28,9 +26,9 @@ class UnitTest : public Singleton<UnitTest>
 {
 public:
 	int	Init();
-	#define	Test(casename,expectrval,functionv,...params) do{\
+	#define	Test(casename,expectrval,functionv,params...) do{\
 		UnitTest::Instance().BeginTest();\
-		UnitTest::Instance().EndTest(casename,expectrval == functionv(...params)?0:-1);\
+		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1);\
 	}while(false)
 	int		PrintReport();
 	const vector<TestCaseResult>	& GetReport();
@@ -43,12 +41,12 @@ public:
 	static bool		 IsVecEqual(const vector<T> & a1,const vector<T> & a2);
 private:	
 	vector<TestCaseResult>	results;
-	struct time_val			lastbegintime;
+	struct timeval			lastbegintime;
 };
 
 
 template<class T>
-static  int UnitTest::GenerateArray(int n,T minv, T maxv,vector<T> & vec)
+int UnitTest::GenerateArray(int n,T minv, T maxv,vector<T> & vec)
 {
 	vec.clear();
 	if(maxv == minv || maxv < minv)
@@ -67,7 +65,7 @@ static  int UnitTest::GenerateArray(int n,T minv, T maxv,vector<T> & vec)
 	return 0;	
 }
 template<class T>
-static bool		 UnitTest::IsVecEqual(const vector<T> & a1,const vector<T> & a2)
+bool		 UnitTest::IsVecEqual(const vector<T> & a1,const vector<T> & a2)
 {
 	if(a1.size() != a2.size())
 	{

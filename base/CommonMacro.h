@@ -54,7 +54,7 @@ if((p)!= NULL)\
 #ifndef SNPRINTF
 #define SNPRINTF(s,n,f,args...)		do{\
     if(n>0)\
-    {\        
+    {\
         snprintf((s),(n),(f),##args);\
         (s)[n-1]='\0';\
     }\

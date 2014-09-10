@@ -20,7 +20,7 @@
 
 #pragma once
 #include "base/stdinc.h"
-
+#include "base/Buffer.h"
 
 class SockAddress
 {

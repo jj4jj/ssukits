@@ -233,7 +233,7 @@ public:
 		printf("current coroutine = %d\n",co->iID);
         while(co)
         {
-            printf("coroutine chain:%03d: [id=%04d,addr=0x%08x]\n",i,co->iID,(ptrdiff_t)co);
+            printf("coroutine chain:%03d: [id=%04d,addr=0x%08lx]\n",i,co->iID,(ptrdiff_t)co);
             co = co->from;
             ++i;
         }

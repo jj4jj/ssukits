@@ -53,7 +53,7 @@ set(LUA_LIB	${LUA_HOME}/lib)
 set(LUA_BRIDGE_INC	${CMAKE_SOURCE_DIR}/dep/LuaBridge)
 
 # install dir
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../inst-ssukits)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/inst)
 
 
 add_subdirectory(base)
