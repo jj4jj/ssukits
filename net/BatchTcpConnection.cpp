@@ -80,13 +80,14 @@ int     BatchTcpConnection::Loop(int iProcNum)
         {
             pHandler = ptrClientDefHandler.get();
         }
-        if(pEvents[i].events & EPOLLIN )
-        {
-            pHandler->OnReadable(fd);
-        }
+        //must process epollout event before epollin , for connecting event
         if(pEvents[i].events & EPOLLOUT )
         {
             pHandler->OnWritable(fd);
+        }
+        if(pEvents[i].events & EPOLLIN )
+        {
+            pHandler->OnReadable(fd);
         }
     }
     return 0;
