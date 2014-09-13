@@ -17,7 +17,7 @@ public:
     virtual     int     OnDisconnected( TcpSocket &   client) = 0;
 
 public:
-    void        SetPoller(Epoll* _pepoll);
+    void        SetPoller(Epoll* _pEpoll);
     enum
     {
         DEAFAULT_MAX_RECV_BUFFER_SIZE = 65536,

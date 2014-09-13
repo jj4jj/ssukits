@@ -12,6 +12,7 @@ int     BatchTcpConnection::Init(int _iMaxConnxNum)
     }
     clientList.reserve(_iMaxConnxNum);
     iMaxConnxNum = _iMaxConnxNum;
+    iNfds = 0;
     return 0;
 }       
 int     BatchTcpConnection::SetDefHandler(TcpClientHandlerSharedPtr pHandler)

@@ -39,6 +39,8 @@ int 	TcpServer::Init(const SockAddress & localAddr,bool bOpenNagle,int iMaxConnx
     {
         return -1;
     }
+    LOG_INFO("server listen on :%s ok nagle:%d max conn num = %d",
+             localAddr.ToString(),bOpenNagle,iMaxConnxNum);
     return 0;
 }
 int	TcpServer::Start()
