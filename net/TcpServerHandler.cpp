@@ -57,7 +57,7 @@ int     TcpServerHandler::OnClientReadable(int fd)
     else if( 1 == iRet ||
             iRet < 0)
     {            
-        int clifd = client.GetFD();
+        //int clifd = client.GetFD();
         iRet = OnConnectionClosed(client);            
         //pEpoll->Del(clifd);//when fd close , system will auto remove epoll fd               
         client.Close();            
