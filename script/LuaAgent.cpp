@@ -35,7 +35,7 @@ int  LuaAgent::Init()
         return -1;
     }
     
-    luaL_openlibs(luaState);
+    //luaL_openlibs(luaState);
     LOG_TRACE("lua agent init ok .");
     return 0;
 }

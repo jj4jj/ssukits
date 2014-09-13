@@ -8,6 +8,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}
   ${LUA_BRIDGE_INC}
+  ${LUA_INC}
 )
 
 #base dir linked lib dir
@@ -68,9 +69,9 @@ target_link_libraries(test_base
 )
 
 target_link_libraries(test_lua
-	libssukits_script.a
 	libssukits_base.a
 	liblua.a
+	libssukits_script.a
 )
 
 
