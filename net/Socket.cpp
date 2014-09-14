@@ -287,12 +287,12 @@ int	Socket::Send(const Buffer & sendBuffer, int iFlags /*=0*/)
 			(iSent > 0 && sendBuffer.iUsed - iSentTotal > 0));			
 	if(iSent > 0)
 	{
-        LOG_DEBUG("send buffer [END CHAR ASCII=0x%02x] len=%d used=%d !",sendBuffer.pBuffer[iSentTotal-1],iSentTotal,sendBuffer.iUsed);
+        //LOG_DEBUG("send buffer [END CHAR ASCII=0x%02x] len=%d used=%d !",sendBuffer.pBuffer[iSentTotal-1],iSentTotal,sendBuffer.iUsed);
 		return 0;
 	}
     else if(0 == iSent)
 	{
-		//close by peer
+		//close by peer or error ?
 		return 1;
 	}
 	else if(iSent < 0 &&
@@ -329,7 +329,7 @@ int	Socket::Recv(Buffer& recvBuff,int iFlags /*=0*/)
 			(iRead > 0 && recvBuff.iCap - recvBuff.iUsed > 0));			
 	if(iRead > 0)
 	{
-         LOG_DEBUG("read buffer [END CHAR ASCII=0x%02x] len=%d cap=%d !",recvBuff.pBuffer[recvBuff.iUsed-1],recvBuff.iUsed,recvBuff.iCap);        
+        //LOG_DEBUG("read buffer [END CHAR ASCII=0x%02x] len=%d cap=%d !",recvBuff.pBuffer[recvBuff.iUsed-1],recvBuff.iUsed,recvBuff.iCap);        
 		return 0;
 	}
 	else if(0 == iRead)
