@@ -65,6 +65,7 @@ int     BatchTcpConnection::Loop(int iProcNum)
         //no events
         return 1;
     }
+    int iRet = 0;
     for(int i = 0;i < iProcNum &&
                   iLastProcNum < iNfds;
                   ++i,++iLastProcNum )
@@ -80,15 +81,21 @@ int     BatchTcpConnection::Loop(int iProcNum)
         {
             pHandler = ptrClientDefHandler.get();
         }
+        
         //must process epollout event before epollin , for connecting event
         if(pEvents[i].events & EPOLLOUT )
         {
-            pHandler->OnWritable(fd);
+            iRet = pHandler->OnWritable(fd);
         }
-        if(pEvents[i].events & EPOLLIN )
+        if(0 == iRet && (pEvents[i].events & EPOLLIN) )
         {
-            pHandler->OnReadable(fd);
+            iRet = pHandler->OnReadable(fd);
         }
+        if(iRet < 0)
+        {
+            LOG_ERROR("client fd = %d has ocurr an error = %d need be closed !",fd);
+            mpClientHandler.erase(fd);
+        }        
     }
     return 0;
 }

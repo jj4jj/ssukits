@@ -21,42 +21,31 @@ void        TcpClientHandler::SetPoller(Epoll* _pepoll)
 int     TcpClientHandler::OnWritable(int fd)
 {
     TcpSocket sock(fd);
-    TcpSocket * pSock = &sock;
-    if(NULL == pSock)
+    if(sock.GetErrorState() == 0)
     {
-        LOG_FATAL("fd = %d has no tcp socket map",fd);
-        return -1;
-    }
-    if(pSock->GetErrorState() == 0)
-    {
-        pEpoll->Mod(pSock->GetFD(),EPOLLIN);
-        return OnConnected(*pSock);
+        pEpoll->Mod(fd,EPOLLIN);
+        return OnConnected(sock);
     }
     return 0;
 }
 int     TcpClientHandler::OnReadable(int fd)
 {
     TcpSocket sock(fd);
-    TcpSocket * pSock = &sock;
-    if(NULL == pSock)
-    {
-        LOG_FATAL("fd = %d has no tcp socket map",fd);
-        return -1;
-    }
-    int iRet =  pSock->Recv(_recvBuffer);
+    int iRet =  sock.Recv(_recvBuffer);
     if( 0 ==iRet )
     {
-        iRet= OnDataRecv(*pSock,_recvBuffer);
+        iRet= OnDataRecv(sock,_recvBuffer);
     }
     else if( 1 == iRet ||
              iRet < 0 )
     {
-         iRet =  OnDisconnected(*pSock);
-         pSock->Close();           
+         OnDisconnected(sock.);
+         sock.Close();      
+         return -1;
     }
     else        
     {
-        LOG_ERROR("client read return val =  %d",iRet);
+        LOG_INFO("client read return val =  %d",iRet);
     }
     return iRet;
 }   
