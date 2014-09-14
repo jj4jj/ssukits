@@ -36,7 +36,7 @@ int     TcpClient::Init()
 
 int     TcpClient::ConnectTo(const SockAddress & addr)
 {
-    pEpoll->Add(clientSocket.GetFD(),EPOLLOUT);
+    pEpoll->Add(clientSocket.GetFD(),EPOLLIN|EPOLLOUT);
     int iRet =  clientSocket.ConnectTo(addr);
     if(iRet < 0)
     {
