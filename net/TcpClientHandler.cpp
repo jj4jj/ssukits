@@ -39,7 +39,7 @@ int     TcpClientHandler::OnReadable(int fd)
     else if( 1 == iRet ||
              iRet < 0 )
     {
-         OnDisconnected(sock.);
+         OnDisconnected(sock);
          sock.Close();      
          return -1;
     }
