@@ -20,6 +20,7 @@ public:
     File();
     File(const char*  pszFilePath,const char* pszMode);
     virtual ~File();
+    inline FILE*  GetFilePointer(){return pFile;}
 public:
     int  Open(const char*  pszFilePath,const char* pszMode);
     void Close();
