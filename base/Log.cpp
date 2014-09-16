@@ -23,7 +23,7 @@ int Log::Init(const char* pszLogFileName,LogLevel iFilterLv_,int iSingleFileKBSi
     {
         ptrFile.reset(new LogFile(pszLogFileName,0,iSingleFileKBSize*1024));
     }    
-    LOG_INFO("Log initialize min filter lv = %d ",iFilterLv);
+    LOG_INFO("Log initialize min filter lv = %d \n",iFilterLv);
     return 0;
 }
 int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,const char* szfmt, ...)

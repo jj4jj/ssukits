@@ -5,6 +5,10 @@
 //enbale this process become a daemon process.
 int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
 {
+    if(pszWorkDir)
+    {
+        pszWorkDir = "/";
+    }
 //daemon(3)
 //Feature Test Macro Requirements for glibc (see feature_test_macros(7)):    
 #if _BSD_SOURCE || (_XOPEN_SOURCE && _XOPEN_SOURCE < 500)
