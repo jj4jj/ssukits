@@ -5,7 +5,7 @@
 //enbale this process become a daemon process.
 int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
 {
-    if(pszWorkDir)
+    if(!pszWorkDir)
     {
         pszWorkDir = "/";
     }
