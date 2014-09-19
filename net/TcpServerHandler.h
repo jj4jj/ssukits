@@ -30,4 +30,6 @@ private:
     };
     Buffer              _recvBuffer;
 };
+//////////////////////////////////////////////////////////////
+typedef shared_ptr<TcpServerHandler>    TcpServerHandlerPtr;
 

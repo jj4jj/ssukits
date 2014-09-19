@@ -95,15 +95,21 @@ int	TcpServer::Loop(int iProcessNum )
             int efd = pEvents[iProcessNumThisRound].data.fd;
             if(listenSocket.GetFD() == efd)
             {
+                LOG_DEBUG("aceptable");
                 pServerHandler->OnAcceptable();
             }
             else
             {
+                LOG_DEBUG("readable");
                 pServerHandler->OnClientReadable(efd);
             }
-        }            
+        }
+        else
+        {
+            LOG_DEBUG("other epoll idx = %d events = %d",iProcessNumThisRound,pEvents[iProcessNumThisRound].events);
+        }
     }
-    return 0;        
+    return iNfds;        
 }
 
 void  TcpServer::SetServerHandler(TcpServerHandler* pHandler)

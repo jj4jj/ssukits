@@ -77,17 +77,18 @@ int 	Epoll::Polling(epoll_event* * ppEvents,int iTimeCountMs )
 {
     *ppEvents  = pEvents;
 	int iNfds = epoll_wait(epfd,pEvents,max_nfds,iTimeCountMs);
-	if (iNfds < 0) 
+	if (iNfds < 0 && errno != EINTR ) 
 	{
-		LOG_ERROR("epoll_wait return ret = %d < 0",iNfds);
+		LOG_ERROR("epoll_wait return ret = %d < 0 errno = %d str = %s",
+            iNfds,errno,strerror(errno));
 		return iNfds;
 	}
-	if(0 == iNfds)
+	if(iNfds > 0)
 	{
-		return 0;
+		return iNfds;
 	}
-	LOG_DEBUG("epoll wait return events num = %d",iNfds);    
-	return iNfds;
+	//LOG_DEBUG("epoll wait return events num = %d",iNfds);    
+	return 0;
 }
 void	Epoll::Destroy()
 {

@@ -41,15 +41,9 @@ int     TcpServerHandler::OnClientReadable(int fd)
     // < 0 .error
     // = 0 .ok
     // = 1 . peer close
-    TcpSocket sock(fd);
-    TcpSocket* pClient = &sock;
-    if(NULL == pClient)
-    {
-        LOG_FATAL("client fd = %d is not exist socket object",fd);
-        return -1;
-    }
-    TcpSocket& client = *pClient;
+    TcpSocket   client(fd);    
     int iRet = client.Recv(_recvBuffer);
+    LOG_DEBUG("client fd = %d recv buffer return = %d",fd,iRet);
     if(0 == iRet)
     {
         iRet = OnClientDataRecv(client,_recvBuffer);            
@@ -60,7 +54,7 @@ int     TcpServerHandler::OnClientReadable(int fd)
         //int clifd = client.GetFD();
         iRet = OnConnectionClosed(client);            
         //pEpoll->Del(clifd);//when fd close , system will auto remove epoll fd               
-        client.Close();            
+        //client.Close();            
     }
     else
     {

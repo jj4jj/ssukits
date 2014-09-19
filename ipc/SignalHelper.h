@@ -52,7 +52,7 @@ public:
     //if first call , return 0
     //else if restore , return the restore param
     //sigsetjmp
-    static int SigalSaveExeContex(jmp_buf  env,int saveMask);
+    static int  SigalSaveExeContex(jmp_buf  env,int saveMask);
     //siglongjmp
     static void SinalRestoreExeContex(jmp_buf  env,int iCtx);
 
