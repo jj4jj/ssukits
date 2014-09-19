@@ -144,7 +144,7 @@ int	CoroutineMgr::Resume(int coid)
     swapcontext(&(cur->ctx),&(co->ctx));
 	return 0;
 }
-int	CoroutineMgr::Yield(int coid = 0)
+int	CoroutineMgr::Yield(int coid )
 {
     Coroutine * cur = GetCurrent();
     if(!cur)

@@ -1,4 +1,5 @@
 #pragma once
+#include "base/Buffer.h"
 
 class ProtoBufHelper
 {

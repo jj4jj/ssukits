@@ -38,12 +38,24 @@ int  SignalHelper::SendSelfSignal(int signo)
     }
     return 0;
 }
-void    SignalHelper::BlockSignal(int signo)
+int    SignalHelper::BlockSignal(int signo)
 {
-    //todo
-    
+    sigset_t set;
+    ClearSigSet(&set);
+    AddSigSet(&set,signo);    
+    return    AddSigSetMask(&set);
 }
-
+int    SignalHelper::UnBlockSignal(int signo)
+{
+    sigset_t set;
+    GetSigSetMask(&set);
+    if(!IsSigInSigSet(&set,signo))
+    {
+        return -1;
+    }
+    RemoveSigSet(&set,signo);
+    return   SetSigSetMask(&set);
+}
 
 void    SignalHelper::WaitSignal()
 {

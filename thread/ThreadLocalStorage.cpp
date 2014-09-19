@@ -1,31 +1,70 @@
-#include "ThreadLocalStorage.h"
 #include "base/Log.h"
+#include "base/CommonMacro.h"
 
+#include "ThreadLocalStorage.h"
 
-ThreadLoacalStorage::ThreadLocalStorage():create_key_once(PTHREAD_ONCE_INIT)
+#if 1
+ThreadKeyCreater::ThreadKeyCreater()
 {
-
+    iMaxKeyNum = 0;
+    iNextIdx = 0;   
+    keyPool = NULL;
+    mutex.Init(NULL);
 }
-int ThreadLoacalStorage::Init(FNDestroyValue _fnDestroyValue)
+ThreadKeyCreater::~ThreadKeyCreater()
 {
-    fnDestroyValue = _fnDestroyValue;
-    pthread_once(&create_key_once,CreateKey);
+    Destroy();
+}
+//single thread
+int ThreadKeyCreater::Init(int iKeyPoolSize)
+{
+    iMaxKeyNum = iKeyPoolSize;
+    keyPool = (pthread_key_t*)malloc(sizeof(pthread_key_t)*iMaxKeyNum);
+    iNextIdx = 0;
+    mutex.Init(NULL);
+}
+//single thread
+void ThreadKeyCreater::Destroy()
+{
+    iMaxKeyNum = 0;
+    iNextIdx = 0;                
+    mutex.Destroy();
+    SAFE_FREE(keyPool);
+}
+pthread_key_t * ThreadKeyCreater::CreateKey(FNDestroyKeyValue fndestroy)
+{
+    //
+    mutex.Lock();
+    if(iNextIdx >= iMaxKeyNum)
+    {
+        mutex.Unlock();
+        return NULL;
+    }
+    pthread_key_create(&keyPool[iNextIdx],fndestroy);        
+    ++iNextIdx;        
+    mutex.Unlock();
+    return &keyPool[iNextIdx];
 }    
-void*    ThreadLoacalStorage::GetLocalValue()
+
+
+
+
+#endif
+
+
+
+#if 1
+int ThreadLocalStorage::Init(pthread_key_t k)
+{
+    key = k;
+    return 0;
+}    
+void*    ThreadLocalStorage::GetLocalValue()
 {
     return pthread_getspecific(key);
 }
-int      ThreadLoacalStorage::SetLocalValue(const void* val)
+int      ThreadLocalStorage::SetLocalValue(const void* val)
 {
     return pthread_setspecific(key,val);
 }
-static int ThreadLoacalStorage::ThreadLoacalStorage::CreateKey()
-{
-    int ret = pthread_key_create(&key,fnDestroyValue);
-    if( ret < 0)
-    {
-        LOG_ERROR("pthread_key_create error no = %d",errno);
-    }
-    return ret;
-}
-
+#endif

@@ -10,7 +10,8 @@ public:
     static   sighandler_t RestoreSignal(int signo);
     static   int SendProcessSignal(int signo,pid_t pid);
     static  void    WaitSignal();
-    static  void    BlockSignal(int signo);
+    static  int    BlockSignal(int signo);
+    static  int    UnBlockSignal(int signo);
     static  uint32_t  AlarmInSeconds(int iSeconds);   
     static  int  SetTimer(int iTimerType,struct itimerval * pTime);
     static  int  GetTimer(int iTimerType,struct itimerval * pTime);

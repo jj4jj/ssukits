@@ -1,7 +1,8 @@
 #pragma once
 #include "base/CommonMacro.h"
+#include "base/Buffer.h"
 
-
+struct RSAParam;
 class EncrptionHelper
 {
 public:

@@ -6,9 +6,10 @@
 //Thread init , start with a function .
 //
 
+#define restrict        
 
 typedef void* (*ThreadCallBack)(void*);
-class Thread : NonCopyable
+class Thread
 {
 public:
      Thread();     

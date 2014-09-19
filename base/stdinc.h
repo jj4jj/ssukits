@@ -97,5 +97,11 @@ using std::tr1::unordered_set;
 #include <sys/mman.h>
 //thread
 #include <pthread.h>
+#include <semaphore.h>
 
+
+
+#ifndef restrict
+#define restrict 
+#endif
 

@@ -7,10 +7,15 @@ Mutex::Mutex()
 {
     mutex = PTHREAD_MUTEX_INITIALIZER;
 }
-void Mutex::SetMutex(mutex_t _mu)
+void Mutex::SetMutex(pthread_mutex_t _mu)
 {
     mutex = _mu;
 }
+pthread_mutex_t & Mutex::GetMutex()
+{
+    return mutex;
+}
+
 int Mutex::Init(const pthread_mutexattr_t *restrict attr)
 {
     return  pthread_mutex_init(&mutex,
@@ -48,15 +53,15 @@ int Condition::Init(const pthread_condattr_t *restrict attr)
 {
     return pthread_cond_init(&cond,attr);
 }
-int Condition::TimeWaitMutex(Mutex& mutex,const struct timespec *restrict abstime)
+int Condition::TimeWaitMutex(Mutex & mutex,const struct timespec *restrict abstime)
 {
     return pthread_cond_timedwait(&cond,
-                &(mutex.mutex),abstime);
+                &(mutex.GetMutex()),abstime);
 }
 int Condition::WaitMutex(Mutex& mutex)
 {
     return pthread_cond_wait(&cond,
-               &(mutex.mutex));
+               &(mutex.GetMutex()));
 }
 int Condition::NotifyAll()
 {

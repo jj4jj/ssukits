@@ -9,8 +9,9 @@
 class Mutex
 {
 public:
-    Mutex()
-    void SetMutex(mutex_t _mu);
+    Mutex();
+    void SetMutex(pthread_mutex_t _mu);
+    pthread_mutex_t & GetMutex();
     int Init(const pthread_mutexattr_t *restrict attr);
     int Destroy();
     int Lock();
