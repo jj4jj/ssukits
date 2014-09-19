@@ -17,7 +17,7 @@ public:
     MFileMap();
     ~MFileMap();
 private:
-    void* pBaseAddr;
+    void*  pBaseAddr;
     size_t zLen;
 };
 

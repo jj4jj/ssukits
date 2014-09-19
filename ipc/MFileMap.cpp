@@ -1,8 +1,8 @@
-
 #include "MFileMap.h"
+#include "base/Log.h"
 
 #if 1
-MFileMap::MFileMap():fd(0)
+MFileMap::MFileMap():pBaseAddr(NULL),zLen(0)
 {
 
 } 
@@ -50,7 +50,9 @@ int MFileMap::Sync()
 {
     return Sync(pBaseAddr,zLen);
 }
+#endif
 
+#if 1
 void* MFileMap::MapFile(int fd,size_t & len,size_t offset,int iFlags ,int iProt,int iType )
 {
     if(0 == len)
@@ -64,12 +66,11 @@ void* MFileMap::MapFile(int fd,size_t & len,size_t offset,int iFlags ,int iProt,
         len = sb.st_size;
     }
     void * p = mmap(NULL,len,iProt,iType,fd,offset);
-    if(pBaseAddr == (void*)-1)
+    if(p == (void*)-1)
     {
         LOG_ERROR("mmap error no = %d",errno);
         return NULL;
-    }
-    
+    }    
     return p;
 }
 int MFileMap::DestroyMap(void* p,size_t len)

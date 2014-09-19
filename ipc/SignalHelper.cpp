@@ -1,19 +1,20 @@
-
-
-
 #include "SignalHelper.h"
+#include "base/Log.h"
 
+#ifndef SIGBAD
+#define SIGBAD(signo) ((signo) <= 0 || (signo) >= NSIG)
+#endif
 
-
+#if 1
 sighandler_t SignalHelper::SetSigHandler(int signo,sighandler_t handler)
 {
     return signal(signo,handler);
 }
-int SignalHelper::IgnoreSignal(int signo)
+sighandler_t SignalHelper::IgnoreSignal(int signo)
 {
     return SetSigHandler(signo,SIG_IGN);
 }
-int SignalHelper::RestoreSignal(int signo)
+sighandler_t SignalHelper::RestoreSignal(int signo)
 {
     return SetSigHandler(signo,SIG_DFL);
 }
@@ -37,19 +38,20 @@ int  SignalHelper::SendSelfSignal(int signo)
     }
     return 0;
 }
+void    SignalHelper::BlockSignal(int signo)
+{
+    //todo
+    
+}
+
 
 void    SignalHelper::WaitSignal()
 {
     pause();
 }
-int SignalHelper::AlarmInSeconds(int iSeconds)
+uint32_t SignalHelper::AlarmInSeconds(int iSeconds)
 {        
-    if( alarm(iSeconds) < 0)
-    {
-        LOG_ERROR("alarm error = %d",errno);
-        return -1;
-    }
-    return 0;
+    return alarm(iSeconds);
 }
 
 int SignalHelper::SetTimer(int iTimerType,struct itimerval * pTime)
@@ -70,11 +72,11 @@ int  SignalHelper::GetTimer(int iTimerType,struct itimerval * pTime)
     }
     return 0;
 }    
-  int  SignalHelper::SignalMayBeUnReliable(int signo,sighandler_t handler)
+sighandler_t  SignalHelper::SignalMayBeUnReliable(int signo,sighandler_t handler)
 {
     return signal(signo,handler);
 }    
-  int  SignalHelper::SignalReliable(int signo,sighandler_t handler)
+sighandler_t  SignalHelper::SignalReliable(int signo,sighandler_t handler)
 {
     struct sigaction act,oact;
     act.sa_handler = handler;
@@ -117,7 +119,7 @@ int  SignalHelper::GetTimer(int iTimerType,struct itimerval * pTime)
 
   int  SignalHelper::AddSigSet(sigset_t * set, int signo)
 {
-    return sigaddsigset(set,signo);
+    return sigaddset(set,signo);
 }
   int  SignalHelper::RemoveSigSet(sigset_t * set, int signo)
 {
@@ -133,15 +135,15 @@ int  SignalHelper::GetTimer(int iTimerType,struct itimerval * pTime)
 }
  int  SignalHelper::SetSigSetMask(const sigset_t * restrict set)
 {
-    return sigprocmask(SIG_SETMASK,mask,NULL);
+    return sigprocmask(SIG_SETMASK,set,NULL);
 }
  int  SignalHelper::AddSigSetMask(const sigset_t *  restrict set)
 {
-    return sigprocmask(SIG_BLOCK,mask,NULL);
+    return sigprocmask(SIG_BLOCK,set,NULL);
 }
  int  SignalHelper::CancelSigSetMask(const sigset_t * restrict set)
 {
-    return sigprocmask(SIG_UNBLOCK,mask,NULL);
+    return sigprocmask(SIG_UNBLOCK,set,NULL);
 }
  int  SignalHelper::GetSigSetMask(sigset_t *  set)
 {
@@ -175,4 +177,6 @@ int  SignalHelper::GetTimer(int iTimerType,struct itimerval * pTime)
 {
     siglongjmp(env,iCtx);
 }
+
+ #endif
 
