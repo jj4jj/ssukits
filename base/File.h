@@ -72,7 +72,7 @@ public:
     virtual ~LogFile();    
 public:
     //return 
-    int      Open(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize );    
+    int      Open(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize ,bool bNewLogFile = false );    
     int      Write(const char* pBuffer,int iLen);
     int      GetLastLogFileOrder();
     int      ShiftNext();

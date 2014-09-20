@@ -1,4 +1,4 @@
-
+#include "CommonMacro.h"
 #include "File.h"
 
 
@@ -89,29 +89,42 @@ const char* File::GetPathDirName(const char* pszFilePath,char* pszDirNameBuff,in
     }
     if(iDirPathLen > 0 && iDirPathLen < iBuffLen)
     {
-        return strncpy(pszDirNameBuff,pszFilePath,iDirPathLen);
+        memcpy(pszDirNameBuff,pszFilePath,iDirPathLen);
+        pszDirNameBuff[iDirPathLen] = '\0';
+        return pszDirNameBuff;
     }
     //current dir
-    strncpy(pszDirNameBuff,".",1);
+    STRNCPY(pszDirNameBuff,iBuffLen,".");
     return pszDirNameBuff;
 }
 const char* File::GetPathBaseName(const char* pszFilePath,char* pszBaseNameBuff,int iBuffLen)
 {
     int len = strlen(pszFilePath);
-    int iBaseNameLen = 0;
-    for(int i = len ; i >= 0;  --i)
+    int i = len;
+    if(0 == len )
+    {
+        return NULL;
+    }
+    for(; i >= 0;  --i)
     {
         if(pszFilePath[i] == DELIMS)
         {
-            iBaseNameLen = len - (i + 1);
             break;
         }
     }
-    
-    if(iBaseNameLen > 0 && iBaseNameLen < iBuffLen)
+    if(i < 0)
     {
-        return strncpy(pszBaseNameBuff,pszFilePath + len - iBaseNameLen ,iBaseNameLen);
-        //return pszBufDirNameBuff;
+        i = 0;
+    }
+    else
+    {
+        ++i;
+    }
+    //len - i
+    if(len < iBuffLen + i)
+    {
+        memcpy(pszBaseNameBuff,pszFilePath + i, len + 1 - i);
+        return pszBaseNameBuff;
     }
     return NULL;
 }
@@ -261,7 +274,7 @@ LogFile::~LogFile()
     Destruct();
 }
 
-int LogFile::Open(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize )
+int LogFile::Open(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize , bool bNew )
 {
     strncpy(szFilePrefix,pszPrefix,sizeof(szFilePrefix));        
     if(0 != _lMaxLogSingleFileSize)
@@ -272,7 +285,15 @@ int LogFile::Open(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingl
     {
         iMaxHistoryLogFileNum = _iMaxLogFiles;
     }
-    return File::Open(GetLogFileName(GetLastLogFileOrder()).c_str(),"a+");
+    ////////////////////////////////////////////////////
+    if(bNew)
+    {
+        return File::Open(GetLogFileName(GetLastLogFileOrder()).c_str(),"w+");
+    }
+    else
+    {
+        return File::Open(GetLogFileName(GetLastLogFileOrder()).c_str(),"a+");
+    }        
 }
 
 int      LogFile::GetLastLogFileOrder()
@@ -328,8 +349,8 @@ int LogFile::ShiftNext()
 {
     File::Close();
     //--
-    iLastLogFileOrder = (iLastLogFileOrder + 1) % iMaxHistoryLogFileNum;
-    return    Open(szFilePrefix,0,0);
+    iLastLogFileOrder = (iLastLogFileOrder + 1) % ( iMaxHistoryLogFileNum + 1);
+    return    Open(szFilePrefix,0,0,true);
 }
 int LogFile::Write(const char* pBuffer,int iLen)
 {

@@ -16,12 +16,12 @@ Log::~Log()
     }
 }
 
-int Log::Init(const char* pszLogFileName,LogLevel iFilterLv_,int iSingleFileKBSize)
+int Log::Init(const char* pszLogFileName,LogLevel iFilterLv_,int iSingleFileKBSize,int iMaxLogFileNum)
 {
 	iFilterLv = iFilterLv_;
     if(pszLogFileName != NULL)
     {
-        ptrFile.reset(new LogFile(pszLogFileName,0,iSingleFileKBSize*1024));
+        ptrFile.reset(new LogFile(pszLogFileName,iMaxLogFileNum,iSingleFileKBSize*1024));
     }    
     LOG_INFO("Log initialize min filter lv = %d \n",iFilterLv);
     return 0;

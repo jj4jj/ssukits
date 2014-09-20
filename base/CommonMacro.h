@@ -62,10 +62,10 @@ if((p)!= NULL)\
 #endif
 
 #ifndef STRNCPY
-#define STRNCPY(d,s,n)  do{\
+#define STRNCPY(d,n,s)  do{\
     if(n>0)\
     {\
-        strncpy((d),n,(s));\
+        strncpy((d),(s),n);\
         (d)[(n)-1] = '\0';\
     }\
 }while(false)

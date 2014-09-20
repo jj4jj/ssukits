@@ -1,8 +1,9 @@
 #include "DateTime.h"
 
+#define US_S_FACTOR     (1000000)
+
+
 #if 1
-
-
 
 Time::Time(time_t tm)
 {
@@ -41,6 +42,52 @@ Time Time::now(struct timezone *tz )
         return Time(tv);
     }
 }
+void Time::now(struct timeval & tv,struct timezone *tz )
+{
+    gettimeofday(&tv,tz);
+}
+int64_t Time::uspast(struct timeval & after,struct timeval & before)
+{
+    return (after.tv_sec-before.tv_sec)*US_S_FACTOR + after.tv_usec - before.tv_usec;
+}
+void Time::usappend(struct timeval & time , int64_t append)
+{
+    if(append > 0)
+    {
+        time.tv_sec += append/US_S_FACTOR;
+        time.tv_usec += append%US_S_FACTOR;
+        if(time.tv_usec > US_S_FACTOR)
+        {
+            time.tv_usec = time.tv_usec - US_S_FACTOR;
+            ++time.tv_sec;
+        }
+    }
+    else if(append < 0)
+    {
+        append = 0 - append;
+        int us = append % US_S_FACTOR;
+        int s = append / US_S_FACTOR;
+        if(us > time.tv_usec)
+        {
+            --time.tv_sec;
+            time.tv_usec = US_S_FACTOR - us + time.tv_usec;
+        }
+        else
+        {
+            time.tv_usec -= us;
+        }
+        if(time.tv_sec >= s)
+        {
+            time.tv_sec -= s;
+        }
+        else
+        {
+            time.tv_sec = 0;
+            time.tv_usec = 0;
+        }
+    }
+}
+
 string Time::ToString()
 {
     char szBuffer[64];

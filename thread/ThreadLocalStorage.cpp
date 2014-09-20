@@ -21,7 +21,7 @@ int ThreadKeyCreater::Init(int iKeyPoolSize)
     iMaxKeyNum = iKeyPoolSize;
     keyPool = (pthread_key_t*)malloc(sizeof(pthread_key_t)*iMaxKeyNum);
     iNextIdx = 0;
-    mutex.Init(NULL);
+    return mutex.Init(NULL);
 }
 //single thread
 void ThreadKeyCreater::Destroy()
