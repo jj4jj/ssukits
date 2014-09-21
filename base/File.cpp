@@ -260,8 +260,7 @@ void    LogFile::Destruct()
 {
     File::Destruct();
     iLastLogFileOrder = 0;
-    szFilePrefix[0] = '\0';
-    
+    szFilePrefix[0] = '\0';    
 }
 
 LogFile::LogFile(const char * pszPrefix, int _iMaxLogFiles , long _lMaxLogSingleFileSize )
