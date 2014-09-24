@@ -31,7 +31,10 @@ int     TcpServerHandler::OnAcceptable()
         return -1;
     }        
     client.SetNonBlock(true);
-    client.SetNagle(true);    
+    client.SetNagle(true);
+    //close time wait status
+	struct linger opt = {1, 0};
+    client.SetLinger(opt);
     //just consider in read event
     pEpoll->Add(client.GetFD(),EPOLLIN);
     return OnNewConnection(client);        

@@ -30,6 +30,7 @@ public:
 	int 	Init();
 	int	    AttachFD(int fd);
 	int	    SetNagle(bool bSetOpen);
+    int     SetLinger(struct linger & lgr);
 	TcpSocket  Accept();		
 	int	    Listen(int iBacklog = 128);
 public:

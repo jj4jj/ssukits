@@ -52,7 +52,18 @@ int	TcpSocket::SetNagle(bool bSetOpen)
 {
 	return SetFlag(O_NDELAY,bSetOpen);
 }
-
+int TcpSocket::SetLinger(struct linger& lgr)
+{
+    //if ligr on off is 0 £¬close will return right now 
+    //and send any buffer unsent
+    //else if on off is 1 .
+    //it will wait linger time , during the linger time
+    //kernel send buffer unsent
+    //if linger time is 0
+    //close will send a RST to peer tcp will be closed state.
+    
+    return SetOption(SO_LINGER,&lgr,sizeof(struct linger));
+}
 int	TcpSocket::Listen(int iBacklog)
 {
 	if(listen(GetFD(),iBacklog) < 0)
