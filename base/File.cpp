@@ -212,7 +212,18 @@ int  File::ListFiles(std::vector<std::string> &  files,const char* pszDir)
 	closedir(dfd);
     return 0;
 }
-
+const char*  File::GetLine(char* pBuffer,int iLen)
+{
+    size_t n = iLen;
+    size_t r = getline(&pBuffer,&n,pFile);
+    //erase the last newline char
+    //****\n\0
+    if(pBuffer[r-1] == '\n')
+    {
+        pBuffer[r-1] = '\0';
+    }
+    return pBuffer;
+}
 int File::Read(char * pBuffer,int iLen)
 {
     return   fread(pBuffer,iLen,1,pFile) != 1 ? -1 : 0;
@@ -220,6 +231,40 @@ int File::Read(char * pBuffer,int iLen)
 int File::Write(const char* pBuffer,int iLen)
 {
     return fwrite(pBuffer,iLen,1,pFile)!=1 ? -1 : 0;
+}
+int    File::ShareLock()
+{
+    int fd = GetFD();
+    if(fd >= 0)
+    {
+        return flock(fd,LOCK_SH);
+    }
+    return -1;
+}
+int    File::ExcluLock()
+{
+    int fd = GetFD();
+    if(fd >= 0)
+    {
+        return flock(fd,LOCK_EX);
+    }
+    return -1;
+}
+void   File::Unlock()
+{
+    int fd = GetFD();
+    if(fd >= 0)
+    {
+        flock(fd,LOCK_UN); 
+    }
+}
+int   File::GetFD()
+{
+    if(pFile)
+    {
+        return  fileno(pFile);
+    }
+    return -1;
 }
 long File::GetCurrentFileSize()
 {

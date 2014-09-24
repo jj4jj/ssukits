@@ -43,7 +43,7 @@ int		UdpSocket::SendTo(const Buffer & sendBuffer,const SockAddress & dstAddr,int
 			(iSent > 0 && sendBuffer.iUsed - iSentTotal > 0));			
 	if(iSent > 0)
 	{
-        LOG_DEBUG("send buffer [END CHAR ASCII=0x%02x] len=%d used=%d !",sendBuffer.pBuffer[iSentTotal-1],iSentTotal,sendBuffer.iUsed);
+        //LOG_DEBUG("send buffer [END CHAR ASCII=0x%02x] len=%d used=%d !",sendBuffer.pBuffer[iSentTotal-1],iSentTotal,sendBuffer.iUsed);
 		return 0;
 	}
     else if(0 == iSent)
@@ -87,7 +87,7 @@ int		UdpSocket::RecvFrom(Buffer& recvBuff ,SockAddress & srcAddr, int iFlags )
 			(iRead > 0 && recvBuff.iCap - recvBuff.iUsed > 0));			
 	if(iRead > 0)
 	{
-         LOG_DEBUG("read buffer [END CHAR ASCII=0x%02x] len=%d cap=%d !",recvBuff.pBuffer[recvBuff.iUsed-1],recvBuff.iUsed,recvBuff.iCap);        
+        //LOG_DEBUG("read buffer [END CHAR ASCII=0x%02x] len=%d cap=%d !",recvBuff.pBuffer[recvBuff.iUsed-1],recvBuff.iUsed,recvBuff.iCap);        
 		return 0;
 	}
 	else if(0 == iRead)

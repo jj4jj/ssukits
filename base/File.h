@@ -29,6 +29,11 @@ public:
     //return 
     virtual int  Write(const char* pBuffer,int iLen);
     virtual int  Read(char * pBuffer,int iLen);
+    int     ShareLock();
+    int     ExcluLock();
+    void    Unlock();
+    int     GetFD();
+    const char*  GetLine(char* pBuffer,int iLen);
 public:
     static bool Exist(const char* pszFile);
     static int  Rename(const char* pszOld,const char* pszNew);

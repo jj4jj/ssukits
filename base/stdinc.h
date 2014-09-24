@@ -88,6 +88,8 @@ using std::tr1::unordered_set;
 #include <sys/stat.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/file.h>
+
 
 #include <arpa/inet.h>
 #include <arpa/inet.h>
