@@ -212,6 +212,11 @@ int  File::ListFiles(std::vector<std::string> &  files,const char* pszDir)
 	closedir(dfd);
     return 0;
 }
+int    File::Flush()
+{
+    return fflush(pFile);
+}
+
 const char*  File::GetLine(char* pBuffer,int iLen)
 {
     size_t n = iLen;

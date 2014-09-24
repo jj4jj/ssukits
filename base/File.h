@@ -34,6 +34,7 @@ public:
     void    Unlock();
     int     GetFD();
     const char*  GetLine(char* pBuffer,int iLen);
+    int     Flush();
 public:
     static bool Exist(const char* pszFile);
     static int  Rename(const char* pszOld,const char* pszNew);
