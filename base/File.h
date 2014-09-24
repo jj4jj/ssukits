@@ -1,7 +1,5 @@
-
 #pragma once
 #include "stdinc.h"
-
 
 class File
 {
@@ -35,6 +33,10 @@ public:
     int     GetFD();
     const char*  GetLine(char* pBuffer,int iLen);
     int     Flush();
+    int     Seek(int whence = SEEK_SET , int64_t offset = 0L );
+    int     ScanFormat(const char* pszFormat  ,...);
+    int     WriteFormat(const char* pszFormat ,...);
+
 public:
     static bool Exist(const char* pszFile);
     static int  Rename(const char* pszOld,const char* pszNew);

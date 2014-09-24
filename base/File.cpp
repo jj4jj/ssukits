@@ -1,6 +1,6 @@
 #include "CommonMacro.h"
 #include "File.h"
-
+#include "Log.h"
 
 
 static int FileAttrCompByLastModifyTime(struct stat & s1,struct stat& s2)
@@ -139,7 +139,7 @@ int File::Rename(const char* pszOld,const char* pszNew)
 }
 void  File::FileListSort(std::vector<string> &  files,const char* pszDir,FileAttrCompare pfnCmp)
 {
-    //见一个索引表.从小到大比较.
+    //create index , compare 
     typedef std::map<string,struct stat>          FileStatMap;
     //typedef FileStatMap::iterator                 FileStatMapItr;
     
@@ -216,18 +216,31 @@ int    File::Flush()
 {
     return fflush(pFile);
 }
+int     File::WriteFormat(const char* pszFormat,...)
+{
+	va_list ap;
+	va_start(ap, pszFormat);
+    int ret = vfprintf(pFile,pszFormat,ap);
+	va_end(ap);
+    return ret;
+}
+
+int     File::ScanFormat(const char* pszFormat,...)
+{
+	va_list ap;
+	va_start(ap, pszFormat);
+    int ret = vfscanf(pFile,pszFormat,ap);
+	va_end(ap);
+    return ret;
+}
+int    File::Seek(int whence,int64_t offset )
+{
+    return    fseek(pFile,offset,whence);
+}
 
 const char*  File::GetLine(char* pBuffer,int iLen)
 {
-    size_t n = iLen;
-    size_t r = getline(&pBuffer,&n,pFile);
-    //erase the last newline char
-    //****\n\0
-    if(pBuffer[r-1] == '\n')
-    {
-        pBuffer[r-1] = '\0';
-    }
-    return pBuffer;
+    return fgets(pBuffer,iLen,pFile);
 }
 int File::Read(char * pBuffer,int iLen)
 {
