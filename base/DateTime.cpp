@@ -1,4 +1,7 @@
 #include "DateTime.h"
+#include "StringUtil.h"
+
+
 
 #define US_S_FACTOR     (1000000)
 
@@ -87,6 +90,43 @@ void Time::usappend(struct timeval & time , int64_t append)
         }
     }
 }
+time_t Time::mkTimeStamp(const char* psTime,const char* pszFormat )
+{
+    string sdatetime = psTime;
+    StringUtil::ReplaceAll(sdatetime," ","-");
+    StringUtil::ReplaceAll(sdatetime,":","-");
+    StringUtil::ReplaceAll(sdatetime,"/","-");
+
+    char* pszTime = sdatetime.c_str();
+    //char sTemp[20] , s1[5] ;
+    struct tm tmTime;
+    time_t lTime ;
+
+	int iNum = 0;
+	int aiValues[6];
+	iNum = StringUtil::SplitNum(pszTime, aiValues, 6, "-");
+	if(iNum < 6)
+	{
+		return 0;
+	}
+	tmTime.tm_year = aiValues[0]-1900;
+	tmTime.tm_mon  = aiValues[1]-1;
+	tmTime.tm_mday = aiValues[2];
+	tmTime.tm_hour = aiValues[3];
+	tmTime.tm_min  = aiValues[4];
+	tmTime.tm_sec  = aiValues[5];
+	
+    tmTime.tm_isdst=0; //标准时间，非夏令时
+    lTime =mktime(&tmTime);	
+	return lTime ;
+}
+/*
+const char* Time::fmtTime(time_t t,const char* pszFormat,char* buffer,int bflen)
+{
+    //todo
+    
+}
+*/
 
 string Time::ToString()
 {

@@ -11,6 +11,9 @@ public:
     static void now(struct timeval & tv,struct timezone *tz = NULL);
     static int64_t uspast(struct timeval & after,struct timeval & before);
     static void usappend(struct timeval & time , int64_t append);
+    static time_t mkTimeStamp(const char* pszTime,const char* pszFormat = NULL);
+    //todo
+    //static const char* fmtTime(time_t t,const char* pszFormat,char* buffer,int bflen);
 public:
     Time(time_t tm = 0);    
     Time(struct timeval _tv);
