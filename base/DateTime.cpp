@@ -97,7 +97,7 @@ time_t Time::mkTimeStamp(const char* psTime,const char* pszFormat )
     StringUtil::ReplaceAll(sdatetime,":","-");
     StringUtil::ReplaceAll(sdatetime,"/","-");
 
-    char* pszTime = sdatetime.c_str();
+    char* pszTime = const_cast<char*>(sdatetime.c_str());
     //char sTemp[20] , s1[5] ;
     struct tm tmTime;
     time_t lTime ;

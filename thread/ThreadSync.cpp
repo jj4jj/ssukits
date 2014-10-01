@@ -5,7 +5,8 @@
 
 Mutex::Mutex()
 {
-    mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_t tmp = PTHREAD_MUTEX_INITIALIZER;
+    mutex = tmp;
 }
 void Mutex::SetMutex(pthread_mutex_t _mu)
 {
@@ -43,7 +44,8 @@ int Mutex::Trylock()
 
 Condition::Condition()
 {
-     cond = PTHREAD_COND_INITIALIZER;
+    pthread_cond_t tmp = PTHREAD_COND_INITIALIZER;
+    cond = tmp;   
 }
 void Condition::SetCond(pthread_cond_t _cond)
 {

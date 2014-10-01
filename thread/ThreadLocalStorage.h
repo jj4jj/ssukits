@@ -3,6 +3,8 @@
 #include "base/stdinc.h"
 #include "base/Singleton.hpp"
 #include "ThreadSync.h"
+
+
 //pthread_once
     //pthread_once_t
     //once
@@ -34,7 +36,7 @@ public:
 public:
     typedef void (*FNDestroyKeyValue)(void* p);
     //single thread
-    int Init(int iKeyPoolSize);
+    int  Init(int iKeyPoolSize);
     //single thread
     void Destroy();
     pthread_key_t * CreateKey(FNDestroyKeyValue fndestroy);

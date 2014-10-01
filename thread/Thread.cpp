@@ -22,7 +22,7 @@ int    Thread::Create(pthread_attr_t * restrict attr,ThreadCallBack tcb,void* pT
 	        tcb,pTcbArg);
     if(ret == 0)
     {
-        LOG_DEBUG("thread id = %d is created ok !",thread_id);
+        LOG_DEBUG("thread id = %u is created ok !",thread_id);
     }
     else
     {

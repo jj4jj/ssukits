@@ -86,13 +86,28 @@ void StringUtil::ReplaceAll(string & src , const string & match, const string & 
 {
     do
     {
-        int pos = src.find(match);    
+        size_t pos = src.find(match);    
         if(pos == string::npos)
         {
             break;
         }
         src.replace(pos,match.length(),repl);
     }while(true);
+}
+size_t StringUtil::Hash(const string & s)
+{
+    return Hash(s.c_str());
+}
+//BKDRHash
+size_t StringUtil::Hash(const char *  str)
+{
+    unsigned int seed = 13131; // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+    while (*str)
+    {
+        hash = hash * seed + (*str++);
+    }
+    return (hash & 0x7FFFFFFF);
 }
 
 #endif

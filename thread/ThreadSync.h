@@ -21,6 +21,21 @@ private:
     pthread_mutex_t mutex;
 };
 
+class MutexLockGuard
+{
+public:
+    MutexLockGuard(Mutex & _mutex):mutex(_mutex)
+    {
+        mutex.Lock();
+    }
+    ~MutexLockGuard()
+    {
+        mutex.Unlock();
+    }
+    /////////////////
+    Mutex & mutex;
+};
+
 /////////////////////////////////////////////////////////////////
 
 class Condition

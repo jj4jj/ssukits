@@ -23,7 +23,8 @@ public:
      int    Detach();
 public:
     static pthread_t   GetCurrentThreadID();
-    static void     ExitCurrentThread(void* retval);
+    static void        ExitCurrentThread(void* retval);
+    static void        usleep(int   us){usleep(us);}
 private:
     pthread_t       thread_id;
 };

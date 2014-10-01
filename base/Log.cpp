@@ -34,10 +34,15 @@ int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,
     {
         return -1;
     }
+    static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&mutex);
+    
+    
     static char szBuffer[MAX_SZ_BUFFER_SIZE];// = new char[MAX_SZ_BUFFER_SIZE];
-    const char * pszLineHeadFmt = "%s | %s | %s:%d | %s | ";
+    const char * pszLineHeadFmt = "%s | %d | %s | %s:%d | %s | ";
     snprintf(szBuffer,MAX_SZ_BUFFER_SIZE,pszLineHeadFmt,
             Time::now().ToString().c_str(),
+            pthread_self(),
 			pszLogLv[lv],
             pszFile,line,pszFunction);
     int iLineLen = strlen(szBuffer);
@@ -55,6 +60,7 @@ int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,
         szBuffer[MAX_SZ_BUFFER_SIZE - 1] = '\0';
         iLineLen = MAX_SZ_BUFFER_SIZE - 1;
     }
+
     
     if(ptrFile)
     {
@@ -66,6 +72,8 @@ int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,
         fprintf(stderr,"%s",szBuffer);
         fprintf(stderr,"%s","\r\n");
     }
+    
+    pthread_mutex_unlock(&mutex);
 	return 0;
 }
 
