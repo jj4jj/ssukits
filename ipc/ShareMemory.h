@@ -11,7 +11,7 @@ public:
     void    Destroy();
     void*   GetData();
 public:
-    static  int     PathToKey(const char *pszPath,int iID);
+    static  int     PathToKey(const char *pszPath,int iID = 1);
     static  void    Destroy(int shmid);
     static  int     Control(int shmid, int cmd, struct shmid_ds *buf);
 protected:
