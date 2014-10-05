@@ -10,23 +10,51 @@ ShareMemory::ShareMemory():iShmId(-1),pDataBase(NULL)
 }
 ShareMemory::~ShareMemory()
 {
-    Detach();
+    //Detach();
 }
 #endif
 
 
 
 #if 1
-int     ShareMemory::Attach(int iKey, size_t size)
+bool    ShareMemory::Exists(int iKey,int iFlag)
+{    
+    int mshmid = shmget(iKey,0,IPC_CREAT|IPC_EXCL|iFlag);
+    if ( mshmid < 0 && errno == EEXIST )
+    {
+        LOG_DEBUG("shm key = %d is already exist .",iKey);
+        return true;
+    }    
+    else
+    {
+        LOG_DEBUG("get old shm id = %d errno = %d .",
+                  mshmid,errno);
+        if(mshmid >= 0)
+        {
+            Destroy(mshmid);
+        }
+        return false;
+    }
+}
+
+int     ShareMemory::Attach(int iKey,size_t size, int iFlag)
 {
-    //if not exist ,return error
-    return AuxGet(iKey,size,IPC_EXCL);
+    if(!Exists(iKey,iFlag))
+    {
+        LOG_ERROR("attach an not exist memory ! key = %d",iKey);
+        return 1;
+    }
+    //if not exist ,return error .
+    iFlag &=  (~IPC_CREAT);
+    return AuxGet(iKey,size,iFlag);
 }
 //if not exist , create it , if exist attach it
 int      ShareMemory::Create(int iKey, size_t size, int iFlag )
 {
-    int iPrivFlag = iFlag&(~IPC_EXCL);
-    return AuxGet(iKey,size,iPrivFlag|IPC_CREAT);
+    //if already exists, fail
+    iFlag |= IPC_CREAT;    
+    iFlag |= IPC_EXCL;
+    return AuxGet(iKey,size,iFlag);
 }
 void    ShareMemory:: Detach()
 {
@@ -51,6 +79,11 @@ void*   ShareMemory::GetData()
 {
     return pDataBase;
 }
+int     ShareMemory::GetShmID()
+{
+    return iShmId;
+}
+
 #endif
 
 #if 1
@@ -92,6 +125,7 @@ int     ShareMemory::AuxGet(int iKey,size_t sz,int iCreateFlag,int iIOFlag ,void
         //- need to dt ? no 
         return -1 ;
     }   
+    LOG_DEBUG("get shm id = %d size = %zu ok .",shmid,sz);
     iShmId = shmid;
     pDataBase = shmaddr;
     return 0;

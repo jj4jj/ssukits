@@ -3,13 +3,17 @@
 #include "base/stdinc.h"
 class ShareMemory
 {
+public:
+    #define DEFAULT_ACCESS  (0664)
 public:    
-    int     Attach(int iKey, size_t size);
+    bool    Exists(int iKey,int iFlag = DEFAULT_ACCESS);
+    int     Attach(int iKey,size_t size, int iFlag = DEFAULT_ACCESS);
     //if not exist , create it , if exist attach it
-    int     Create(int iKey, size_t size, int iFlag );
+    int     Create(int iKey, size_t size, int iFlag = DEFAULT_ACCESS);
     void    Detach();
     void    Destroy();
     void*   GetData();
+    int     GetShmID();
 public:
     static  int     PathToKey(const char *pszPath,int iID = 1);
     static  void    Destroy(int shmid);
