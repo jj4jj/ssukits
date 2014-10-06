@@ -89,7 +89,7 @@ using std::tr1::unordered_set;
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/file.h>
-
+#include <sys/syscall.h>
 
 #include <arpa/inet.h>
 #include <arpa/inet.h>

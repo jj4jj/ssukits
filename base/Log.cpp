@@ -1,6 +1,6 @@
-#include "Log.h"
 #include "stdinc.h"
 #include "DateTime.h"    
+#include "Log.h"
 
 Log::Log(LogLevel iLv)
 {
@@ -39,7 +39,7 @@ int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,
     
     
     static char szBuffer[MAX_SZ_BUFFER_SIZE];// = new char[MAX_SZ_BUFFER_SIZE];
-    const char * pszLineHeadFmt = "%s | %d | %s | %s:%d | %s | ";
+    const char * pszLineHeadFmt = "%s | %u | %s | %s:%d | %s | ";
     snprintf(szBuffer,MAX_SZ_BUFFER_SIZE,pszLineHeadFmt,
             Time::now().ToString().c_str(),
             pthread_self(),
