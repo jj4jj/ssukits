@@ -2,10 +2,9 @@
 #include "DateTime.h"    
 #include "Log.h"
 
-Log::Log(LogLevel iLv)
+Log::Log()
 {
-    iFilterLv = iLv;     
-    //pszBuffer = NULL;
+    iFilterLv = LOG_LV_DEBUG;     
 }
 Log::~Log()
 {

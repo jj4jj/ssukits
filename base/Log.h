@@ -37,7 +37,7 @@ public:
 	int Init(const char* pszLogFileName = NULL,LogLevel iFilterLv_ = LOG_LV_DEBUG,int iSingleFileKBSize = 1024,int iMaxLogFileNum = 20);
 	int Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,const char* szfmt, ...);
 public:
-	Log(LogLevel iFilterLv_= LOG_LV_DEBUG);
+	Log();
     ~Log();    
 private:
 	int iFilterLv;

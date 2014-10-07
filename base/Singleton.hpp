@@ -19,28 +19,50 @@
 
 #pragma once
 #include "NonCopyable.hpp"
-
+#include <pthread.h>
+#include <memory>
 //single thread edition 
 //multi thread edition
 //
-//
-//
-//
-//
 
-// just have single thread edition.
-template<class HostType>
+////////////////////////////////////////////////////
+using std::auto_ptr;
+
+template <class T>
 class Singleton
 {
-public:
-	static HostType & Instance()
-	{
-		static HostType s_Inst;
-		return s_Inst;
-	}
-protected:
-	Singleton(){}
+public :
+    static inline T* instance();
+    static inline T& Instance()
+    {
+        return *instance();
+    }
+protected :
+    Singleton(void){}
+    ~Singleton(void){}
+    Singleton(const Singleton&){}
+    Singleton & operator = (const Singleton &){} 
+    static auto_ptr<T> _instance;
 };
-
+ 
+template <class T>
+auto_ptr<T> Singleton<T>::_instance;
+ 
+template <class T>
+inline T* Singleton<T>::instance()
+{
+   if( 0 == _instance.get())
+   {
+        static pthread_mutex_t  mutex = PTHREAD_MUTEX_INITIALIZER;
+        pthread_mutex_lock(&mutex);
+        if(0 == _instance.get())
+        {
+            _instance.reset ( new T);
+        }
+        pthread_mutex_unlock(&mutex);
+   }  
+   return _instance.get();
+}
+
 
 
