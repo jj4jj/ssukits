@@ -55,16 +55,27 @@ using std::vector;
 #include <bitset>
 #include <stack>
 
+
+
+/////////////////////////old tr1/////////////////////
 #include <tr1/memory>
 using std::tr1::shared_ptr;
+
 #include <tr1/unordered_map>
 #include <tr1/unordered_set>
 using std::tr1::unordered_map;
 using std::tr1::unordered_set;
 
+
+/////////////////////////cxx new std/////////////////////
+//#include <memory>
+//using std::shared_ptr;
+//using std::make_shared;
+
+
+
 #include <functional>
 #include <iostream>
-
 
 //#include <tr1/functional>
 //using namespace std::tr1::placeholders;

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdinc.h"
+#include "Buffer.h"
 
 class StringUtil
 {
