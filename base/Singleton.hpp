@@ -65,4 +65,14 @@ inline T* Singleton<T>::instance()
 }
 
 
+/////////////////////////////////////////////////////////////////////////////
+#define DeclareDefaultPrivateConstructor(clsName)  \
+private:\
+    clsName(){}\
+    ~clsName(){}
+#define DeclareSingltonSupport(clsName)  \
+    friend class auto_ptr<clsName>;\
+    friend class Singleton<clsName>;
+
+
 

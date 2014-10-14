@@ -3,6 +3,7 @@
 
 class MemPool
 {
+public:
     int     Init(void* pBuffer,size_t zBufferSize,
                  int iEntySize,int iMaxEntryNum);
     /////////////////////////////////////////////////////////////////////////////////////////////////

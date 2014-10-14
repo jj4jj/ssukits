@@ -109,5 +109,27 @@ size_t StringUtil::Hash(const char *  str)
     }
     return (hash & 0x7FFFFFFF);
 }
+vector<string> StringUtil::SplitString(string & str,const char* pszSep)
+{
+    vector<string>  splits;
+    size_t start = 0;
+    size_t seplen = strlen(pszSep);
+    size_t pos  = 0;
+    do
+    {
+        pos = str.find(pszSep,start);        
+        if(pos != string::npos && pos > start)
+        {
+            splits.push_back(str.substr(start,pos));
+        }
+        start = pos+seplen;
+    }
+    while(pos != string::npos);
+    if(start < str.length() )
+    {
+        splits.push_back(str.substr(start));
+    }    
+    return splits;
+}
 
 #endif

@@ -10,6 +10,10 @@ public:
     static void ReplaceAll(string & src , const string & match, const string &  repl);
     static size_t Hash(const char *  str);
     static size_t Hash(const string & s);
+    static vector<string> SplitString(string & str,const char* pszSep);
+
+
+public:
     static int  ToBase64(string & to,const Buffer & from);
     static int  FromBase64(Buffer & to,string & from);
 };
