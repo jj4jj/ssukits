@@ -93,7 +93,7 @@ int     BatchTcpConnection::Loop(int iProcNum)
         }
         if(iRet < 0)
         {
-            LOG_ERROR("client fd = %d has ocurr an error = %d need be closed !",fd);
+            LOG_ERROR("client fd = %d has ocurr an error = %d need be closed !",fd,errno);
             mpClientHandler.erase(fd);
         }        
     }

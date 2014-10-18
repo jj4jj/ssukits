@@ -116,10 +116,15 @@ time_t Time::mkTimeStamp(const char* psTime,const char* pszFormat )
 	tmTime.tm_min  = aiValues[4];
 	tmTime.tm_sec  = aiValues[5];
 	
-    tmTime.tm_isdst=0; //标准时间，非夏令时
+    tmTime.tm_isdst=0; //standard time , not dst
     lTime =mktime(&tmTime);	
 	return lTime ;
 }
+time_t Time::GetTimeStampNow()
+{
+    return time(NULL);
+}
+
 /*
 const char* Time::fmtTime(time_t t,const char* pszFormat,char* buffer,int bflen)
 {
