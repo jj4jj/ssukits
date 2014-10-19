@@ -5,15 +5,11 @@
 //enbale this process become a daemon process.
 int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
 {
-    if(!pszWorkDir)
-    {
-        pszWorkDir = "/";
-    }
 //daemon(3)
 //Feature Test Macro Requirements for glibc (see feature_test_macros(7)):    
 #if _BSD_SOURCE || (_XOPEN_SOURCE && _XOPEN_SOURCE < 500)
     //int daemon ( int __nochdir, int __noclose) ;
-    return daemon(strcmp(pszWorkDir,"/")==0?0:1,bCloseStdFD?0:1);
+    return daemon(pszWorkDir?0:1,bCloseStdFD?0:1);
 #else
     //1.fork a child process . exit parent process
     //      enable the process into back end running.
@@ -62,7 +58,7 @@ int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
     
     //5.change current work dir
     //      it's optional.
-    if(NULL == pszWorkDir)
+    if(NULL != pszWorkDir)
     {
         if(chdir(pszWorkDir) < 0)
         {

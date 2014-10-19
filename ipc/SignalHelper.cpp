@@ -22,8 +22,8 @@ int SignalHelper::SendProcessSignal(int signo,pid_t pid)
 {
     if( kill(pid,signo) < 0)
     {
-        LOG_ERROR("send process = %d signal = %d error no = %d",
-                pid,signo,errno);
+        LOG_ERROR("send process = %d signal = %d error no = %d for = %s",
+                pid,signo,errno,strerror(errno));
         return -1;
     }
     return 0;

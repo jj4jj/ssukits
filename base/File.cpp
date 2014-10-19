@@ -51,7 +51,7 @@ int File::Open(const char*  pszFileName,const char* pszMode)
     pFile = fopen(pszFileName,pszMode);
     if(!pFile)
     {
-        printf("fopen error errno = %d",errno);
+        LOG_ERROR("fopen error errno = %d for = %s",errno,strerror(errno));
         return -1;
     }
     snprintf(szFilePath,sizeof(szFilePath),"%s",pszFileName);
