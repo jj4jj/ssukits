@@ -8,6 +8,7 @@ class UdpDriver
 {
 public:
     int     Init(int maxfds);
+    void    Destroy();
     int     AddSocket(int fd);
     int     DelSocket(int fd);
     int     Loop(int iProcNumOneRound,int iTimeOutMS = 10);

@@ -1,6 +1,11 @@
 #include "UdpDriver.h"
 
 
+void    UdpDriver::Destroy()
+{
+    epoll.Destroy();
+}
+
 int     UdpDriver::Init(int maxfds)
 {
     if(epoll.Init(maxfds))
