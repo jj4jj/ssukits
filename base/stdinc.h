@@ -63,9 +63,13 @@ using std::tr1::shared_ptr;
 
 #include <tr1/unordered_map>
 #include <tr1/unordered_set>
+#include <tr1/cstdlib>
 using std::tr1::unordered_map;
 using std::tr1::unordered_set;
 
+using std::tr1::atoll;
+using std::tr1::strtoll;
+using std::tr1::strtoull;
 
 /////////////////////////cxx new std/////////////////////
 //#include <memory>

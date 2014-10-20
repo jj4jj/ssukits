@@ -131,5 +131,30 @@ vector<string> StringUtil::SplitString(string & str,const char* pszSep)
     }    
     return splits;
 }
+long StringUtil::StrToSLong(const char* pszStr)
+{
+    long    lv = 0L;
+    if(!pszStr)
+    {
+        return lv;
+    }
+    else if(*pszStr)
+    {
+        if(*pszStr == '+' ||
+           *pszStr == '-' )
+        {
+            if(!isdigit(*pszStr))
+            {
+                return lv;
+            }
+        }
+        else if(!isdigit(*pszStr))
+        {
+            return lv;
+        }
+        return atoll(pszStr);
+    }
+    return lv;
+}
 
 #endif

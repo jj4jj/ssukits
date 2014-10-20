@@ -11,7 +11,7 @@ public:
     static size_t Hash(const char *  str);
     static size_t Hash(const string & s);
     static vector<string> SplitString(string & str,const char* pszSep);
-
+    static  long StrToSLong(const char* pszStr);
 
 public:
     static int  ToBase64(string & to,const Buffer & from);
