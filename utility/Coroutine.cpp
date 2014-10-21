@@ -98,8 +98,8 @@ void	CoroutineMgr::CoroutineFuncStub(Coroutine* co,CoroutineFunc f,void* arg)
 	LOG_INFO("co = %d is start , it is from co = %d",co->iID,co->from->iID);
 	f(co,arg);
 	co->bState = Coroutine::COROUTINE_STATUS_STOP;
-	//co->iID = 0;
 	LOG_INFO("co = %d is stoped , destroy it . decide next co = %d",co->iID,co->from->iID);
+	co->iID = 0;//destroy
 	CoroutineMgr::Instance().Yield(co->from->iID);
 	LOG_FATAL("shouldn't be called ");
 }
