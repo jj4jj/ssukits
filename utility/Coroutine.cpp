@@ -2,10 +2,11 @@
 #include "Coroutine.h"
 
 #if 1
-int CoroutineMgr::Init()
+int CoroutineMgr::Init(int iInitMaxCoroutineNum)
 {
-    iCosCap = DEFAULT_COROUTINE_NUM;
+    iCosCap = iInitMaxCoroutineNum;
     iCosCount = 1;
+    retval = 0;
 	cos = (Coroutine*)malloc(iCosCap*sizeof(Coroutine));
 	if(!cos)
 	{
@@ -22,6 +23,7 @@ int CoroutineMgr::Init()
     co.iID = 0;        
     current = &co;
     getcontext(&(co.ctx));//just for initializing
+    LOG_INFO("init coroutine mgr ok init max = %d",iInitMaxCoroutineNum);
     return 0;
 }
 CoroutineMgr::~CoroutineMgr()
@@ -60,6 +62,7 @@ Coroutine * CoroutineMgr::Alloc()
 	{
 		if(iCosCount >= iCosCap)
 		{
+            LOG_INFO("coroutine count = %d reach max = %d will expand double",iCosCount,iCosCap);
             assert(iCosCount == iCosCap);
 			cos = (Coroutine*)realloc(cos,2*iCosCap*sizeof(Coroutine));
 			if(!cos)
@@ -127,7 +130,7 @@ int	CoroutineMgr::Create(CoroutineFunc f,void * arg)
 	LOG_INFO("co = %d is create ",co->iID);
 	return co->iID;
 }
-int	CoroutineMgr::Resume(int coid)
+int	CoroutineMgr::Resume(int coid,int retv)
 {
 	Coroutine * co = Find(coid);
 	if(!co || co->bState == Coroutine::COROUTINE_STATUS_STOP )
@@ -141,6 +144,7 @@ int	CoroutineMgr::Resume(int coid)
 	//make ctx
     SetCurrent(co);
 	LOG_INFO("co = %d status = %d is resume from = %d",co->iID,co->bState,cur->iID);
+    retval = retv;
     swapcontext(&(cur->ctx),&(co->ctx));
 	return 0;
 }
@@ -149,6 +153,7 @@ int	CoroutineMgr::Yield(int coid )
     Coroutine * cur = GetCurrent();
     if(!cur)
     {
+		LOG_FATAL("current co is null !");
         return -1;
     }
 	Coroutine * co = Find(coid);
@@ -170,7 +175,7 @@ int	CoroutineMgr::Yield(int coid )
     SetCurrent(co);
 	LOG_INFO("co = %d is yield schedule next = %d for = %d",cur->iID,co->iID,coid);
     swapcontext(&(cur->ctx),&(co->ctx));
-    return 0;
+    return retval;
 }
 int	CoroutineMgr::GetStatus(int coid)
 {

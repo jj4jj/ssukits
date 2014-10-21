@@ -27,7 +27,7 @@ int main()
             return -1;
        }
        //no event occur
-       else if( 1 == ret)
+       else if( 0 == ret)
        {
             usleep(20);
        }

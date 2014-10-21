@@ -63,14 +63,15 @@ int     BatchTcpConnection::Loop(int iProcNum)
     if(0 == iNfds)
     {
         //no events
-        return 1;
+        return 0;
     }
     int iRet = 0;
-    for(int i = 0;i < iProcNum &&
+    int iCount = 0;
+    for(iCount = 0;iCount < iProcNum &&
                   iLastProcNum < iNfds;
-                  ++i,++iLastProcNum )
+                  ++iCount,++iLastProcNum )
     {
-        int fd = pEvents[i].data.fd;
+        int fd = pEvents[iLastProcNum].data.fd;
         ClientHandlerMapItr it = mpClientHandler.find(fd);
         TcpClientHandler* pHandler = NULL;
         if(it != mpClientHandler.end())
@@ -83,11 +84,11 @@ int     BatchTcpConnection::Loop(int iProcNum)
         }
         
         //must process epollout event before epollin , for connecting event
-        if(pEvents[i].events & EPOLLOUT )
+        if(pEvents[iLastProcNum].events & EPOLLOUT )
         {
             iRet = pHandler->OnWritable(fd);
         }
-        if(0 == iRet && (pEvents[i].events & EPOLLIN) )
+        if(0 == iRet && (pEvents[iLastProcNum].events & EPOLLIN) )
         {
             iRet = pHandler->OnReadable(fd);
         }
@@ -97,7 +98,7 @@ int     BatchTcpConnection::Loop(int iProcNum)
             mpClientHandler.erase(fd);
         }        
     }
-    return 0;
+    return iCount;
 }
 int     BatchTcpConnection::Shutdown()
 {

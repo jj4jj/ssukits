@@ -19,6 +19,7 @@ struct	Coroutine
 	Coroutine	*from;
 	enum
 	{
+        COROUTINE_STATUS_INVALID = 0,
 		COROUTINE_STATUS_SUSPEND = 1,
 		COROUTINE_STATUS_RUNNING = 2,
 		COROUTINE_STATUS_STOP    = 3,
@@ -26,7 +27,7 @@ struct	Coroutine
     void construct()
     {
         iID = 0;
-        bState = 0;
+        bState = COROUTINE_STATUS_INVALID;
         from = NULL;        
     }
 };
@@ -40,22 +41,25 @@ struct	Coroutine
 
 class CoroutineMgr : public Singleton<CoroutineMgr>
 {
+private:
+    CoroutineMgr(){}
+	~CoroutineMgr();
+    DeclareSingltonSupport(CoroutineMgr)
 public:
 enum {
 		DEFAULT_STACK_SIZE = 8192,	
-        DEFAULT_COROUTINE_NUM = 64,
+        DEFAULT_COROUTINE_NUM = 128,
 	};
 public:
- 	int Init();
-	~CoroutineMgr();
+ 	int Init(int    iMaxCoroutineNum = DEFAULT_COROUTINE_NUM);
 public:
 	static void	CoroutineFuncStub(Coroutine* co,CoroutineFunc f,void* arg);
     int	Create(CoroutineFunc f,void * arg);	
-	int	Resume(int coid);
+	int	Resume(int coid,int retv = 0);
 	int	Yield(int coid = 0);
 	int	GetStatus(int coid);
 	Coroutine*	Find(int id);
-    void    BackTrace();
+    void        BackTrace();
 private:
     Coroutine*  GetCurrent();
     void        SetCurrent(Coroutine* co);
@@ -66,6 +70,7 @@ private:
 	int				iCosCount;
 	Coroutine	*	cos;	
     Coroutine   *   current;
+    volatile    int   retval;
 };
 
 
