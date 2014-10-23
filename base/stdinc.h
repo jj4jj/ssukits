@@ -90,6 +90,14 @@ using std::tr1::strtoull;
 
 //------------------prototypes---------------------
 
+
+//-------------------------------------------------
+///////////////////////////////////////////////////////
+#ifndef gettid
+#include <sys/syscall.h>
+#define gettid() syscall(__NR_gettid)
+#endif
+
 //------------------linux system call -------------
 #include <unistd.h>
 #include <dirent.h>
@@ -118,6 +126,7 @@ using std::tr1::strtoull;
 
 
 
+//////////////////////////////////////////////////////
 #ifndef restrict
 #define restrict 
 #endif
