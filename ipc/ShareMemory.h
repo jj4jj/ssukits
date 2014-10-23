@@ -8,6 +8,7 @@ public:
 public:    
     bool    Exists(int iKey,int iFlag = DEFAULT_ACCESS);
     int     Attach(int iKey,size_t size, int iFlag = DEFAULT_ACCESS);
+    int     GetAttachNum();
     //if not exist , create it , if exist attach it
     int     Create(int iKey, size_t size, int iFlag = DEFAULT_ACCESS);
     void    Detach();

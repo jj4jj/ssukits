@@ -36,6 +36,18 @@ bool    ShareMemory::Exists(int iKey,int iFlag)
         return false;
     }
 }
+int     ShareMemory::GetAttachNum()
+{
+    //todo
+    struct shmid_ds buf ;    
+    int    flag = shmctl(iShmId, IPC_STAT, &buf) ;
+    if ( flag == -1 )
+    {
+        LOG_ERROR("shmctl shm error") ;
+        return -1;
+    }
+    return buf.shm_nattch;
+}
 
 int     ShareMemory::Attach(int iKey,size_t size, int iFlag)
 {
