@@ -17,8 +17,9 @@
  * =====================================================================================
  */
 #pragma once
+
 #include "Singleton.hpp"
-#include "File.h"
+#include "LogFile.h"
 
 class Log : public Singleton<Log>
 {

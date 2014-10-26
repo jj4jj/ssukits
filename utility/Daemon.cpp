@@ -3,7 +3,8 @@
 
 
 //enbale this process become a daemon process.
-int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
+int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,
+        mode_t mask,const char* stdoutlogprefix )
 {
 //daemon(3)
 //Feature Test Macro Requirements for glibc (see feature_test_macros(7)):    
@@ -50,7 +51,14 @@ int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,mode_t mask)
     if(bCloseStdFD)
     {
         close(0);
-        open ("/dev/null",O_RDWR,0);
+        if(!stdoutlogprefix)
+        {
+            open("/dev/null",O_RDWR,0);
+        }
+        else
+        {
+            open(stdoutlogprefix,O_RDWR,0);
+        }
         dup2(0,1);
         dup2(0,1);
     }
