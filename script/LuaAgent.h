@@ -49,8 +49,11 @@ public:
     //lua_close
     void    Destroy();
     int     OpenLib(const char * szLibName);
+    void    OpenStdLib();
     lua_State*  GetLuaState();
 public:
+    int     GCStop();
+    int     GCRestart();
     void    PushNil();
     void    PushNumber(double number);
     void    PushInteger(ptrdiff_t n);
@@ -58,13 +61,14 @@ public:
     void    PushString(const char* pszString);
     void    PushBoolean(bool b);
     void    PushCClosure(lua_CFunction f,int n);
+    void    PushLightUserData(void * pud);
     const char* GetTypeName(int type);
     int     GetType(int idx);
-
+    bool        IsNil(int idx);
     double      ToNumber(int idx);
     ptrdiff_t   ToInteger(int idx);
     bool         ToBoolean(int idx);
-    const char* ToLString(int idx,size_t * len);
+    const char* ToLString(int idx,size_t * len = NULL);
     lua_CFunction ToCFunction(int idx);
 
     int     GetTop();
@@ -98,6 +102,22 @@ private:
     lua_State* luaState;
 };
 
+#define EXPORT_FUNCTION(ls,func)    \
+	do{\
+        LOG_INFO("push lua function  %s = %p",#func,func);\
+	    lua_register(ls,#func,func);\
+	}while(0)
 
-
+#define EXPORT_MACRO(ls,mcr)    \
+	do{\
+        LOG_INFO("push lua macro  %s = %d",#mcr,mcr);\
+		lua_pushinteger((ls),(mcr));\
+		lua_setglobal((ls),#mcr);\
+	}while(0)
+#define EXPORT_VARIABLE(ls,var) \
+    do{\
+        LOG_INFO("push lua variable  %s = %p",#var,var);\
+		lua_pushlightuserdata((ls),(var));\
+		lua_setglobal((ls),#var);\
+    }while(0)
 

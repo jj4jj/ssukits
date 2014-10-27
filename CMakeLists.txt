@@ -32,8 +32,8 @@ endif()
 
 
 # debug common
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Wfatal-errors -Wextra -g -rdynamic -gdwarf-2 -g3 -Wl,-Bdynamic -ldl -lpthread ")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -rdynamic -gdwarf-2 -Wall -Wfatal-errors -Wextra -Wno-unused-parameter -ldl -lpthread")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Wfatal-errors -Wextra -g -rdynamic -gdwarf-2 -g3 -Wl,-Bdynamic -ldl -lm -lpthread ")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -rdynamic -gdwarf-2 -Wall -Wfatal-errors -Wextra -Wno-unused-parameter -ldl -lm -lpthread")
 
 # release mode
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} --no-warnings -ldl -lpthread")

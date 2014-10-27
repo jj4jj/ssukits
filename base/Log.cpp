@@ -28,8 +28,7 @@ int Log::Init(const char* pszLogFileName,LogLevel iFilterLv_,int iSingleFileKBSi
 int Log::Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,const char* szfmt, ...)
 {	
     static const char * pszLogLv[] = {"LOG_LV_0","TRACE","DEBUG","INFO","WARN","ERROR","FATAL"};
-    if(lv < iFilterLv ||
-       lv > (int)(sizeof(pszLogLv)/sizeof(pszLogLv[0]) ))
+    if(lv > (int)(sizeof(pszLogLv)/sizeof(pszLogLv[0]) ))
     {
         return -1;
     }

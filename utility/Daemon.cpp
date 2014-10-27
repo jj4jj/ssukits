@@ -9,9 +9,11 @@ int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,
 //daemon(3)
 //Feature Test Macro Requirements for glibc (see feature_test_macros(7)):    
 #if _BSD_SOURCE || (_XOPEN_SOURCE && _XOPEN_SOURCE < 500)
+/*
     //int daemon ( int __nochdir, int __noclose) ;
     return daemon(pszWorkDir?0:1,bCloseStdFD?0:1);
 #else
+*/
     //1.fork a child process . exit parent process
     //      enable the process into back end running.
     pid_t pid = fork ();
@@ -51,16 +53,18 @@ int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,
     if(bCloseStdFD)
     {
         close(0);
+        close(1);
+        close(2);
         if(!stdoutlogprefix)
         {
             open("/dev/null",O_RDWR,0);
         }
         else
         {
-            open(stdoutlogprefix,O_RDWR,0);
+            open(stdoutlogprefix,O_RDWR|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR);
         }
         dup2(0,1);
-        dup2(0,1);
+        dup2(0,2);
     }
     
     
@@ -79,12 +83,7 @@ int    Daemon::Create(const char* pszWorkDir,bool bCloseStdFD,
     
     //6.set file mask
     //      clear the inheritance file mask
-    if(umusk(mask) < 0)
-    {
-        LOG_ERROR("daemonlizing umusk mask=0x%08x error !",mask);
-        return -1;
-    }
-
+    umask(mask);
 
     //7.handle sigchild signal
     //      it's optional , but when child  process is exit.

@@ -82,9 +82,22 @@ int      LuaAgent::OpenLib(const char * szLibName)
     return -1;
 #endif
 }
+void     LuaAgent::OpenStdLib()
+{
+    return luaL_openlibs(luaState);
+}
+
 lua_State*   LuaAgent::GetLuaState()
 {
     return luaState;
+}
+int     LuaAgent::GCStop()
+{
+	return lua_gc(luaState, LUA_GCSTOP, 0);
+}
+int     LuaAgent::GCRestart()
+{
+	return lua_gc(luaState, LUA_GCRESTART, 0);
 }
 void     LuaAgent::PushNil()
 {
@@ -114,9 +127,18 @@ void     LuaAgent::PushCClosure(lua_CFunction f,int n)
 {
     lua_pushcclosure(luaState,f,n);
 }
+void    LuaAgent::PushLightUserData(void * pud)
+{
+    lua_pushlightuserdata(luaState, pud);
+}
+
 const char*  LuaAgent::GetTypeName(int type)
 {
     return lua_typename(luaState,type);
+}
+bool        LuaAgent::IsNil(int idx)
+{
+    return lua_isnil(luaState,idx);
 }
 int      LuaAgent::GetType(int idx)
 {
@@ -137,7 +159,14 @@ bool          LuaAgent::ToBoolean(int idx)
 }
 const char*  LuaAgent::ToLString(int idx,size_t * len)
 {
-    return lua_tolstring(luaState,idx,len);
+    if(!len)
+    {
+        return lua_tolstring(luaState,idx,len);
+    }
+    else
+    {
+        return lua_tostring(luaState,idx);
+    }
 }
 lua_CFunction  LuaAgent::ToCFunction(int idx)
 {

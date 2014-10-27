@@ -35,6 +35,8 @@ public:
         LOG_LV_FATAL = 6,
     };
 public:
+    inline    int   GetLevel(){return iFilterLv;}
+    inline    void  SetLevel(int lv){iFilterLv = lv;}
 	int Init(const char* pszLogFileName = NULL,LogLevel iFilterLv_ = LOG_LV_DEBUG,int iSingleFileKBSize = 1024,int iMaxLogFileNum = 20);
 	int Write(LogLevel lv,const char* pszFile,const char* pszFunction,int line,const char* szfmt, ...);
 public:
@@ -55,7 +57,10 @@ private:
 /////////////////////////////////////////////////////////////////
 
 #define LOG_real(lvl, fmt, args...)	 do{\
-Log::Instance().Write(lvl, __FILE__, __FUNCTION__, __LINE__ , fmt, ##args);\
+    if(lvl >= Log::Instance().GetLevel())\
+    {\
+        Log::Instance().Write(lvl, __FILE__, __FUNCTION__, __LINE__ , fmt, ##args);\
+    }\
 }while(false)
 
 #define LOG_TRACE(fmt,args...) LOG_real(Log::LOG_LV_TRACE,fmt,##args)
