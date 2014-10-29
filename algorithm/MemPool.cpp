@@ -129,7 +129,7 @@ int     MemPool::Alloc()
         LOG_ERROR("no more space to alloc !");
         return -1;
     }
-    MemPoolEntryTag * pTag = ( MemPoolEntryTag *)((char*)m_pBufferBase + MemPoolHeadSize + pHead->iEntryAlianedSize * pHead->iFreeHead);
+    MemPoolEntryTag * pTag = ( MemPoolEntryTag *)((char*)m_pBufferBase + MemPoolHeadSize + pHead->iEntryAlianedSize * iFreePos);
     assert(0 == (pTag->dwTagAndNext&MEMPOOL_ENTRY_USED_MASK));
     //remove first free node from free list
     if(pTag->dwTagAndNext == (uint32_t)pHead->iFreeHead)
@@ -143,7 +143,7 @@ int     MemPool::Alloc()
         pHead->iFreeHead = pTag->dwTagAndNext;
     }
     //////////////////////////////////////////////////////////////
-    pTag->dwTagAndNext = (MEMPOOL_ENTRY_USED_MASK&iFreePos);//USED
+    pTag->dwTagAndNext = (MEMPOOL_ENTRY_USED_MASK|iFreePos);//USED
     if(pHead->iUseTail < 0)
     {
         //first one
@@ -152,11 +152,12 @@ int     MemPool::Alloc()
     }
     else
     {
-        pTag->dwPrev = pHead->iUseTail;
         //insert to use list tail
         MemPoolEntryTag * pUseTailTag = ( MemPoolEntryTag *)((char*)m_pBufferBase + MemPoolHeadSize + pHead->iEntryAlianedSize * pHead->iUseTail);        
-        assert(pUseTailTag->dwTagAndNext == (MEMPOOL_ENTRY_USED_MASK&(pHead->iUseTail)));        
+        assert(pUseTailTag->dwTagAndNext == (MEMPOOL_ENTRY_USED_MASK|(pHead->iUseTail)));        
         pUseTailTag->dwTagAndNext = pTag->dwTagAndNext;
+        pTag->dwPrev = pHead->iUseTail;
+        pHead->iUseTail = iFreePos;
     }
     
     pHead->iUsed++;
@@ -181,7 +182,7 @@ int     MemPool::Free(int idx)
     }
 
     //remove pos from use list
-    int iNextPos = pTag->dwTagAndNext&(MEMPOOL_ENTRY_USED_MASK);
+    int iNextPos = pTag->dwTagAndNext&(~MEMPOOL_ENTRY_USED_MASK);
     int iPrevPos = pTag->dwPrev;
 
     if(iPrevPos == idx && iNextPos == idx)
@@ -201,17 +202,25 @@ int     MemPool::Free(int idx)
     {
         //no next node , but prev
         pHead->iUseTail = iPrevPos;
-        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iPrevPos&MemPoolHeadSize;         
+        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iPrevPos|MemPoolHeadSize;         
     }
     //prev and next is valid
     else
     {
-        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iNextPos&MemPoolHeadSize;         
+        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iNextPos|MemPoolHeadSize;         
         ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iNextPos + MemPoolHeadSize))->dwPrev = iPrevPos;         
     }
     
     //insert to free list head
-    pTag->dwTagAndNext = pHead->iFreeHead;
+    if(pHead->iFreeHead >= 0)
+    {
+        pTag->dwTagAndNext = pHead->iFreeHead;
+    }
+    else
+    {
+        pTag->dwTagAndNext = idx;
+    }
+    pTag->dwPrev = idx ;
     pHead->iFreeHead = idx;
 
     pHead->iUsed--;
@@ -261,7 +270,7 @@ void*   MemPool::GetNextEntry(int & itr)
     {
         return NULL;
     }
-    MemPoolEntryTag* pTag = (MemPoolEntryTag*)m_pBufferBase + MemPoolHeadSize + pHead->iEntryAlianedSize* itr;
+    MemPoolEntryTag* pTag = (MemPoolEntryTag*)((char*)m_pBufferBase + MemPoolHeadSize + pHead->iEntryAlianedSize* itr);
     if(pTag->dwTagAndNext & MEMPOOL_ENTRY_USED_MASK)
     {
         itr = pTag->dwTagAndNext&(~MEMPOOL_ENTRY_USED_MASK);
@@ -272,7 +281,7 @@ void*   MemPool::GetNextEntry(int & itr)
 int     MemPool::Check(void* pBuffer,int iEntrySize,int iMaxEntryNum)
 {
     MemPoolHead* pHead = (MemPoolHead*)pBuffer;
-    if(pHead->iMaxNum != iEntrySize ||
+    if(pHead->iMaxNum != iMaxEntryNum ||
        pHead->iEntryAlianedSize != GetEntryAlienedSize(iEntrySize))
     {
         //size check error
