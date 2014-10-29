@@ -59,6 +59,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/inst)
 
 add_subdirectory(base)
 add_subdirectory(net)
+add_subdirectory(algorithm)
 add_subdirectory(ipc)
 #add_subdirectory(math)
 add_subdirectory(thread)

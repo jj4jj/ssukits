@@ -69,9 +69,11 @@ target_link_libraries(test_base
 )
 
 target_link_libraries(test_lua
+	libssukits_script.a
 	libssukits_base.a
 	liblua.a
-	libssukits_script.a
+	rt
+	dl
 )
 
 

@@ -4,6 +4,7 @@
 class MemPool
 {
 public:
+    MemPool(){m_pBufferBase = NULL;}
     int     Init(void* pBuffer,size_t zBufferSize,
                  int iEntySize,int iMaxEntryNum);
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,18 +17,16 @@ public:
     int     Free(int idx);
     //idx
     int     Addr2Idx(void* p);
-    int     Idx2Addr(int idx);
+    void*   Idx2Addr(int idx);
     void*   operator [](int idx);
     //////////////////////////
     int     MaxCount();
     int     Count();    
-    //head is 0
+    int     GetEntryBegin();
     void*   GetNextEntry(int & itr);    
 protected:
-    int     Check();
+    int     Check(void* pBuffer,int iEntrySize,int iMaxEntryNum);
 public:
     void*    m_pBufferBase;
-    size_t   m_zBuffSize;
-    int      iEntrySize;
 };
 

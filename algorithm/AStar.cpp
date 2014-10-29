@@ -145,7 +145,7 @@ int    AStar2D::ExtendNode(Pos2D& pos)
         return -1;
     }
 
-    for(int i = 0; i < ngbs.size(); ++i)
+    for(int i = 0; i < (int)ngbs.size(); ++i)
     {
         if(IsPosVisited(ngbs[i]))
         {
