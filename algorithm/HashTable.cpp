@@ -46,19 +46,44 @@ struct HashTableHead
 #define HashTableKeyIndexSize   ((sizeof(HashTableKeyIndex) + HashTableAlianSize - 1)/HashTableAlianSize*HashTableAlianSize)
 
 #if 1
-static HashTableKeyIndex * FindListKeyIndex(HashTableHead* pHead,size_t zhash,
-                                            PFNHashCompare comp,
-                                            void * pEntry,MemPool & mempool,
-                                            int   iBegin )
+static HashTableKeyIndex * FindListKeyIndex(HashTableHead* pHead,size_t zhash,int & iBegin)
 {
-    LOG_WARN("find in list !");
+    if(iBegin >= pHead->iHashTableKeyIndexListTail)
+    {
+        LOG_WARN("iBegin = %d is bigger than tail = %d !",iBegin,pHead->iHashTableKeyIndexListTail);
+        return NULL;
+    }
+    HashTableKeyIndex * ret = NULL;
     //todo replace by bsearch
     HashTableKeyIndex * pIndex = (HashTableKeyIndex*)((char*)pHead + pHead->zKeyIndexListOffset);
     assert(pHead->iHashTableKeyIndexListTail < pHead->iMaxEntryNum);
+    for(int i = iBegin; i < pHead->iHashTableKeyIndexListTail; ++i)
+    {
+        if(pIndex[i].zKey != zhash)
+        {
+            continue;
+        }
+        iBegin = i;
+        ret = &(pIndex[i]);
+        break;
+    }
+    LOG_WARN("find key in list  zhash = %zu beg = %d ret = %p !",zhash,iBegin,ret);
+    return ret;
+}
+static inline HashTableKeyIndex * FindListEntryKeyIndex(HashTableHead* pHead,size_t zhash,
+                                            PFNHashCompare comp,
+                                            void * pEntry,MemPool & mempool,
+                                            int   iBegin = 0 )
+{
     if(iBegin >= pHead->iHashTableKeyIndexListTail)
     {
+        LOG_WARN("iBegin = %d is bigger than tail = %d !",iBegin,pHead->iHashTableKeyIndexListTail);
         return NULL;
     }
+    HashTableKeyIndex * ret = NULL;
+    //todo replace by bsearch
+    HashTableKeyIndex * pIndex = (HashTableKeyIndex*)((char*)pHead + pHead->zKeyIndexListOffset);
+    assert(pHead->iHashTableKeyIndexListTail < pHead->iMaxEntryNum);
     for(int i = iBegin; i < pHead->iHashTableKeyIndexListTail; ++i)
     {
         if(pIndex[i].zKey != zhash)
@@ -68,17 +93,19 @@ static HashTableKeyIndex * FindListKeyIndex(HashTableHead* pHead,size_t zhash,
         void * prEntry = mempool.Idx2Addr(pIndex[i].iIndex);
         if(comp(prEntry,pEntry) == 0)
         {
-            return &(pIndex[i]);
+            ret = &(pIndex[i]);
+            break;
         }
     }
-    return NULL;    
+    LOG_WARN("find in list  zhash = %zu ret = %p !",zhash,ret);
+    return ret;
 }
 static int      InsertListKeyIndex(HashTableHead* pHead,size_t zhash,
                         PFNHashCompare comp,MemPool & mempool,
                         void * pEntry )
 {
 
-    LOG_WARN("insert in list !");
+    LOG_WARN("insert into list !");
 
     //todo replace by bsearch
     HashTableKeyIndex * pIndex = (HashTableKeyIndex*)((char*)pHead + pHead->zKeyIndexListOffset);
@@ -105,11 +132,11 @@ static int      InsertListKeyIndex(HashTableHead* pHead,size_t zhash,
     return 0;
 }
 
-static int  GetListKeyIndexOffset(HashTableHead* pHead,HashTableKeyIndex * pIndex )
+static inline int  GetListKeyIndexOffset(HashTableHead* pHead,HashTableKeyIndex * pIndex )
 {
     HashTableKeyIndex * pBase = (HashTableKeyIndex* )((char*)pHead + pHead->zKeyIndexListOffset);
     if(pIndex < pBase ||
-       pIndex > pBase + pHead->iHashTableKeyIndexListTail )
+       pIndex >= pBase + pHead->iHashTableKeyIndexListTail )
     {
         LOG_FATAL("get error offset base = %p p = %p!",pBase,pIndex);
         return -1;
@@ -119,6 +146,8 @@ static int  GetListKeyIndexOffset(HashTableHead* pHead,HashTableKeyIndex * pInde
 
 static int  RemoveListKeyIndex(HashTableHead* pHead,HashTableKeyIndex * pIndex,MemPool & mempool)
 {
+    LOG_WARN("remove from list !");
+
     int iOffset = GetListKeyIndexOffset(pHead,pIndex);
     if(iOffset < 0)
     {
@@ -167,48 +196,46 @@ int     HashTable::Init(void* pBuffer,size_t zBufferSize,
     //////////////////////////////////////////////////////////////////////////
     memset(pBuffer,0,zSize);
     HashTableHead * pHead = (HashTableHead*)pBuffer;
-    int iLayerBuckets = 0;
     OnTheFlyPrimeTable  ofp;
     int iLastPrime = ofp.GetNextPrime(iMaxEntryNum);
-    iLayerBuckets += iLastPrime;
-    pHead->iTotalBucketsNum = 0;
+    int iLayerBuckets = iLastPrime;
     pHead->iEntrySize = iEntySize;
+    pHead->iMaxEntryNum = iMaxEntryNum;
     pHead->iMaxBucketsFactor = iMaxBucketsFactor;
     pHead->aKeyBucketsNum[0] = iLastPrime;
     pHead->azKeyBucketsOffset[0] = HashTableHeadSize;    
-    pHead->iTotalBucketsNum += iLastPrime;
-    for(int i = 1;i <= iMaxBucketsFactor; ++i)
+    for(int i = 1;i < iMaxBucketsFactor; ++i)
     {
         int  p = ofp.GetPrevPrime(iLastPrime);
         if(p <= 0)
         {
             p = iLastPrime;
         }
-        iLayerBuckets += p;
         iLastPrime = p;
-        pHead->iTotalBucketsNum += iLastPrime;
         pHead->aKeyBucketsNum[i] = iLastPrime;
-        pHead->azKeyBucketsOffset[i] = 
-            pHead->azKeyBucketsOffset[i-1] + pHead->aKeyBucketsNum[i-1]*sizeof(int);
+        pHead->azKeyBucketsOffset[i] = iLayerBuckets*sizeof(int);
+        iLayerBuckets += iLastPrime;
     }
-    for(int j = 0 ; j < iLastPrime; ++j)
+    int * pLayerIndexBase = ((int*)((char*)pBuffer + HashTableHeadSize ));
+    for(int j = 0 ; j < iLayerBuckets; ++j)
     {
-        ((int*)((char*)m_pBuffer + HashTableHeadSize ))[j] = -1;
+        pLayerIndexBase[j] = -1;
     }
-    pHead->zKeyIndexListOffset = pHead->azKeyBucketsOffset[iMaxBucketsFactor-1] + pHead->aKeyBucketsNum[iMaxBucketsFactor-1]*sizeof(int);
-    pHead->iTotalBucketsNum += iMaxEntryNum;
+    pHead->zKeyIndexListOffset = HashTableHeadSize + iLayerBuckets*sizeof(int);
+    pHead->iTotalBucketsNum = iLayerBuckets + iMaxEntryNum;
+    HashTableKeyIndex * pKeyIndex = (HashTableKeyIndex*)((char*)pBuffer + pHead->zKeyIndexListOffset);
     for(int j = 0 ; j < iMaxEntryNum; ++j)
     {
-        HashTableKeyIndex * pKeyIndex = (HashTableKeyIndex*)((char*)m_pBuffer + pHead->zKeyIndexListOffset);
         pKeyIndex[j].iIndex = -1;
     }    
     pHead->zmmpoolOffset = pHead->zKeyIndexListOffset + iMaxEntryNum*HashTableKeyIndexSize;
 
     STRNCPY(pHead->szMagic,sizeof(pHead->szMagic),HashTableMagic);
     size_t zMemPoolSize = zSize - pHead->zmmpoolOffset;
-    if(mempool.Init(pBuffer,zMemPoolSize, iEntySize, iMaxEntryNum))
+    int ret = mempool.Init((char*)pBuffer + pHead->zmmpoolOffset,zMemPoolSize, iEntySize, iMaxEntryNum);
+    if(ret)
     {
-        LOG_ERROR("mem pool init error !");
+        LOG_ERROR("mem pool init error = %d !",ret);
         return -3;
     }
     ////////////////////////////////////////////////
@@ -279,16 +306,16 @@ int     HashTable::Insert(void* pEntry)
     //multi factor hash
     for(int i = 0;i < pHead->iMaxBucketsFactor; ++i)
     {
-        int idx = zhash%pHead->aKeyBucketsNum[i];
+        int idx = zhash%(pHead->aKeyBucketsNum[i]);
         int * pIndexBase = (int*)((char*)m_pBuffer + pHead->azKeyBucketsOffset[i]);
         if(pIndexBase[idx] < 0)
         {
             //alloc it
             //mempool insert            
             int iPos = mempool.Alloc();
-            memcpy(mempool.Idx2Addr(iPos),pEntry,pHead->iEntrySize);            
+            memcpy(mempool.Idx2Addr(iPos),pEntry,pHead->iEntrySize);  
             pIndexBase[idx] = iPos;
-            pHead->iTotalUseCount++;            
+            ++(pHead->iTotalUseCount);            
             return 0;
         }
         ///if is same , repeat
@@ -296,6 +323,7 @@ int     HashTable::Insert(void* pEntry)
         if(0 == m_fnComp(pEntry,prEntry))
         {
             //repeat
+            //LOG_DEBUG("repeat insert zhash = %zu",zhash);
             return -2;
         } 
     }
@@ -310,7 +338,7 @@ int     HashTable::Remove(void* pEntry)
     int * piFindIdx = NULL;
     for(int i = 0;i < pHead->iMaxBucketsFactor; ++i)
     {
-        int idx = zhash%pHead->aKeyBucketsNum[i];
+        int idx = zhash%(pHead->aKeyBucketsNum[i]);
         int * pIndexBase = (int*)((char*)m_pBuffer + pHead->azKeyBucketsOffset[i]);
         if(pIndexBase[idx] < 0)
         {
@@ -329,10 +357,21 @@ int     HashTable::Remove(void* pEntry)
 
     if(iFindLayer < 0)
     {
-        return -1;
+        LOG_DEBUG("not found zhash = %zu in layer buckets",zhash);
+        HashTableKeyIndex * pEntryIndex = FindListEntryKeyIndex(pHead,zhash,m_fnComp,pEntry,mempool,0);
+        if(!pEntryIndex)
+        {
+            //not found
+            return -1;
+        }
+        else
+        {
+            return RemoveListKeyIndex(pHead,pEntryIndex,mempool);
+        }        
     }
     ////////////////////////////////////////////////////////////////////////////////////
     assert(piFindIdx);
+    int iRemoveIndex = *piFindIdx;
     int * piTailIdx = piFindIdx;
     //swap with tail
     int iLayerTail = pHead->iMaxBucketsFactor - 1;
@@ -347,11 +386,11 @@ int     HashTable::Remove(void* pEntry)
     }    
     //at least = i;
     assert(piTailIdx);
-    int iRemoveIndex = *piFindIdx;
     //not last layer
     if( iLayerTail < pHead->iMaxBucketsFactor - 1)
     {
         *piFindIdx = *piTailIdx;
+        //remove in layer buckets
         *piTailIdx = -1;
     }
     //last layer
@@ -359,24 +398,38 @@ int     HashTable::Remove(void* pEntry)
     {
         //find out the entry
         int iBegin = 0;
-        HashTableKeyIndex * pIndex = FindListKeyIndex(pHead,zhash,m_fnComp,pEntry,mempool,iBegin);
+        HashTableKeyIndex * pIndex = FindListKeyIndex(pHead,zhash,iBegin);
         //not found
         if(!pIndex)
         {
             *piFindIdx = *piTailIdx;
+            //remove in layer buckets
             *piTailIdx = -1;
         }
         else
-        {
-            //swap 
-            *piFindIdx = pIndex->iIndex;
-            pIndex->iIndex = iRemoveIndex;
-            //remove list
-            return RemoveListKeyIndex(pHead,pIndex,mempool);
+        {            
+            //swap            
+            HashTableKeyIndex * pEntryIndex = FindListEntryKeyIndex(pHead,zhash,m_fnComp,pEntry,mempool,iBegin);
+            if(!pEntryIndex)
+            {
+                //swap with pIndex
+                *piFindIdx = pIndex->iIndex;
+                pIndex->iIndex = iRemoveIndex;
+                //remove list
+                return RemoveListKeyIndex(pHead,pIndex,mempool);
+            }
+            else
+            {
+                //swap with pEntryIndex
+                *piFindIdx = pEntryIndex->iIndex;
+                pEntryIndex->iIndex = iRemoveIndex;
+                //remove list
+                return RemoveListKeyIndex(pHead,pEntryIndex,mempool);
+            }
         }
     }
 
-    //remove in layer buckets 
+    //remove mempool data 
     mempool.Free(iRemoveIndex);
     --pHead->iTotalUseCount;
     
@@ -402,8 +455,8 @@ void*   HashTable::Find(void* pEntry)
             return prEntry;
         }
     }
-
-    HashTableKeyIndex * pIndex = FindListKeyIndex( pHead, zhash,m_fnComp,pEntry,mempool,0);
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    HashTableKeyIndex * pIndex = FindListEntryKeyIndex( pHead, zhash,m_fnComp,pEntry,mempool,0);
     if(!pIndex)
     {
         return NULL;
@@ -414,11 +467,13 @@ void*   HashTable::Find(void* pEntry)
 int     HashTable::MaxCount()
 {
     HashTableHead * pHead = (HashTableHead*)m_pBuffer;
+    assert(pHead->iMaxEntryNum == mempool.MaxCount());
     return pHead->iMaxEntryNum;
 }
 int     HashTable::Count()
 {
     HashTableHead * pHead = (HashTableHead*)m_pBuffer;
+    assert(pHead->iTotalUseCount == mempool.Count());
     return pHead->iTotalUseCount;
 }
 //head is 0

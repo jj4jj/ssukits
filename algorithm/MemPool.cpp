@@ -185,44 +185,56 @@ int     MemPool::Free(int idx)
     int iNextPos = pTag->dwTagAndNext&(~MEMPOOL_ENTRY_USED_MASK);
     int iPrevPos = pTag->dwPrev;
 
+    //uniq one
     if(iPrevPos == idx && iNextPos == idx)
     {
         pHead->iUseHead = pHead->iUseTail = -1;
     }
     else
+    //first one
     if(iPrevPos == idx && iNextPos != idx)
     {        
-        //prev head
+        //prev next (head)
         pHead->iUseHead = iNextPos;
         //next pos prev
         ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iNextPos + MemPoolHeadSize))->dwPrev = iNextPos;         
     }
     else
+    //last one
     if(iPrevPos != idx && iNextPos == idx)
     {
         //no next node , but prev
         pHead->iUseTail = iPrevPos;
-        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iPrevPos|MemPoolHeadSize;         
+        //prev next self
+        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iPrevPos|MEMPOOL_ENTRY_USED_MASK;         
     }
     //prev and next is valid
     else
     {
-        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iNextPos|MemPoolHeadSize;         
+        //prev next
+        ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iPrevPos + MemPoolHeadSize))->dwTagAndNext = iNextPos|MEMPOOL_ENTRY_USED_MASK;         
+        //next prev
         ((MemPoolEntryTag*)((char*)m_pBufferBase + pHead->iEntryAlianedSize*iNextPos + MemPoolHeadSize))->dwPrev = iPrevPos;         
     }
     
     //insert to free list head
+
+    //head is exist
     if(pHead->iFreeHead >= 0)
     {
         pTag->dwTagAndNext = pHead->iFreeHead;
     }
+    //head not exist
     else
     {
         pTag->dwTagAndNext = idx;
     }
     pTag->dwPrev = idx ;
+
+    //it 's head next (insert to head)
     pHead->iFreeHead = idx;
 
+    //free
     pHead->iUsed--;
 
     return 0;

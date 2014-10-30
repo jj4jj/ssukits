@@ -90,3 +90,31 @@ INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/TestLua.lua DESTINATION script/)
 
 
 	
+
+
+
+###################################
+ADD_EXECUTABLE(mmpool_test
+	${CMAKE_CURRENT_SOURCE_DIR}/TestMMPool.cpp
+)
+target_link_libraries(mmpool_test
+	ssukits_algo
+	ssukits_base
+	rt
+	dl
+)
+INSTALL(TARGETS  mmpool_test DESTINATION test/)
+
+###################################
+ADD_EXECUTABLE(hashtable_test
+	${CMAKE_CURRENT_SOURCE_DIR}/TestHashTable.cpp
+)
+target_link_libraries(hashtable_test
+	ssukits_algo
+	ssukits_base
+	rt
+	dl
+)
+INSTALL(TARGETS  hashtable_test DESTINATION test/)
+
+
