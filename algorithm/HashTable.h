@@ -2,9 +2,6 @@
 
 #include "MemPool.h"
 
-
-
-
 /////////////////////////////////////////////////
 
 typedef size_t  (*PFNHashCode) (void* v);
@@ -38,18 +35,14 @@ public:
     int     MaxCount();
     int     Count();    
     //head is 0
+    int     GetBeinEntry();
     void*   GetNextEntry(int & itr);    
-protected:
-    int     Check();
+    static  int     Check(void* pBuffer,int iEntrySize,int iMaxEntryNum,int iMaxFactor);
 public:
-    void*    m_pBuffer;
-    size_t   m_zBuffSize;
-    PFNHashCode hash;
-    PFNHashCompare comp;
-    ///////////////////////////
-    int         iMaxEntryNum;
-    int         iMaxBucketsFactor;
+    void*          m_pBuffer;
+    PFNHashCode    m_fnHash;
+    PFNHashCompare m_fnComp;
     //////////////////////////////
-    MemPool     mempool;       
+    MemPool        mempool;       
 };
 

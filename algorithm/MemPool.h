@@ -24,8 +24,7 @@ public:
     int     Count();    
     int     GetEntryBegin();
     void*   GetNextEntry(int & itr);    
-protected:
-    int     Check(void* pBuffer,int iEntrySize,int iMaxEntryNum);
+    static int     Check(void* pBuffer,int iEntrySize,int iMaxEntryNum);
 public:
     void*    m_pBufferBase;
 };
