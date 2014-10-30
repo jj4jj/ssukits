@@ -1,7 +1,11 @@
 #pragma once
 
-#include "base/stdinc.h"
+#include "MemPool.h"
 
+
+
+
+/////////////////////////////////////////////////
 
 typedef size_t  (*PFNHashCode) (void* v);
 typedef int  (*PFNHashCompare) (void* v1,void* v2);
@@ -9,6 +13,11 @@ typedef int  (*PFNHashCompare) (void* v1,void* v2);
 //a hash table flat in a memory block
 class HashTable
 {
+public:
+    enum
+    {
+        DEFAULT_MAX_BUCKETS_FACTOR  =   7,
+    };
 public:
     int     Init(void* pBuffer,size_t zBufferSize,
                  int iEntySize,int iMaxEntryNum,
