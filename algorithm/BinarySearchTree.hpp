@@ -291,7 +291,7 @@ template <class U , class Compare ,class NodeType  >
 void    BinarySearchTree<U,Compare,NodeType>::GetSortedList(vector<U> & vec)
 {
 	vec.clear();
-	stack<NodePtr>  history;
+	std::stack<NodePtr>  history;
 	Node* p = root;
 	history.push(root);
 	while(!history.empty())

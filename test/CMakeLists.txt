@@ -118,3 +118,41 @@ target_link_libraries(hashtable_test
 INSTALL(TARGETS  hashtable_test DESTINATION test/)
 
 
+###################################
+ADD_EXECUTABLE(bst_test
+	${CMAKE_CURRENT_SOURCE_DIR}/BSTTest.cpp
+)
+target_link_libraries(bst_test
+	ssukits_algo
+	ssukits_base
+	rt
+	dl
+)
+INSTALL(TARGETS  bst_test DESTINATION test/)
+
+###################################
+ADD_EXECUTABLE(bsa_test
+	${CMAKE_CURRENT_SOURCE_DIR}/BSATest.cpp
+)
+target_link_libraries(bsa_test
+	ssukits_algo
+	ssukits_base
+	rt
+	dl
+)
+INSTALL(TARGETS  bsa_test DESTINATION test/)
+
+
+###################################
+ADD_EXECUTABLE(astar_test
+	${CMAKE_CURRENT_SOURCE_DIR}/TestAstar.cpp
+)
+target_link_libraries(astar_test
+	ssukits_algo
+	ssukits_base
+	rt
+	dl
+)
+INSTALL(TARGETS  astar_test DESTINATION test/)
+
+

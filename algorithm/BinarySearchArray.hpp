@@ -1,12 +1,13 @@
 #pragma once
 
+#include "base/stdinc.h"
 
 template<class U , class Compare = std::less<U> >
 class BinarySearchArray
 {
 protected:
-    typedef    std::vector<U>   ListType;
-    typedef    ListType::iterator   ListTypeItr;
+    typedef    typename std::vector<U>       ListType;
+    typedef    typename ListType::iterator   ListTypeItr;
     
 public:    
 
@@ -80,7 +81,7 @@ public:
         }
         return first; 
     }
-    ListTypeItr end()
+    ListTypeItr End()
     {
         return list.end();
     }
@@ -111,7 +112,7 @@ public:
         //insert it
         list.insert(it,u);
     }    
-    bool    equal(const U& u1,const U& u2)
+    bool    Equal(const U& u1,const U& u2)
     {
         return !Compare()(u1,u2) && !Compare()(u2,u1);
     }
