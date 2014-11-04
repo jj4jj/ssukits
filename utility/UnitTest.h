@@ -15,7 +15,7 @@
 
 struct TestCaseResult
 {
-	timeval	runningTime;
+	timeval	    runningTime;
 	//ok = 0
 	//otherwise , ec 
 	int			status;
@@ -36,9 +36,9 @@ public:
 	void	EndTest(string casename,int stat);
 public:
 	template<class T>
-	static int GenerateArray(int n,T minv, T maxv,vector<T> & vec );
+	static int      GenerateArray(int n,T minv, T maxv,vector<T> & vec );
 	template<class T>
-	static bool		 IsVecEqual(const vector<T> & a1,const vector<T> & a2);
+	static bool		IsVecEqual(const vector<T> & a1,const vector<T> & a2);
 private:	
 	vector<TestCaseResult>	results;
 	struct timeval			lastbegintime;

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "BinarySearchTree.h"
-
+#include "BinarySearchTree.hpp"
 
 
 template <class U>
@@ -14,14 +13,14 @@ template<class U,class Compare = std::less<U>  >
 class AVLTree : public BinarySearchTree<U,Compare,AVLNode<U> >
 {    
 public:
-    using     typename BinarySearchTree<U,Compare>::Node;
-    using     typename BinarySearchTree<U,Compare>::NodePtr;
-    using     typename BinarySearchTree<U,Compare>::NodeRef;  
-    typedef   BinarySearchTree<U,Compare>   BST;
+    typedef     typename BinarySearchTree<U,Compare>::Node  Node;
+    typedef     typename BinarySearchTree<U,Compare>::NodePtr       NodePtr;
+    typedef     typename BinarySearchTree<U,Compare>::NodeRef       NodeRef;  
+    typedef     BinarySearchTree<U,Compare,AVLNode<U> >   BST;
 
 protected:
     
-    using     BinarySearchTree<U,Compare>::root;
+    using     BST::root;
     
 public:
     inline int     GetHeight(NodePtr pNode)

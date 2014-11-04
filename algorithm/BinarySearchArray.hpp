@@ -13,14 +13,14 @@ public:
 
     template<class Itr>
     //assign a container to list
-    int    Init(Itr first,Itr last)
+    void    Assign(Itr first,Itr last)
     {
         list.assign(first,last);
         Compare comp;
         std::sort(list.begin(),list.end(),comp);
     }
     //construct a empty list
-    int    Init(int iReserveSize = 16)
+    void    Reserve(int iReserveSize = 16)
     {
         list.reserve(iReserveSize);
     }
@@ -30,13 +30,12 @@ public:
     ListTypeItr LowwerBound(const U & u)
     {
     //   return lowwer_bound(list.begin(),list.end(),u);
-
         Compare comp;
         ListTypeItr it = list.begin(),
                     first = list.begin();
         typename std::iterator_traits<ListTypeItr>::difference_type count, step;
         
-        uint32_t count = std::distance(first,list.end());     
+        count = std::distance(first,list.end());
         while (count > 0)
 		{
             it = first;
@@ -64,7 +63,7 @@ public:
                     first = list.begin();
         typename std::iterator_traits<ListTypeItr>::difference_type count, step;
         
-        uint32_t count = std::distance(first,list.end());     
+        count = std::distance(first,list.end());     
         while (count > 0) {
             it = first;
             step = count>>1;
@@ -95,7 +94,7 @@ public:
 
         //lowwer_bound it
         ListTypeItr it = UpperBound(u);
-        if(it == end())
+        if(it == End())
         {
             Append(u);
             return 0;
@@ -103,7 +102,7 @@ public:
         if(it != list.begin())
         {
             //insert u into the it pos        
-            if(!bInsertWhenEual && equal(*(it-1),u))
+            if(!bInsertWhenEual && Equal(*(it-1),u))
             {
                 //repeat
                 return -1;
@@ -128,9 +127,9 @@ public:
     int     Remove1st(const U& u)
     {
         ListTypeItr it = LowwerBound(u);
-        if(it != end())
+        if(it != End())
         {
-            if(equal(*it,u))
+            if(Equal(*it,u))
             {
                 //
                 list.erase(it);
@@ -155,9 +154,9 @@ public:
     U*      Find1st(const U & u)
     {
         ListTypeItr it = LowwerBound(u);
-        if(it != end())
+        if(it != End())
         {
-            if(equal(*it,u))
+            if(Equal(*it,u))
             {
                 return &(list.at(it-list.begin()));
             }
@@ -168,8 +167,8 @@ public:
     {
         rlst.clear();
         ListTypeItr it = LowwerBound(u);
-        while(it != end() &&
-               equal(*it,u))
+        while(it != End() &&
+               Equal(*it,u))
         {
             rlst.push_back(*it);
         }

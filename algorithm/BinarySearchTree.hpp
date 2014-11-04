@@ -6,9 +6,9 @@
 template <class U>
 struct  BSTNode
 {
-    BSTNode<U>* left,*right,*parent;
-    //////////////////////////
     U   data;
+    void * left,*right,*parent;
+    ///////////////////////////////
 };
 template <class U , class Compare = std::less<U> ,class NodeType = BSTNode<U> >
 class BinarySearchTree
@@ -77,6 +77,14 @@ public:
 	NodePtr	GetMin(NodePtr pNode);
 	NodePtr	GetMax(NodePtr pNode);
     int     Destroy(NodePtr pTree);
+    inline U & GetMin()
+    {
+        return (*GetMin(GetRoot())).data;
+    }
+    inline U & GetMax()
+    {
+        return (*GetMax(GetRoot())).data;
+    }
 protected:
     virtual NodePtr     Delete(NodePtr pNode);	
     virtual NodePtr     Insert(NodePtr pTree,NodePtr pNode);
@@ -197,11 +205,11 @@ typename  BinarySearchTree<U,Compare,NodeType>::NodePtr
     BinarySearchTree<U,Compare,NodeType>::Insert(typename BinarySearchTree<U,Compare,NodeType>::NodePtr pTree,
                                                  typename BinarySearchTree<U,Compare,NodeType>::NodePtr pNode)
 {        
-	if( EQ(pNode->u,pTree->data))
+	if( EQ(pNode->data,pTree->data))
 	{
 		return NULL;	
 	}
-    else if( LT(pNode->u,pTree->data) )
+    else if( LT(pNode->data,pTree->data) )
     {
         if(pTree->left != NULL)
         {
