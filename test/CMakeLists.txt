@@ -119,18 +119,6 @@ INSTALL(TARGETS  hashtable_test DESTINATION test/)
 
 
 ###################################
-ADD_EXECUTABLE(bst_test
-	${CMAKE_CURRENT_SOURCE_DIR}/BSTTest.cpp
-)
-target_link_libraries(bst_test
-	ssukits_algo
-	ssukits_base
-	rt
-	dl
-)
-INSTALL(TARGETS  bst_test DESTINATION test/)
-
-###################################
 ADD_EXECUTABLE(bsa_test
 	${CMAKE_CURRENT_SOURCE_DIR}/BSATest.cpp
 )

@@ -2,136 +2,152 @@
 
 #include "base/stdinc.h"
 
-template<class U , class Compare = std::less<U> >
+
+
+template<class T>
+class BlockArray
+{
+public:    
+    typedef T   value_type;
+    typedef T * pointer; 
+    typedef T & reference; 
+    typedef const T & const_reference;
+    typedef const T * const_pointer;
+    typedef pointer iterator;
+private:
+    size_t     *    pzNum;
+    size_t          zMax;
+    value_type *    data;
+public:
+    BlockArray(T * pData,size_t * pzNum_,size_t zMax_)
+    {
+        data = pData;
+        zMax = zMax_;
+        pzNum = pzNum_;
+    }
+public:
+    inline iterator  begin()
+    {
+        return  data;
+    }
+    inline iterator  end()
+    {
+        return (data + (*pzNum) );
+    }
+    void  erase(const iterator it)
+    {
+        if(it >= data + (*pzNum) || it < data )
+        {
+            return;
+        }
+        memcpy(it,it+1,data+(*pzNum) - it - 1);
+        (*pzNum)--;
+    }
+    void  erase(const iterator  begp,const iterator  endp)
+    {
+        if(begp < begin() || endp > end() )
+        {
+            return;
+        }        
+        memcpy(begp,endp,end() - endp);
+        (*pzNum) -= (endp - begp);         
+    }   
+    iterator  insert(const iterator  pos,const_reference val)
+    {
+        if(*pzNum >= zMax || pos > data + (*pzNum) || pos < data )
+        {
+            return end();
+        }        
+        //
+        for(iterator xend = end();xend > pos; --xend)
+        {
+            *xend = *(xend-1);
+        }
+        //memmove(pos+1,pos,data + (*pzNum) - pos );
+        *pos = val;
+        ++(*pzNum);
+        return pos;
+    }
+    reference operator [](size_t idx)
+    {        
+        return data[idx];
+    }
+    template <class Itr>
+    void assign(Itr first,Itr last)
+    {
+        *pzNum = 0;
+        while(first != last && *pzNum < zMax)
+        {
+            data[(*pzNum)++] = *first;
+            ++first;
+        }
+    }
+};
+
+
+template<class U ,class Container = std::vector<U>, class Compare = std::less<U> >
 class BinarySearchArray
 {
 protected:
-    typedef    typename std::vector<U>       ListType;
-    typedef    typename ListType::iterator   ListTypeItr;
-    
-public:    
-
-    template<class Itr>
-    //assign a container to list
-    void    Assign(Itr first,Itr last)
+    typedef      typename Container::iterator   ContainerItr;    
+    Container  & list;
+    Compare      comp;
+public:
+    BinarySearchArray(Container & ctn):list(ctn)
     {
-        list.assign(first,last);
-        Compare comp;
+        Normalize();
+    }
+    void Normalize()
+    {
         std::sort(list.begin(),list.end(),comp);
     }
-    //construct a empty list
-    void    Reserve(int iReserveSize = 16)
-    {
-        list.reserve(iReserveSize);
-    }
-
     //first not less than u element
     //if there is no this elements , return end();
-    ListTypeItr LowwerBound(const U & u)
+    inline ContainerItr LowerBound(const U & u)
     {
-    //   return lowwer_bound(list.begin(),list.end(),u);
-        Compare comp;
-        ListTypeItr it = list.begin(),
-                    first = list.begin();
-        typename std::iterator_traits<ListTypeItr>::difference_type count, step;
-        
-        count = std::distance(first,list.end());
-        while (count > 0)
-		{
-            it = first;
-            step = count>>1;
-            std::advance(it, step);
-            if (comp(*it,u)) 
-            {
-                first = ++it;
-                count -= step + 1;
-            } 
-            else
-            {
-                count = step;
-            }
-        }
-        return first;        
+        return std::lower_bound(list.begin(),list.end(),u,comp);
     }
     //first greater than u elements
     //if there is no this elements , return end();
-    ListTypeItr UpperBound(const U & u)
+    inline ContainerItr UpperBound(const U & u)
     {
-    //   return upper_bound(list.begin(),list.end(),u);
-        Compare comp;
-        ListTypeItr it = list.begin(),
-                    first = list.begin();
-        typename std::iterator_traits<ListTypeItr>::difference_type count, step;
-        
-        count = std::distance(first,list.end());     
-        while (count > 0) {
-            it = first;
-            step = count>>1;
-            std::advance(it, step);
-            if(!comp(*it,u)) 
-            {
-                first = ++it;
-                count -= step + 1;
-            } 
-            else
-            {
-                count = step;
-            }
-        }
-        return first; 
-    }
-    ListTypeItr End()
-    {
-        return list.end();
-    }
-    
+       return std::upper_bound(list.begin(),list.end(),u,comp);
+    }    
     //o(log(N))
     //return > 0 is repeat
     //return 0 is ok
     //return < 0 is ilegal
-    int     Insert(const U& u , bool bInsertWhenEual = false )
+    inline int     Insert(const U& u , bool bInsertForce = false )
     {
-
         //lowwer_bound it
-        ListTypeItr it = UpperBound(u);
-        if(it == End())
+        ContainerItr it = LowerBound(u);
+        if(it == list.end())
         {
-            Append(u);
+            list.insert(list.end(),u);
             return 0;
         }
-        if(it != list.begin())
+        //insert u into the it pos        
+        if(!bInsertForce && Equal(*it,u))
         {
-            //insert u into the it pos        
-            if(!bInsertWhenEual && Equal(*(it-1),u))
-            {
-                //repeat
-                return -1;
-            }        
-        }
+            //repeat
+            return 1;
+        }        
         //insert it
         list.insert(it,u);
+        return 0;
     }    
-    bool    Equal(const U& u1,const U& u2)
+    inline bool    Equal(const U& u1,const U& u2)
     {
-        return !Compare()(u1,u2) && !Compare()(u2,u1);
-    }
-    void     Append(const U& u)
-    {
-        if(!list.empty())
-        {
-            assert(!Compare()(u,list.back()));
-        }
-        list.push_back(u);
+        return !comp(u1,u2) && !comp(u2,u1);
     }
     //o(N)
-    int     Remove1st(const U& u)
+    inline int     Remove1st(const U& u)
     {
-        ListTypeItr it = LowwerBound(u);
-        if(it != End())
+        ContainerItr it = LowerBound(u);
+        if(it != list.end())
         {
             if(Equal(*it,u))
             {
-                //
                 list.erase(it);
                 return 0;
             }
@@ -139,22 +155,15 @@ public:
         //not found
         return -1;
     }
-    int     RemoveAll(const U& u)
+    inline void     RemoveAll(const U& u)
     {
-        ListTypeItr it1 = LowwerBound(u);
-        ListTypeItr it2 = UpperBound(u);
-        if(it1 != it2)
-        {
-            list.erase(it1,it2);
-            return 0;
-        }
-        return -1;
+        list.erase(std::remove(list.begin(),list.end(),u),list.end());
     }
     //o(logN)
-    U*      Find1st(const U & u)
+    inline U*      Find1st(const U & u)
     {
-        ListTypeItr it = LowwerBound(u);
-        if(it != End())
+        ContainerItr it = LowerBound(u);
+        if(it != list.end())
         {
             if(Equal(*it,u))
             {
@@ -163,18 +172,17 @@ public:
         }
         return NULL;
     }
-    void     FindAll(const U & u,std::vector<U> & rlst)
+    inline void     FindAll(const U & u,std::vector<U> & rlst)
     {
         rlst.clear();
-        ListTypeItr it = LowwerBound(u);
-        while(it != End() &&
+        ContainerItr it = LowerBound(u);
+        while(it != list.end() &&
                Equal(*it,u))
         {
             rlst.push_back(*it);
+            ++it;
         }
     }
-private:
-    std::vector<U>  list;
 };
 
 

@@ -39,6 +39,34 @@ public:
 	static int      GenerateArray(int n,T minv, T maxv,vector<T> & vec );
 	template<class T>
 	static bool		IsVecEqual(const vector<T> & a1,const vector<T> & a2);
+    template<class T>
+    static void PrintArray(vector<T> & vec)
+    {
+        std::cout<<"[";
+        for(int i = 0;i < (int)vec.size(); ++i)
+        {
+            if(i > 0)
+            {
+                std::cout<<",";
+            }
+            std::cout<<vec[i];
+        }
+        std::cout<<"]\n";
+    }
+    template<class T>
+    static void PrintArray(T* pData,size_t znum)
+    {
+        std::cout<<"[";
+        for(int i = 0;i < (int)znum; ++i)
+        {
+            if(i > 0)
+            {
+                std::cout<<",";
+            }
+            std::cout<<pData[i];
+        }
+        std::cout<<"]\n";
+    }
 private:	
 	vector<TestCaseResult>	results;
 	struct timeval			lastbegintime;
