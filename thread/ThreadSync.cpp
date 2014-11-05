@@ -60,7 +60,7 @@ int Condition::TimeWaitMutex(Mutex & mutex,const struct timespec *restrict absti
     return pthread_cond_timedwait(&cond,
                 &(mutex.GetMutex()),abstime);
 }
-int Condition::WaitMutex(Mutex& mutex)
+int Condition::Wait(Mutex& mutex)
 {
     return pthread_cond_wait(&cond,
                &(mutex.GetMutex()));

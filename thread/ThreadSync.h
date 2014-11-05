@@ -45,7 +45,7 @@ public:
     void SetCond(pthread_cond_t _cond);
     int Init(const pthread_condattr_t *restrict attr);
     int TimeWaitMutex(Mutex& mutex,const struct timespec *restrict abstime);
-    int WaitMutex(Mutex& mutex);
+    int Wait(Mutex& mutex);
     int NotifyAll();
     int Notify();
     int Destroy();
