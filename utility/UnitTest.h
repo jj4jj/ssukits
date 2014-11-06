@@ -17,17 +17,20 @@ struct TestCaseResult
 {
 	timeval	    runningTime;
 	//ok = 0
-	//otherwise , ec 
+	//otherwise , ec .
 	int			status;
 	string		casename;
 };
 
 class UnitTest : public Singleton<UnitTest>
 {
+private:
+    DeclareDefaultPrivateConstructor(UnitTest)
+    DeclareSingltonSupport(UnitTest)
 public:
 	int	Init();
 	#define	Test(casename,expectrval,functionv,params...) do{\
-		UnitTest::Instance().BeginTest();\		
+		UnitTest::Instance().BeginTest();\
 		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1);\
 	}while(false)
 	int		PrintReport();
