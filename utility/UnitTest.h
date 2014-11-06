@@ -27,7 +27,7 @@ class UnitTest : public Singleton<UnitTest>
 public:
 	int	Init();
 	#define	Test(casename,expectrval,functionv,params...) do{\
-		UnitTest::Instance().BeginTest();\
+		UnitTest::Instance().BeginTest();\		
 		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1);\
 	}while(false)
 	int		PrintReport();
