@@ -20,7 +20,7 @@ struct TestCaseResult
 	//otherwise , ec .
 	int			status;
 	string		casename;
-    string      testfuncname;
+    string      testfunc;
     string      scopefunc;
     string      scopefile;
     int         line;
