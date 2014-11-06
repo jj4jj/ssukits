@@ -32,10 +32,14 @@ private:
     DeclareDefaultPrivateConstructor(UnitTest)
     DeclareSingltonSupport(UnitTest)
 public:
-	int	Init();
-	#define	Test(casename,expectrval,functionv,params...) do{\
+	int	    Init();
+	#define	TestFunction(casename,expectrval,functionv,params...) do{\
 		UnitTest::Instance().BeginTest();\
 		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1,#functionv,__FILE__,__FUNCTION__,__LINE__);\
+	}while(false)
+	#define	TestExpr(casename,compute_bool_expr) do{\
+		UnitTest::Instance().BeginTest();\
+		UnitTest::Instance().EndTest(casename,compute_bool_expr,##compute_bool_expr,__FILE__,__FUNCTION__,__LINE__);\
 	}while(false)
 	int		PrintReport();
 	const vector<TestCaseResult>	& GetReport();
