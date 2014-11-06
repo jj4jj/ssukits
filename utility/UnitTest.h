@@ -20,6 +20,10 @@ struct TestCaseResult
 	//otherwise , ec .
 	int			status;
 	string		casename;
+    string      testfuncname;
+    string      scopefunc;
+    string      scopefile;
+    int         line;
 };
 
 class UnitTest : public Singleton<UnitTest>
@@ -31,12 +35,12 @@ public:
 	int	Init();
 	#define	Test(casename,expectrval,functionv,params...) do{\
 		UnitTest::Instance().BeginTest();\
-		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1);\
+		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1,#functionv,__FILE__,__FUNCTION__,__LINE__);\
 	}while(false)
 	int		PrintReport();
 	const vector<TestCaseResult>	& GetReport();
 	void	BeginTest();
-	void	EndTest(string casename,int stat);
+	void	EndTest(string casename,int stat,const char* pszTestFuncName,const char* pszFile,const char* pszFunction,int iLine);
 public:
 	template<class T>
 	static int      GenerateArray(int n,T minv, T maxv,vector<T> & vec );

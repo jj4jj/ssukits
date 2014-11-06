@@ -33,7 +33,7 @@ inline void	UnitTest::BeginTest()
 {
 		gettimeofday(&lastbegintime,NULL);	
 }
-inline void	UnitTest::EndTest(string casename,int stat)
+inline void	UnitTest::EndTest(string casename,int stat,const char* pszTestFuncName,const char* pszFile,const char* pszFunction,int iLine)
 {
 		timeval	endtime;
 		gettimeofday(&endtime,NULL);
@@ -42,5 +42,9 @@ inline void	UnitTest::EndTest(string casename,int stat)
 		tcr.runningTime.tv_usec = endtime.tv_usec - lastbegintime.tv_usec;
 		tcr.casename = casename;
 		tcr.status = stat;
+        tcr.scopefile = pszFile;
+        tcr.scopefunc = pszFunction;
+        tcr.testfuncname = pszTestFuncName;
+        tcr.line = iLine;
 		results.push_back(tcr);
 }
