@@ -33,7 +33,7 @@ private:
     DeclareSingltonSupport(UnitTest)
 public:
 	int	    Init();
-	#define	TestFunction(casename,expectrval,functionv,params...) do{\
+	#define	TestFunc(casename,expectrval,functionv,params...) do{\
 		UnitTest::Instance().BeginTest();\
 		UnitTest::Instance().EndTest(casename,expectrval==functionv(##params)?0:-1,#functionv,__FILE__,__FUNCTION__,__LINE__);\
 	}while(false)

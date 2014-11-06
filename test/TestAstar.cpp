@@ -8,7 +8,7 @@ int main()
 {
 
     UnitTest::Init();
-    UnitTest::Test("min",1,std::min,1,2);
+    UnitTest::TestFunc("min",1,std::min,1,2);
     UnitTest::TestExpr("te",std::min(1,2) == 1);
 
     return 0;
